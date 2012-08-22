@@ -85,8 +85,8 @@ typedef struct {
   guint repeat_start_timer;
   gpointer field_90;
   gpointer field_94;
-  int field_98;
-  int field_9C;
+  gchar* predicted_word;
+  gchar* field_9C;
   GtkTextTag *tag_fg;
   GtkTextTag *tag_bg;
   gboolean dual_dictionary;
@@ -126,6 +126,7 @@ static void set_layout(HildonIMWesternFKB *fkb);
 static void temp_text_clear(HildonIMWesternFKB *fkb);
 static void insert_text_with_tag(HildonIMWesternFKB *fkb, GtkTextIter *iter, gchar *text, GtkTextTag *tag);
 static gboolean word_completion_clear(HildonIMWesternFKB *fkb);
+static void word_completion_reset(HildonIMWesternFKB *fkb);
 
 /* callbacks */
 static void numbers_button_release(GObject *obj, void *data);
@@ -311,8 +312,8 @@ static void hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
 
   priv->field_90 = 0;
   priv->field_94 = 0;
-  priv->field_98 = 0;
-  priv->field_9C = 0;
+  priv->predicted_word = NULL;
+  priv->field_9C = NULL;
   priv->field_B0 = 0;
 
   priv->hwc = hildon_im_word_completer_new();
@@ -395,6 +396,94 @@ static gboolean word_completion_clear(HildonIMWesternFKB *fkb)
   priv->field_94 = NULL;
 
   return rv;
+}
+
+static void word_completion_reset(HildonIMWesternFKB *fkb)
+{
+  HildonIMWesternFKBPrivate *priv;
+  gint lang_index;
+  const gchar *active_lang;
+  const gchar *lang[2];
+
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
+
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
+
+
+  lang[0] = hildon_im_ui_get_language_setting(priv->ui, 0);
+  lang[1] = hildon_im_ui_get_language_setting(priv->ui, 1);
+  lang_index = hildon_im_ui_get_active_language_index(priv->ui);
+
+  if ( lang_index > 1 )
+    lang_index = 0;
+
+  hildon_im_word_completer_configure(priv->hwc, priv->ui);
+
+  active_lang = lang[lang_index];
+
+  if (active_lang)
+  {
+    gchar *key;
+    GConfValue *value;
+
+    key = g_strdup_printf("/apps/osso/inputmethod/hildon-im-languages/%s/word-completion", active_lang);
+    value = gconf_client_get(priv->ui->client, key, NULL);
+
+    if (value)
+    {
+      priv->word_completion = gconf_value_get_bool(value);
+      gconf_value_free(value);
+    }
+
+    g_free(key);
+
+    key = g_strdup_printf("/apps/osso/inputmethod/hildon-im-languages/%s/auto-capitalisation", active_lang);
+    value = gconf_client_get(priv->ui->client, key, NULL);
+
+    if ( value ) /* possible bug? */
+      gconf_value_free(value);
+
+    g_free(key);
+
+    key = g_strdup_printf("/apps/osso/inputmethod/hildon-im-languages/%s/insert-space-after-word", active_lang);
+    value = gconf_client_get(priv->ui->client, key, NULL);
+
+    if (value)
+    {
+      priv->field_AC = gconf_value_get_bool(value); /* possible bug? */
+      gconf_value_free(value);
+    }
+
+    g_free(key);
+  }
+
+
+  word_completion_clear(fkb);
+}
+
+static void word_completion_hit_word(HildonIMWesternFKB *fkb, gchar *word)
+{
+  gchar *word_lc;
+  HildonIMWesternFKBPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
+
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
+
+  if ( word && *word )
+  {
+    word_lc = g_utf8_strdown(word, -1);
+    if ( priv->predicted_word && !g_strcmp0(word_lc, priv->predicted_word) )
+    {
+      g_free(word_lc);
+    }
+    else
+    {
+      hildon_im_word_completer_hit_word(priv->hwc, word_lc, 1);
+      g_free(priv->predicted_word);
+      priv->predicted_word = word_lc;
+    }
+  }
 }
 
 static gchar *get_input_text(HildonIMWesternFKB *fkb, gboolean no_autocomplete)
@@ -1040,7 +1129,7 @@ static void hildon_im_western_fkb_finalize(GObject *object)
   }
   g_free((gpointer)priv->field_90);
   g_free((gpointer)priv->field_94);
-  g_free((gpointer)priv->field_98);
+  g_free((gpointer)priv->predicted_word);
   g_free((gpointer)priv->field_9C);
 
   if (G_OBJECT_CLASS(parent_class)->finalize)

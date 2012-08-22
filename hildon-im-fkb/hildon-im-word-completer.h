@@ -28,5 +28,6 @@ typedef struct {
 gpointer hildon_im_word_completer_new(void);
 void hildon_im_word_completer_save_data(HildonIMWWordCompleter *hwc);
 void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI *ui);
+gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gchar *str, gboolean unk);
 
 #endif /* __HILDON_IM_WORD_COMPLETER_H_INCLUDED__ */
