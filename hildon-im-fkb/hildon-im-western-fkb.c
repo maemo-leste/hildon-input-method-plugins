@@ -133,8 +133,12 @@ static void word_completion_reset(HildonIMWesternFKB *fkb);
 /* callbacks */
 static void numbers_button_release(GObject *obj, void *data);
 static gboolean delete_fkb_cb(GtkWidget *widget, GdkEvent *event, gpointer data);
+
+static void menu_button_cb(GtkWidget *widget, void *data);
 static void menu_item_selected(GtkWidget *button, gpointer data);
 static void language_item_selected_cb(GtkWidget *button, gpointer data);
+static void clipboard_targets_received_callback(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, gpointer data);
+
 static void hildon_im_western_fkb_language_settings_changed(HildonIMPlugin *plugin, gint index);
 static void hildon_im_western_fkb_language(HildonIMPlugin *plugin);
 static void hildon_im_western_fkb_save_data(HildonIMPlugin *plugin);
@@ -1830,4 +1834,99 @@ static void fkb_delete_selection(HildonIMWesternFKB *fkb, gboolean clear_wc, gbo
     gtk_text_buffer_delete_selection(priv->text_buffer, TRUE, TRUE);
     word_completion_clear(fkb);
   }
+}
+
+static void menu_button_cb(GtkWidget *widget, void *data)
+{
+  HildonIMWesternFKBPrivate *priv;
+  HildonIMWesternFKB *fkb;
+  gint selection;
+
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
+
+  fkb = HILDON_IM_WESTERN_FKB(data);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
+
+
+  if (priv->current_input_mode & HILDON_GTK_INPUT_MODE_INVISIBLE)
+  {
+    gboolean sel_bounds = gtk_text_buffer_get_selection_bounds(priv->text_buffer, NULL, NULL);
+    gtk_widget_set_sensitive(priv->button_common_menu_cut, sel_bounds);
+    gtk_widget_set_sensitive(priv->button_common_menu_copy, sel_bounds);
+  }
+
+
+  gtk_clipboard_request_targets(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+                                clipboard_targets_received_callback,
+                                fkb);
+
+  gtk_window_set_modal(GTK_WINDOW(priv->control_menu), TRUE);
+  gtk_window_set_transient_for(GTK_WINDOW(priv->control_menu),
+                               priv->fkb_window);
+  selection = gtk_dialog_run(GTK_DIALOG(priv->control_menu));
+
+  gtk_widget_hide(GTK_WIDGET(priv->control_menu));
+
+  switch ( selection )
+  {
+    case 0:
+      if(hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+        fkb_delete_selection(fkb, 0, 1);
+
+      gtk_text_buffer_cut_clipboard(priv->text_buffer,
+                                    gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+                                    TRUE);
+      break;
+    case 1:
+
+    gtk_text_buffer_copy_clipboard(priv->text_buffer,
+                                   gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+    break;
+    case 2:
+      gtk_clipboard_request_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+                                 paste_received,
+                                 fkb);
+      break;
+    case 3:
+      g_warning("%d %d", 0, priv->active_language);
+      if ( priv->active_language )
+        hildon_im_ui_set_active_language_index(priv->ui, 0);
+      break;
+    case 4:
+      g_warning("%d %d", 1, priv->active_language);
+      if ( priv->active_language != 1 )
+        hildon_im_ui_set_active_language_index(priv->ui, 1);
+      break;
+    default:
+      break;
+  }
+
+  show_text_view(fkb);
+}
+
+static void clipboard_targets_received_callback(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, gpointer data)
+{
+  HildonIMWesternFKBPrivate *priv;
+  HildonIMWesternFKB *fkb;
+  gboolean sensitive = FALSE;
+
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
+
+  fkb = HILDON_IM_WESTERN_FKB(data);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
+
+  if ( n_atoms > 0 )
+  {
+    int i;
+    for(i=0;i<n_atoms;i++)
+      if(atoms[i] == gdk_atom_intern("UTF8_STRING", 0) ||
+         atoms[i] == gdk_atom_intern("COMPOUND_TEXT", 0) ||
+         atoms[i] == GDK_TARGET_STRING )
+      {
+        sensitive = TRUE;
+        break;
+      }
+  }
+
+  gtk_widget_set_sensitive(priv->button_common_menu_paste, sensitive);
 }
