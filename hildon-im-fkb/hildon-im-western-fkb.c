@@ -158,6 +158,8 @@ static void repeating_button_leave(GtkWidget *widget, void *data);
 static gboolean textview_key_press_release_cb(GtkWidget *widget, GdkEventKey *event, gpointer data);
 static gboolean textview_button_release_cb(GtkWidget *widget, GdkEventButton *event, gpointer data);
 gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpointer data);
+static void textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data);
+static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context, gpointer data);
 
 static void temp_input_cb(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data);
 static void illegal_input_cb(HildonVKBRenderer *vkb, gchar *input, gpointer data);
@@ -2455,4 +2457,72 @@ LABEL_7:
   gdk_region_destroy(region);
 
   return TRUE;
+}
+
+static void textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data)
+{
+  HildonIMWesternFKBPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(user_data));
+
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(user_data));
+
+  if ( hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT )
+  {
+    if(GTK_TEXT_VIEW(priv->textview)->dnd_mark)
+    {
+      GtkTextIter iter;
+      GtkTextIter end;
+      GtkTextIter start;
+      gint offset;
+      const gchar *visible_text;
+
+      gtk_text_buffer_get_iter_at_mark(priv->text_buffer, &iter, GTK_TEXT_VIEW(priv->textview)->dnd_mark);
+      offset = gtk_text_iter_get_offset(&iter);
+
+      if ( gtk_text_buffer_get_selection_bounds(priv->text_buffer, &start, &end) )
+      {
+        int start_offset = gtk_text_iter_get_offset(&start);
+        int end_offset = gtk_text_iter_get_offset(&end);
+
+        hildon_im_ui_send_surrounding_offset(priv->ui, 1, end_offset - priv->offset);
+
+        if ( start_offset < end_offset )
+        {
+          int i = start_offset;
+          do
+          {
+            hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_COMMIT_SURROUNDING);
+            i++;
+          }
+          while ( i != end_offset );
+        }
+
+        if ( offset <= start_offset )
+          priv->offset = start_offset;
+        else
+          priv->offset = end_offset;
+
+        if ( data->target == gdk_atom_intern("GTK_TEXT_BUFFER_CONTENTS", 0) )
+        {
+          if ( data->length == 4 && *data->data)
+          {
+            hildon_im_ui_send_surrounding_offset(priv->ui, 1, offset - priv->offset);
+            visible_text = (const gchar *)gtk_text_iter_get_visible_text(&start, &end);
+            hildon_im_ui_send_utf8(priv->ui, visible_text);
+            g_free((gpointer)visible_text);
+          }
+        }
+      }
+    }
+  }
+}
+
+static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context, gpointer data)
+{
+  HildonIMWesternFKB *fkb;
+
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
+
+  fkb = HILDON_IM_WESTERN_FKB(data);
 }
