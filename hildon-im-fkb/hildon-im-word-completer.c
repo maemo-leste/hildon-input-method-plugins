@@ -401,3 +401,272 @@ void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI 
     gconf_value_free(value);
   }
 }
+
+const gchar *_special_chars[]={".",",",":",";","!","?"};
+
+static gboolean hildon_im_word_completer_word_at_index(guint dict, gchar *word, guint index)
+{
+  gboolean result;
+  gboolean exists;
+
+  result = imengines_wp_word_exists(word, dict, &exists);
+
+  if ( result )
+    result = (exists == index);
+
+  return result;
+}
+
+static gboolean hildon_im_word_completer_move_word(int dict, gchar *word, guint index)
+{
+  imengines_wp_delete_word(word, dict, index);
+  return (imengines_wp_add_word(word, dict, index) == 0);
+}
+
+gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gchar *text, gboolean unk)
+{
+  gboolean has_lang;
+  gboolean v14;
+  gchar *word;
+  HildonIMWWordCompleterPrivate *priv;
+  gchar *p;
+  gunichar last_char;
+  const gchar *special_chars[6];
+  const gchar* str;
+  int i;
+
+  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
+
+  str = text;
+
+  if ( !str || !*str || !g_utf8_validate(str, -1, 0))
+    return FALSE;
+
+  while ( 1 )
+  {
+    gunichar uc = g_utf8_get_char_validated(str, -1);
+
+    if ( uc <= -1 )
+      break;
+
+    if ( !g_unichar_isalnum(uc) && !g_unichar_ismark(uc) && (*str != '-') && (*str != '_') && (*str != '\'') && (*str != '&') )
+      break;
+
+    str = g_utf8_next_char(str);
+
+    if ( !*str )
+      goto go_on;
+  }
+
+  if (g_utf8_next_char(str))
+    return FALSE;
+
+go_on:
+
+  word = g_utf8_strdown(text, -1);
+  memcpy(special_chars, _special_chars, sizeof(special_chars));
+
+  p = g_utf8_offset_to_pointer(word, g_utf8_strlen(word, -1) - 1);
+  last_char = g_utf8_get_char(p);
+
+  i = 0;
+
+  while ( 1 )
+  {
+    gchar *s = g_utf8_normalize(special_chars[i], -1, G_NORMALIZE_DEFAULT);
+    gunichar uc = g_utf8_get_char_validated(s, -1);
+    g_free(s);
+
+    if ( last_char == uc )
+    {
+      *p = 0;
+      break;
+    }
+    i++;
+
+    if (i == (sizeof(special_chars)/sizeof(special_chars[0])))
+      break;
+  }
+
+
+  i = 0;
+  while ( 1 )
+  {
+    if ( *priv->lang[0] )
+    {
+      has_lang = TRUE;
+      if ( unk )
+        goto LABEL_31;
+    }
+    else
+    {
+      has_lang = (*priv->lang[1] != 0);
+      if ( unk )
+      {
+LABEL_31:
+        if ( unk != 1 )
+          goto LABEL_32;
+        if ( hildon_im_word_completer_word_at_index(1u, word, i) )
+        {
+          v14 = hildon_im_word_completer_move_word(1, word, i);
+        }
+        else
+        {
+          if ( hildon_im_word_completer_word_at_index(2u, word, i) )
+            goto LABEL_39;
+          if ( !has_lang || !hildon_im_word_completer_word_at_index(0, word, i) )
+          {
+LABEL_32:
+            v14 = FALSE;
+            goto LABEL_27;
+          }
+          v14 = TRUE;
+        }
+        goto LABEL_27;
+      }
+    }
+    if ( has_lang && hildon_im_word_completer_word_at_index(0, word, i) )
+      goto LABEL_39;
+    if ( !hildon_im_word_completer_word_at_index(1u, word, i) )
+    {
+      if ( !hildon_im_word_completer_word_at_index(2u, word, i) )
+        goto LABEL_32;
+LABEL_39:
+      v14 = hildon_im_word_completer_move_word(2, (gchar *)word, i);
+      goto LABEL_27;
+    }
+    v14 = hildon_im_word_completer_word_at_index(2u, word, i) ? 0 : hildon_im_word_completer_move_word(
+                                                                        2,
+                                                                        word,
+                                                                        i);
+    imengines_wp_delete_word(word, 1, i);
+LABEL_27:
+    ++i;
+    if ( (priv->dual_dictionary != 0) < i )
+      break;
+    if ( v14 )
+      goto LABEL_42;
+  }
+  if ( !v14 )
+    v14 = hildon_im_word_completer_move_word(1, word, 0);
+LABEL_42:
+  g_free(word);
+  return v14;
+}
+
+gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *unk, const char *s, gchar **out)
+{
+  gchar *candidate = hildon_im_word_completer_get_one_candidate(wc, unk, s);
+
+  if (s && *s && candidate)
+  {
+    gchar *rv;
+    size_t len = strlen(s);
+    size_t clen = strlen(candidate);
+
+    if ( len < clen )
+      rv = g_strdup(&candidate[len]);
+    else
+      rv = g_strdup("");
+
+    if ( out )
+    {
+      if ( len < clen )
+        *out = g_strdup(candidate);
+    }
+
+    g_free(candidate);
+    return rv;
+  }
+
+  return g_strdup("");
+}
+
+static gboolean str_contains_uppercase(const gchar *s)
+{
+  const gchar *v1;
+  gunichar v2;
+  gboolean v3;
+  gboolean result;
+
+  if ( s && *s )
+  {
+    v1 = s;
+    do
+    {
+      v2 = g_utf8_get_char(v1);
+      v3 = g_unichar_isupper(v2);
+      if ( !v3 )
+        break;
+      v1 = g_utf8_next_char(v1);
+      if ( !v1 )
+        break;
+    }
+    while ( *v1 );
+    result = v3;
+  }
+  else
+  {
+    result = 0;
+  }
+  return result;
+}
+
+typedef struct {
+  guint len;
+  gunichar data[200];
+}im_wp_unk;
+
+gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *unk, const gchar *p)
+{
+  gchar *v4;
+  gchar *rv;
+  HildonIMWWordCompleterPrivate *priv;
+  gchar *text;
+  glong v9;
+  int i;
+  gchar *str;
+  im_wp_unk buf;
+
+  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
+
+  v9 = g_utf8_strlen(p, -1);
+  if ( unk )
+    text = g_utf8_strdown(unk, -1);
+  else
+    text = 0;
+  if ( p )
+    v4 = g_utf8_strdown(p, -1);
+  else
+    v4 = 0;
+  if ( !imengines_wp_get_candidates(text, v4, &buf) && buf.len > 0 )
+  {
+    str = (gchar *)buf.data;
+    i = 0;
+    while ( 1 )
+    {
+      if ( g_utf8_strlen(str, -1) - v9 < priv->max_suffix )
+      {
+        rv = 0;
+      }
+      else
+      {
+        if ( str_contains_uppercase(p) && g_utf8_strlen(p, -1) > 1 )
+          rv = g_utf8_strup(str, -1);
+        else
+          rv = g_strdup(str);
+        if ( rv )
+          goto LABEL_7;
+      }
+      ++i;
+      str += 128;
+      if ( buf.len <= i )
+        goto LABEL_7;
+    }
+  }
+  rv = 0;
+LABEL_7:
+  g_free(text);
+  g_free(v4);
+  return rv;
+}

@@ -1,1 +1,1 @@
-SUBDIRS = hildon-im-fkb hildon-im-western-plugin-common3
+SUBDIRS = hildon-im-western-plugin-common3 hildon-im-fkb
