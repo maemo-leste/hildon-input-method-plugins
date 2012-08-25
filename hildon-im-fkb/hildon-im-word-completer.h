@@ -36,4 +36,11 @@ gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gch
 gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *unk, const char *s, gchar **out);
 
 gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *unk, const gchar *p);
+
+gboolean hildon_im_word_completer_is_interesting_key(HildonIMWWordCompleter *wc, const gchar *key);
+
+void hildon_im_word_completer_remove_word(HildonIMWWordCompleter *wc, const gchar *word);
+
+void hildon_im_word_completer_save_data(HildonIMWWordCompleter *wc);
+
 #endif /* __HILDON_IM_WORD_COMPLETER_H_INCLUDED__ */

@@ -2808,3 +2808,64 @@ static void repeating_button_process_click(HildonIMWesternFKB *fkb, GtkWidget *w
   else if ( priv->enter_button == widget )
     fkb_enter(fkb);
 }
+
+const HildonIMPluginInfo *hildon_im_plugin_get_info(void)
+{
+  static const HildonIMPluginInfo info =
+    {
+      "(c) 2007 Nokia Corporation. All rights reserved",  /* description */
+      "hildon_western_fkb",                               /* name */
+      NULL,                                               /* menu title */
+      NULL,                                               /* gettext domain */
+      FALSE,                                              /* visible in menu */
+      FALSE,                                              /* cached */
+      HILDON_IM_TYPE_FULLSCREEN,                          /* UI type */
+      HILDON_IM_GROUP_LATIN,                              /* group */
+      HILDON_IM_DEFAULT_PLUGIN_PRIORITY,                  /* priority */
+      NULL,                                               /* special character plugin */
+      NULL,                                               /* help page */
+      FALSE,                                              /* disable common UI buttons */
+      HILDON_IM_DEFAULT_HEIGHT,                           /* plugin height */
+      HILDON_IM_TRIGGER_FINGER                            /* trigger */
+    };
+  return &info;
+}
+
+gchar **hildon_im_plugin_get_available_languages(gboolean *free)
+{
+  gchar **rv;
+  GSList *list;
+
+  *free = 0;
+  list = imlayout_vkb_get_layout_list();
+
+  if ( list )
+  {
+    int len = g_slist_length(list);
+
+    if ( len <= 0 )
+      return NULL;
+
+    rv = (gchar **)g_malloc0(4 * len + 4);
+
+
+    if ( rv )
+    {
+      gchar **s= rv;
+      GSList *next = list;
+      do
+      {
+        *s = g_strdup((const gchar *)next->data);
+        s++;
+        next = next->next;
+      }
+      while ( next );
+      *free = 1;
+    }
+
+    imlayout_vkb_free_layout_list(list);
+    return rv;
+  }
+
+  return NULL;
+}

@@ -670,3 +670,30 @@ LABEL_7:
   g_free(v4);
   return rv;
 }
+
+gboolean hildon_im_word_completer_is_interesting_key(HildonIMWWordCompleter *wc, const gchar *key)
+{
+  gboolean result;
+
+  if ( g_strcmp0(key, "/apps/osso/inputmethod/dual-dictionary")
+    && g_strcmp0(key, "/apps/osso/inputmethod/hildon-im-languages/current") )
+  {
+    result = g_str_has_prefix(key, "/apps/osso/inputmethod/hildon-im-languages");
+    if ( result )
+      result = g_str_has_suffix(key, "dictionary") != 0;
+  }
+  else
+  {
+    result = 1;
+  }
+  return result;
+}
+
+void hildon_im_word_completer_remove_word(HildonIMWWordCompleter *wc, const gchar *word)
+{
+  guint index;
+
+  index = 0;
+  if ( imengines_wp_word_exists(word, 1, &index) )
+    imengines_wp_delete_word(word, 1, index);
+}
