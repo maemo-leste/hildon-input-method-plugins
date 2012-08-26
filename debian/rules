@@ -8,10 +8,26 @@
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
+DEB_INSTALL_DOCS_hildon-im-fkb = --no-act
+DEB_INSTALL_CHANGELOGS_hildon-im-fkb = --no-act
+DEB_INSTALL_MANPAGES_hildon-im-fkb = --no-act
+DEB_INSTALL_DOCS_libhildon-im-western-plugin-common3 = --no-act
+DEB_INSTALL_CHANGELOGS_libhildon-im-western-plugin-common3 = --no-act
+DEB_INSTALL_MANPAGES_libhildon-im-western-plugin-common3 = --no-act
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
 
 CFLAGS = -Wall -ggdb -Wno-format-extra-args
 
-DESTDIR = $(CURDIR)/debian/tmp
+# Use thumb mode if it enabled.
+ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -mthumb
+endif
+
+ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -DG_DISABLE_CAST_CHECKS
+endif
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -19,57 +35,15 @@ else
 	CFLAGS += -O2
 endif
 
-configure: configure-stamp
+update-config:: configure-stamp
 configure-stamp:
-	dh_testdir
-
 	./autogen.sh
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-static CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
-
 	touch $@
 
-build: build-stamp
-
-build-stamp: configure-stamp
-	dh_testdir
-
-	$(MAKE)
-
-	touch $@
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
+clean::
+	rm -f configure-stamp
 
 	-./antigen.sh
 
-	dh_clean
-
-install: build
-	dh_testdir
-	dh_testroot
 	dh_clean -k
-	dh_installdirs
-
-	$(MAKE) DESTDIR=$(DESTDIR) install
-	find $(DESTDIR) -name "*.la" | xargs rm -f
-
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_install --sourcedir=debian/tmp
-	dh_installchangelogs
-	dh_installdocs
-	dh_link
-	dh_strip --dbg-package=hildon-im-fkb-dbg
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-arch
-.PHONY: build clean binary-arch binary install configure

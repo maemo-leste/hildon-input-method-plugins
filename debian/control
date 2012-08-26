@@ -24,3 +24,9 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libimlayouts0
 Description: Common functionality in western Hildon IM plugins
  This packages provides the common functionality in western Hildon IM plugins.
+
+Package: libhildon-im-western-plugin-common3-dbg
+Section: devel
+Architecture: any
+Depends: libhildon-im-western-plugin-common3 (= ${Source-Version})
+Description: Debugging symbols for Common functionality in western Hildon IM plugins

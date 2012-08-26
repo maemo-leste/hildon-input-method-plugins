@@ -1,1 +1,1 @@
-usr/lib/hildon-input-method/*.so
+debian/tmp/usr/lib/hildon-input-method/*.so
