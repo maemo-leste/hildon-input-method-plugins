@@ -56,8 +56,8 @@ gboolean char_is_part_of_dictionary_word(const gchar *c)
   {
     uc = g_utf8_get_char_validated(c, -1);
 
-    if ( (uc > -1) &&
-         (g_unichar_isalnum(uc) || g_unichar_ismark(uc) || *c == '-' || *c == '_' || *c == '\''))
+    if ( (((int)uc) > -1) &&
+         (g_unichar_isalnum(uc) || g_unichar_ismark(uc) || (*c == '-') || (*c == '_') || (*c == '\'')))
       return TRUE;
     else
       return (*c == '&');

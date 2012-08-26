@@ -19,6 +19,8 @@
 */
 
 #include <string.h>
+#include <libintl.h>
+#include <locale.h>
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -83,7 +85,7 @@ typedef struct {
   int field_88;
   guint repeat_start_timer;
   gchar *predicted_suffix;
-  gpointer field_94;
+  gchar* field_94;
   gchar* predicted_word;
   gchar* field_9C;
   GtkTextTag *tag_fg;
@@ -167,6 +169,12 @@ static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context
 static void temp_input_cb(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data);
 static void illegal_input_cb(HildonVKBRenderer *vkb, gchar *input, gpointer data);
 static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data);
+
+#if 0
+#define tracef g_warning("%s\n",__func__);
+#else
+#define tracef
+#endif
 
 /* the rest */
 GType
@@ -264,6 +272,7 @@ static void
 hildon_im_western_fkb_clear(HildonIMPlugin *plugin)
 {
 }
+
 static void
 hildon_im_western_fkb_iface_init(HildonIMPluginIface *iface)
 {
@@ -352,7 +361,7 @@ static gint get_text_buffer_offset(HildonIMWesternFKB *fkb)
   HildonIMWesternFKBPrivate *priv;
   GtkTextMark * text_mark;
   GtkTextIter iter;
-
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
   text_mark = gtk_text_buffer_get_selection_bound(priv->text_buffer);
 
@@ -367,7 +376,7 @@ static gint get_text_buffer_offset(HildonIMWesternFKB *fkb)
 static gboolean get_text_bounds_from_tag(HildonIMWesternFKB *fkb, GtkTextIter *start, GtkTextIter *end, GtkTextTag *tag)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb),FALSE);
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -385,6 +394,7 @@ static gboolean get_text_bounds_from_tag(HildonIMWesternFKB *fkb, GtkTextIter *s
 
 static gboolean word_completion_get_bounds(HildonIMWesternFKB *fkb, GtkTextIter *start, GtkTextIter *end)
 {
+  tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb),FALSE);
 
   return get_text_bounds_from_tag(fkb, end, start, HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb)->tag_fg);
@@ -396,7 +406,7 @@ static gboolean word_completion_clear(HildonIMWesternFKB *fkb)
   GtkTextIter start;
   GtkTextIter end;
   gboolean rv = FALSE;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb),FALSE);
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -422,7 +432,7 @@ static void word_completion_reset(HildonIMWesternFKB *fkb)
   gint lang_index;
   const gchar *active_lang;
   const gchar *lang[2];
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -483,7 +493,7 @@ static void word_completion_hit_word(HildonIMWesternFKB *fkb, gchar *word)
 {
   gchar *word_lc;
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -510,7 +520,7 @@ static gchar *get_input_text(HildonIMWesternFKB *fkb, gboolean no_autocomplete)
   gchar *rv;
   GtkTextIter word_start,word_end;
   GtkTextIter start,end;
-
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   gtk_text_buffer_get_bounds(priv->text_buffer, &start, &end);
@@ -537,7 +547,7 @@ static void show_text_view(HildonIMWesternFKB *fkb)
   gint pixels_above_lines;
   int height;
   int width;
-
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
   text = get_input_text(fkb, 1);
   pango_layout_set_text(priv->pango_layout, text, -1);
@@ -583,7 +593,7 @@ hildon_im_western_fkb_set_surrounding_offset(HildonIMWesternFKB *fkb)
   HildonIMWesternFKBPrivate *priv;
   gint offset;
   gboolean relative;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -612,7 +622,7 @@ hildon_im_western_fkb_enable(HildonIMPlugin *plugin, gboolean init)
   guint index;
   GtkTextIter end;
   GtkTextIter start;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
@@ -687,6 +697,7 @@ dialog_delete_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
   return TRUE;
 }
+
 static GtkWidget*
 fkb_create_control_menu(HildonIMWesternFKB *fkb)
 {
@@ -697,7 +708,7 @@ fkb_create_control_menu(HildonIMWesternFKB *fkb)
   GtkBox *language_box;
   HildonIMWesternFKBPrivate *priv;
   GtkWidget *dialog;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb),NULL);
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -833,7 +844,7 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   GtkTextIter iter;
 
   GtkIconTheme *icon_theme;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -969,8 +980,8 @@ numbers_button_release(GObject *obj, void *data)
 {
   HildonIMWesternFKB *fkb;
   HildonIMWesternFKBPrivate *priv;
-
-  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(obj));
+tracef
+  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -999,7 +1010,7 @@ fkb_set_layout(HildonIMWesternFKB *fkb, unsigned int sub_layout)
   HildonIMWesternFKBPrivate *priv;
   gboolean numbers_button_active;
   gboolean shift_active;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -1052,7 +1063,7 @@ set_layout(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMInternalModifierMask mask;
-
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   mask = hildon_im_ui_get_mask(priv->ui);
@@ -1092,7 +1103,7 @@ hildon_im_western_fkb_get_property (GObject *object,
                                     GParamSpec *pspec)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
@@ -1116,7 +1127,7 @@ hildon_im_western_fkb_set_property(GObject *object,
                                    GParamSpec *pspec)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
@@ -1135,7 +1146,7 @@ hildon_im_western_fkb_set_property(GObject *object,
 static void hildon_im_western_fkb_finalize(GObject *object)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
@@ -1157,12 +1168,12 @@ static void hildon_im_western_fkb_finalize(GObject *object)
 static void hildon_im_western_fkb_destroy(GtkObject *object)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(object));
 
-  hildon_im_western_fkb_save_data(HILDON_IM_PLUGIN(priv->ui));
+  hildon_im_western_fkb_save_data(HILDON_IM_PLUGIN(object));
 
   if ( priv->fkb_window )
   {
@@ -1193,7 +1204,7 @@ static void hildon_im_western_fkb_destroy(GtkObject *object)
 static void hildon_im_western_fkb_hide_fkb_window(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   gtk_widget_hide(GTK_WIDGET(priv->fkb_window));
@@ -1209,7 +1220,7 @@ hildon_im_western_fkb_disable(HildonIMPlugin *plugin)
   gchar *surrounding;
   GtkTextIter end;
   GtkTextIter start;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
@@ -1282,7 +1293,7 @@ hildon_im_western_fkb_client_widget_changed(HildonIMPlugin *plugin)
 {
   HildonIMWesternFKB *fkb;
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
@@ -1303,7 +1314,7 @@ static
 gboolean temp_text_get_bounds(HildonIMWesternFKB *fkb, GtkTextIter *start, GtkTextIter *end)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb),FALSE);
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -1318,7 +1329,7 @@ temp_text_clear(HildonIMWesternFKB *fkb)
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter start;
   GtkTextIter end;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -1338,7 +1349,7 @@ static void
 menu_item_selected(GtkWidget *button, gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(data);
@@ -1357,7 +1368,7 @@ static void
 language_item_selected_cb(GtkWidget *button, gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(data);
@@ -1378,7 +1389,7 @@ hildon_im_western_fkb_language_settings_changed(HildonIMPlugin *plugin, gint ind
   HildonIMWesternFKBPrivate *priv;
   GtkWidget *button;
   const gchar *language;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
   g_return_if_fail(index >= 0 && index < NUM_LANGUAGES);
 
@@ -1414,7 +1425,7 @@ static void hildon_im_western_fkb_language(HildonIMPlugin *plugin)
   HildonIMWesternFKBPrivate *priv;
   const gchar* lang;
   gchar *vkb_file;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
@@ -1467,11 +1478,11 @@ static void
 hildon_im_western_fkb_save_data(HildonIMPlugin *plugin)
 {
   HildonIMWesternFKBPrivate *priv;
-  g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
-
+  g_return_if_fail(HILDON_IM_WESTERN_FKB(plugin));
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(plugin));
 
-  if (priv->hwc)
+  if (priv->word_completion)
     hildon_im_word_completer_save_data(priv->hwc);
 }
 
@@ -1480,7 +1491,7 @@ text_buffer_asterisk_fill(HildonIMWesternFKBPrivate *priv)
 {
   glong len;
   gchar *str;
-
+tracef
   len = g_utf8_strlen(priv->str->str, -1);
   str = (gchar *)g_malloc(len);
   memset(str, '*', len);
@@ -1492,6 +1503,7 @@ text_buffer_asterisk_fill(HildonIMWesternFKBPrivate *priv)
 static void
 hildon_im_western_fkb_completion_language_changed(HildonIMPlugin *plugin)
 {
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
   word_completion_reset(HILDON_IM_WESTERN_FKB(plugin));
 }
@@ -1502,7 +1514,7 @@ hildon_im_western_fkb_select_region(HildonIMPlugin *plugin, gint start, gint end
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter iter_start;
   GtkTextIter iter_end;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(plugin));
 
@@ -1516,7 +1528,7 @@ static void hildon_im_western_fkb_surrounding_received(HildonIMPlugin *plugin, c
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
   GtkTextIter iter;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
@@ -1579,6 +1591,7 @@ static void hildon_im_western_fkb_surrounding_received(HildonIMPlugin *plugin, c
 static void
 hildon_im_western_fkb_transition(HildonIMPlugin *plugin, gboolean from)
 {
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   hildon_im_ui_clear_plugin_buffer(HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(plugin))->ui);
@@ -1588,26 +1601,27 @@ static void insert_text_with_tag(HildonIMWesternFKB *fkb, GtkTextIter *iter, con
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter tmp_iter;
+  GtkTextMark *mark;
+  gint offset;
+  tracef
 
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  gtk_text_buffer_get_iter_at_mark(priv->text_buffer,
-                                   &tmp_iter,
-                                   gtk_text_buffer_get_insert(priv->text_buffer));
-
+  mark = gtk_text_buffer_get_insert(priv->text_buffer);
+  gtk_text_buffer_get_iter_at_mark(priv->text_buffer, &tmp_iter, mark);
+  offset = gtk_text_iter_get_offset(&tmp_iter);
   gtk_text_buffer_insert_with_tags(priv->text_buffer, iter, text, -1, tag, NULL);
-  gtk_text_buffer_get_iter_at_offset(priv->text_buffer, &tmp_iter, gtk_text_iter_get_offset(&tmp_iter));
+  gtk_text_buffer_get_iter_at_offset(priv->text_buffer, &tmp_iter, offset);
   gtk_text_buffer_place_cursor(priv->text_buffer, &tmp_iter);
-
 }
 
 static void
 temp_text_insert(HildonIMWesternFKB *fkb, GtkTextIter *iter, gchar *text)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -1623,7 +1637,7 @@ temp_input_cb(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1645,6 +1659,7 @@ temp_input_cb(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
 static void
 illegal_input_cb(HildonVKBRenderer *vkb, gchar *input, gpointer data)
 {
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   hildon_im_ui_play_sound(HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(data))->ui,
@@ -1656,7 +1671,7 @@ repeating_button_pressed(GtkWidget *widget, void *data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1674,7 +1689,7 @@ repeating_button_repeat_start(void *data)
 
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1692,7 +1707,7 @@ repeating_button_repeat(void *data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1707,7 +1722,7 @@ repeating_button_released(GtkWidget *widget, void *data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1732,7 +1747,7 @@ static void
 repeating_button_enter(GtkWidget *widget, void *data)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(data));
@@ -1746,7 +1761,7 @@ static void
 repeating_button_leave(GtkWidget *widget, void *data)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(data));
@@ -1766,7 +1781,7 @@ repeating_button_leave(GtkWidget *widget, void *data)
 static gboolean
 textview_key_press_release_cb(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
 
   if ( event->keyval == GDK_KP_Enter )
@@ -1790,7 +1805,7 @@ textview_button_release_cb(GtkWidget *widget, GdkEventButton *event, gpointer da
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1812,7 +1827,7 @@ static void fkb_delete_selection(HildonIMWesternFKB *fkb, gboolean clear_wc, gbo
   gint text_buffer_offset;
   GtkTextIter iter_end;
   GtkTextIter iter_start;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -1853,7 +1868,7 @@ static void menu_button_cb(GtkWidget *widget, void *data)
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
   gint selection;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1921,7 +1936,7 @@ static void clipboard_targets_received_callback(GtkClipboard *clipboard, GdkAtom
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
   gboolean sensitive = FALSE;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -1947,7 +1962,7 @@ static void paste_received(GtkClipboard *clipboard, const gchar *text, gpointer 
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -2044,7 +2059,7 @@ static void update_input_mode_and_layout(HildonIMWesternFKB *self)
   int v7;
   int mode;
   unsigned int sub_layout;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(self));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(self);
@@ -2099,9 +2114,10 @@ static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer d
   HildonIMWesternFKBPrivate *priv;
   gint text_buffer_offset;
   guint pressed_key_mode;
-  gboolean v21 = FALSE;
+  gboolean v21;
   gchar *dead_key;
-
+  gboolean update;
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -2119,8 +2135,10 @@ static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer d
       hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_LEVEL_UNSTICKY);
       hildon_im_ui_set_level_sticky(priv->ui, 0);
     }
-    if ( priv->field_B0 && priv->field_AC)
-      v21 = TRUE;
+    if ( priv->field_B0)
+      v21 = (priv->field_AC != 0);
+    else
+       v21 = FALSE;
 
     priv->field_B0 = 0;
     text_buffer_offset = get_text_buffer_offset(fkb);
@@ -2131,8 +2149,13 @@ static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer d
       {
         if ( *input != '\b' )
         {
-          if ( priv->field_34 && text_buffer_offset == priv->offset )
+          if ( priv->field_34 && (text_buffer_offset == priv->offset))
             fkb_backspace(fkb, 1);
+
+          if ( priv->field_34 && unk )
+            update = (text_buffer_offset != priv->offset);
+          else
+            update = FALSE;
 
           if (unk && v21 && hildon_im_common_should_be_appended_after_letter(input) && (text_buffer_offset == priv->offset))
           {
@@ -2148,7 +2171,7 @@ static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer d
           }
           else
           {
-            if ( priv->field_34 && unk && (text_buffer_offset == priv->offset) )
+            if ( !update)
             {
               word_completion_update(fkb, input);
 
@@ -2222,7 +2245,7 @@ static void fkb_backspace(HildonIMWesternFKB *self, gboolean unk)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter iter;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(self));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(self);
@@ -2272,7 +2295,7 @@ static void fkb_enter(HildonIMWesternFKB *self)
 {
   HildonIMWesternFKBPrivate *priv;
   gchar *surrounding_content;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(self));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(self);
@@ -2318,7 +2341,7 @@ static void word_completion_complete(HildonIMWesternFKB* fkb)
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter iter;
   gunichar uc;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -2377,7 +2400,7 @@ gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpoi
   gint buffer_y;
   gint buffer_x;
   int v19;
-
+tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -2385,7 +2408,7 @@ gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpoi
 
   priv->offset = get_text_buffer_offset(fkb);
 
-  if ( !priv->predicted_suffix || !*priv->predicted_suffix || !word_completion_get_bounds(fkb, &start, &end) )
+  if ( !priv->predicted_suffix || !*priv->predicted_suffix || !word_completion_get_bounds(fkb, &end, &start) )
     goto LABEL_7;
 
   gtk_text_view_window_to_buffer_coords(GTK_TEXT_VIEW(priv->textview),
@@ -2447,7 +2470,7 @@ gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpoi
 LABEL_7:
     priv->field_B0 = 0;
 
-    GTK_WIDGET_CLASS(widget)->button_press_event(widget, event);
+    GTK_WIDGET_GET_CLASS(widget)->button_press_event(widget, event);
 
     if ( hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT )
       hildon_im_western_fkb_set_surrounding_offset(fkb);
@@ -2465,7 +2488,7 @@ LABEL_7:
 static void textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(user_data));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(user_data));
@@ -2524,7 +2547,7 @@ static void textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_
 static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context, gpointer data)
 {
   HildonIMWesternFKB *fkb;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -2540,7 +2563,7 @@ static void hildon_im_western_fkb_settings_changed(HildonIMPlugin *plugin, const
   const gchar *lang[2];
   char outbuf[256];
   char gconf_path[256];
-
+tracef
 
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
   g_return_if_fail(key != NULL);
@@ -2595,7 +2618,7 @@ static void word_completion_insert(HildonIMWesternFKB* fkb, GtkTextIter*iter, co
 {
 
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -2607,7 +2630,7 @@ static void word_completion_set(HildonIMWesternFKB* fkb, const gchar* text)
 {
   GtkTextIter iter;
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
   g_return_if_fail(text != NULL);
 
@@ -2628,9 +2651,9 @@ static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
 
   gchar*text;
   gchar*prediction;
-  gchar * a2a;
-  gchar * word;
-
+  gchar * previous_word;
+  gchar * current_word;
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -2659,23 +2682,23 @@ static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
 
     if ( last && last->data )
     {
-      word = (gchar *)last->data;
+      current_word = (gchar *)last->data;
 
-      if (word)
-        word = g_utf8_next_char(word);
+      if (word_prefix_starts_with_mark(current_word))
+        current_word = g_utf8_next_char(current_word);
 
-      prediction_lowercase = g_utf8_strdown(word, -1);
+      prediction_lowercase = g_utf8_strdown(current_word, -1);
 
       if ( last->prev && last->prev->data)
-        a2a = last->prev->data;
+        previous_word = last->prev->data;
       else
-        a2a = 0;
+        previous_word = 0;
     }
     else
     {
-      word = 0;
+      current_word = 0;
       prediction_lowercase = 0;
-      a2a = 0;
+      previous_word = 0;
     }
 
 
@@ -2689,7 +2712,7 @@ static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
         gunichar uc = g_utf8_get_char_validated(prev_char, -1);
         if ( g_unichar_isspace(uc) || g_unichar_ispunct(uc) )
         {
-          word_completion_hit_word(fkb, word);
+          word_completion_hit_word(fkb, current_word);
           prediction = 0;
         }
         else
@@ -2708,8 +2731,8 @@ static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
 
     priv->predicted_suffix = hildon_im_word_completer_get_predicted_suffix(
                               priv->hwc,
-                              a2a,
-                              word,
+                              previous_word,
+                              current_word,
                               &priv->field_94);
 
     if ( hildon_im_ui_get_shift_locked(priv->ui) )
@@ -2740,7 +2763,7 @@ static void word_completion_update(HildonIMWesternFKB *fkb, const char *val)
 {
   HildonIMWesternFKBPrivate *priv;
   gint offset;
-
+tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   if ( gtk_text_buffer_get_selection_bounds(priv->text_buffer, 0, 0) )
@@ -2767,7 +2790,7 @@ static void word_completion_update(HildonIMWesternFKB *fkb, const char *val)
   else
     gtk_text_buffer_insert_at_cursor(priv->text_buffer, val, strlen(val));
 
-  if ( (priv->current_input_mode & (HILDON_GTK_INPUT_MODE_INVISIBLE|HILDON_GTK_INPUT_MODE_ALPHA )) != 1 )
+  if ( (priv->current_input_mode & (HILDON_GTK_INPUT_MODE_INVISIBLE|HILDON_GTK_INPUT_MODE_ALPHA )) == 1 )
     word_completion_update_candidate(fkb);
 
 
@@ -2777,7 +2800,7 @@ static void word_completion_update(HildonIMWesternFKB *fkb, const char *val)
 static void fkb_space(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
-
+tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -2846,7 +2869,7 @@ gchar **hildon_im_plugin_get_available_languages(gboolean *free)
     if ( len <= 0 )
       return NULL;
 
-    rv = (gchar **)g_malloc0(4 * len + 4);
+    rv = (gchar **)g_malloc0(sizeof(gchar*)*(len + 1));
 
 
     if ( rv )

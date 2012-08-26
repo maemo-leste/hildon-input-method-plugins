@@ -33,9 +33,9 @@ void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI 
 
 gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gchar *str, gboolean unk);
 
-gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *unk, const char *s, gchar **out);
+gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *previous_word, const gchar *current_word, gchar **out);
 
-gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *unk, const gchar *p);
+gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *previous_word, const gchar *current_word);
 
 gboolean hildon_im_word_completer_is_interesting_key(HildonIMWWordCompleter *wc, const gchar *key);
 

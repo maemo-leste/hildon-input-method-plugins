@@ -446,7 +446,7 @@ gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gch
   {
     gunichar uc = g_utf8_get_char_validated(str, -1);
 
-    if ( uc <= -1 )
+    if ( ((int)uc) <= -1 )
       break;
 
     if ( !g_unichar_isalnum(uc) && !g_unichar_ismark(uc) && (*str != '-') && (*str != '_') && (*str != '\'') && (*str != '&') )
@@ -554,14 +554,14 @@ LABEL_42:
   return v14;
 }
 
-gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *unk, const char *s, gchar **out)
+gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *previous_word, const gchar *current_word, gchar **out)
 {
-  gchar *candidate = hildon_im_word_completer_get_one_candidate(wc, unk, s);
+  gchar *candidate = hildon_im_word_completer_get_one_candidate(wc, previous_word, current_word);
 
-  if (s && *s && candidate)
+  if (current_word && *current_word && candidate)
   {
     gchar *rv;
-    size_t len = strlen(s);
+    size_t len = strlen(current_word);
     size_t clen = strlen(candidate);
 
     if ( len < clen )
@@ -614,7 +614,7 @@ static gboolean str_contains_uppercase(const gchar *s)
 
 typedef struct {
   guint len;
-  gunichar data[200];
+  gunichar data[800];
 }im_wp_unk;
 
 gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *unk, const gchar *p)
@@ -626,7 +626,7 @@ gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, co
   glong v9;
   int i;
   gchar *str;
-  im_wp_unk buf;
+  im_wp_unk buf={0,};
 
   priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
 
