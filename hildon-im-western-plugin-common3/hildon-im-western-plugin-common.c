@@ -5,11 +5,11 @@
 
    This file is part of hildon-input-method-plugins.
 
-   hildon-input-method-plugins is free software; you can redistribute it and/or modify
+   hildon-im-western-plugin-common.c is free software; you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License
    version 2.1 as published by the Free Software Foundation.
 
-   hildon-input-method-plugins is distributed in the hope that it will be useful,
+   hildon-im-western-plugin-common.c is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.

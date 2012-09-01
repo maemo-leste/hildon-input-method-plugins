@@ -1,21 +1,13 @@
 /**
    @file hildon-im-western-fkb.c
 
-   Copyright (C) 2012 Ivaylo Dimitrov <freemangordon@abv.bg>
-
    This file is part of hildon-input-method-plugins.
 
-   hildon-input-method-plugins is free software; you can redistribute it and/or modify
-   it under the terms of the GNU Lesser General Public License
-   version 2.1 as published by the Free Software Foundation.
+   This file may contain parts derived by disassembling of binaries under
+   Nokia's copyright, see http://tablets-dev.nokia.com/maemo-dev-env-downloads.php
 
-   hildon-input-method-plugins is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with hildon-input-method-plugins. If not, see <http://www.gnu.org/licenses/>.
+   The original licensing conditions apply to all those derived parts as well
+   and you accept those by using this file.
 */
 
 #include <string.h>
@@ -2034,6 +2026,7 @@ LABEL_26:
           }
           return;
         }
+
 LABEL_34:
         word_completion_update(fkb, text);
         if ( hildon_im_ui_get_commit_mode(priv->ui) == 1 )

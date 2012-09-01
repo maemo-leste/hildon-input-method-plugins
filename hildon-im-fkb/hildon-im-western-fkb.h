@@ -5,17 +5,17 @@
 
    This file is part of hildon-input-method-plugins.
 
-   Libbme is free software; you can redistribute it and/or modify
+   hildon-im-western-fkb.h is free software; you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License
    version 2.1 as published by the Free Software Foundation.
 
-   Libbme is distributed in the hope that it will be useful,
+   hildon-im-western-fkb.h is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with libhildon-im-vkbrenderer3. If not, see <http://www.gnu.org/licenses/>.
+   License along with hildon-input-method-plugins. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef __HILDON_IM_WESTERN_FKB_H__

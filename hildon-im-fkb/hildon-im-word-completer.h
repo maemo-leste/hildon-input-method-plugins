@@ -1,3 +1,23 @@
+/**
+   @file hildon-im-word-completer.h
+
+   Copyright (C) 2012 Ivaylo Dimitrov <freemangordon@abv.bg>
+
+   This file is part of hildon-input-method-plugins.
+
+   hildon-im-word-completer.h is free software; you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License
+   version 2.1 as published by the Free Software Foundation.
+
+   hildon-im-word-completer.h is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with hildon-input-method-plugins. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __HILDON_IM_WORD_COMPLETER_H_INCLUDED__
 #define __HILDON_IM_WORD_COMPLETER_H_INCLUDED__
 
