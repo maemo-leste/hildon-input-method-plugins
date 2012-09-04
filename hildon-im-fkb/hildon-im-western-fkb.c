@@ -128,6 +128,8 @@ static gboolean word_completion_clear(HildonIMWesternFKB *fkb);
 static void word_completion_reset(HildonIMWesternFKB *fkb);
 static void word_completion_update(HildonIMWesternFKB *fkb, const char *val);
 
+static gboolean dialog_has_portrait_mode_orientation();
+
 /* callbacks */
 static void update_input_mode_and_layout(HildonIMWesternFKB *self);
 
@@ -161,6 +163,8 @@ static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context
 static void temp_input_cb(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data);
 static void illegal_input_cb(HildonVKBRenderer *vkb, gchar *input, gpointer data);
 static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data);
+
+static void dialog_size_changed_cb(GdkScreen* screen, gpointer data);
 
 #if 0
 #define tracef g_warning("%s\n",__func__);
@@ -713,6 +717,8 @@ tracef
   g_object_ref(dialog);
   g_object_ref_sink(GTK_OBJECT(dialog));
   g_signal_connect_data(dialog, "delete-event", G_CALLBACK(dialog_delete_cb), 0, 0, 0);
+  g_signal_connect(gdk_display_get_default_screen(gdk_display_get_default()), 
+		   "size-changed", G_CALLBACK(dialog_size_changed_cb), fkb);
 
   hbox = GTK_BOX(gtk_hbox_new(1, 10));
 
@@ -844,6 +850,8 @@ tracef
   icon_theme = gtk_icon_theme_get_default(); /* unused, but still :) */
 
   priv->fkb_window = (GtkWindow*)gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  hildon_gtk_window_set_portrait_flags(GTK_WINDOW(priv->fkb_window),
+				       HILDON_PORTRAIT_MODE_SUPPORT);
   gtk_window_set_type_hint(GTK_WINDOW(priv->fkb_window), GDK_WINDOW_TYPE_HINT_DIALOG);
   gtk_window_set_decorated(GTK_WINDOW(priv->fkb_window), FALSE);
   gtk_widget_set_name(GTK_WIDGET(priv->fkb_window), "osso-im-fkb-window");
@@ -915,7 +923,10 @@ tracef
 
   /* repeating */
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
-  gtk_widget_set_size_request(button, 324, -1);
+  if(dialog_has_portrait_mode_orientation())
+    gtk_widget_set_size_request(button, 125, -1);
+  else
+    gtk_widget_set_size_request(button, 324, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   repeating_button_connect_signals(fkb, button);
   priv->repeating_button = button;
@@ -1334,6 +1345,9 @@ static
 gboolean delete_fkb_cb(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
   hildon_im_western_fkb_hide_fkb_window(HILDON_IM_WESTERN_FKB(data));
+  g_signal_handlers_disconnect_by_func (gdk_display_get_default_screen(gdk_display_get_default()),
+					G_CALLBACK(dialog_size_changed_cb),
+					data);
   return TRUE;
 }
 
@@ -2884,4 +2898,40 @@ gchar **hildon_im_plugin_get_available_languages(gboolean *free)
   }
 
   return NULL;
+}
+
+static gboolean
+dialog_has_portrait_mode_orientation()
+{
+  if(gdk_screen_get_width(gdk_display_get_default_screen(gdk_display_get_default())) < HILDON_IM_WESTERN_FKB_WIDTH)
+    return TRUE;
+  else
+    return FALSE;
+}
+
+static void
+dialog_size_changed_cb(GdkScreen* screen,
+		       gpointer user_data)
+{
+    GdkGeometry geometry;
+    HildonIMWesternFKBPrivate *priv;
+    g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(user_data));
+    priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(user_data);
+    if(!GTK_IS_WINDOW(priv->fkb_window))
+      return;
+
+    if(dialog_has_portrait_mode_orientation())
+    {
+      geometry.min_height = 360;
+      gtk_widget_set_size_request(priv->repeating_button, 125, -1);
+    }
+    else
+    {
+      geometry.min_height = 500;
+      gtk_widget_set_size_request(priv->repeating_button, 324, -1);
+    }
+    gtk_window_set_geometry_hints(GTK_WINDOW(priv->fkb_window),
+				  GTK_WIDGET(priv->fkb_window),
+				  &geometry,
+				  GDK_HINT_MIN_SIZE);
 }
