@@ -38,6 +38,7 @@
 #include "hildon-im-western-fkb.h"
 #include "hildon-im-western-plugin-common.h"
 #include "hildon-im-word-completer.h"
+#include "imlayout_vkb.h"
 
 typedef struct {
   HildonIMUI *ui;
@@ -924,9 +925,15 @@ tracef
   /* repeating */
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
   if(dialog_has_portrait_mode_orientation())
+  {
     gtk_widget_set_size_request(button, 125, -1);
+    gtk_widget_set_name(GTK_WIDGET(priv->vkb), "osso-im-fkb-portrait-renderer");
+  }
   else
+  {
     gtk_widget_set_size_request(button, 324, -1);
+    gtk_widget_set_name(GTK_WIDGET(priv->vkb), "osso-im-fkb-renderer");
+  }
   gtk_widget_set_name(button, "hildon-im-alt-button");
   repeating_button_connect_signals(fkb, button);
   priv->repeating_button = button;
@@ -1443,10 +1450,16 @@ tracef
   {
     priv->active_language = hildon_im_ui_get_active_language_index(priv->ui);
     vkb_file = g_strconcat("/usr/share/keyboards", "/", lang, ".vkb", NULL);
-    g_object_set(priv->vkb,
-                 "collection", vkb_file,
-                 "layout", 4,
-                 NULL);
+    if(dialog_has_portrait_mode_orientation())
+      g_object_set(priv->vkb,
+		   "collection", vkb_file,
+		   "layout", LAYOUT_TYPE_PORTRAIT,
+		   NULL);
+    else
+      g_object_set(priv->vkb,
+		   "collection", vkb_file,
+		   "layout", LAYOUT_TYPE_THUMB,
+		   NULL);
 
     gtk_widget_queue_draw(priv->vkb);
 
@@ -2913,25 +2926,23 @@ static void
 dialog_size_changed_cb(GdkScreen* screen,
 		       gpointer user_data)
 {
-    GdkGeometry geometry;
     HildonIMWesternFKBPrivate *priv;
     g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(user_data));
     priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(user_data);
     if(!GTK_IS_WINDOW(priv->fkb_window))
       return;
-
     if(dialog_has_portrait_mode_orientation())
     {
-      geometry.min_height = 360;
       gtk_widget_set_size_request(priv->repeating_button, 125, -1);
+      g_object_set(priv->vkb,
+		   "layout", LAYOUT_TYPE_PORTRAIT,
+		   NULL);
     }
     else
     {
-      geometry.min_height = 500;
       gtk_widget_set_size_request(priv->repeating_button, 324, -1);
+      g_object_set(priv->vkb,
+		   "layout", LAYOUT_TYPE_THUMB,
+		   NULL);
     }
-    gtk_window_set_geometry_hints(GTK_WINDOW(priv->fkb_window),
-				  GTK_WIDGET(priv->fkb_window),
-				  &geometry,
-				  GDK_HINT_MIN_SIZE);
 }
