@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.67-1+0m5) unstable; urgency=low
+
+  * Bump version number so its not the same as the stock package
+
+ -- Ivaylo Dimmitrov <freemangordon@abv.bg>  Wed, 18 Oct 2017 20:08:44 -0400
+
 hildon-input-method-plugins (3.9.66-1+0m5) unstable; urgency=low
 
   * First RE release
