@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
 Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake1.9 | automake1.8,
   libgtk2.0-dev, libglib2.0-dev, libx11-dev, hildon-input-method-framework-dev (>= 2.1.61),
-  libimlayouts0
+  libimlayouts0-dev, libimengines4-dev
 Standards-Version: 3.7.2
 
 Package: hildon-im-fkb
@@ -21,7 +21,7 @@ Description: Debugging symbols for Western Finger Keyboard plugin
 
 Package: libhildon-im-western-plugin-common3
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libimlayouts0
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Common functionality in western Hildon IM plugins
  This packages provides the common functionality in western Hildon IM plugins.
 

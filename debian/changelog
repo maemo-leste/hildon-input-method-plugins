@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.68-1+0m5) unstable; urgency=low
+
+  * Start depending on the new imlayouts and imengines dev packages and clean up/finish hildon_im_word_completer.
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sat, 28 Oct 2017 21:31:38 -0400
+
 hildon-input-method-plugins (3.9.67-1+0m5) unstable; urgency=low
 
   * Bump version number so its not the same as the stock package

@@ -14,7 +14,7 @@ AC_HEADER_STDC
 
 PKG_CHECK_MODULES(DEPS, gtk+-2.0 >= 2.4.0 gconf-2.0 > 2.0 glib-2.0 >= 2.20.3 x11 \
                         hildon-1 hildon-im-vkbrenderer3 hildon-input-method-framework-3.0 >= 2.1.44 \
-                        hildon-input-method-ui-3.0 >= 2.0.4)
+                        hildon-input-method-ui-3.0 >= 2.0.4 imlayouts imengines-wp)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 

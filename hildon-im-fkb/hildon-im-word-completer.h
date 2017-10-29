@@ -23,44 +23,45 @@
 
 #define HILDON_IM_WORD_COMPLETER_TYPE (hildon_im_word_completer_get_type())
 
-#define HILDON_IM_WORD_COMPLETER(obj) GTK_CHECK_CAST(obj, hildon_im_word_completer_get_type(), HildonIMWWordCompleter)
+#define HILDON_IM_WORD_COMPLETER(obj) GTK_CHECK_CAST(obj, hildon_im_word_completer_get_type(), HildonIMWordCompleter)
 #define HILDON_IM_WORD_COMPLETER_CLASS(klass) \
         GTK_CHECK_CLASS_CAST(klass, hildon_im_word_completer_get_type, \
-                             HildonIMWWordCompleterClass)
+                             HildonIMWordCompleterClass)
 #define HILDON_IM_IS_WORD_COMPLETER(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_WORD_COMPLETER_TYPE )
 #define HILDON_IM_WORD_COMPLETER_GET_PRIVATE(obj) \
         (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_WORD_COMPLETER_TYPE,\
-                                      HildonIMWWordCompleterPrivate))
+                                      HildonIMWordCompleterPrivate))
 
-typedef struct _HildonIMWWordCompleterPrivate HildonIMWWordCompleterPrivate;
+typedef struct _HildonIMWordCompleterPrivate HildonIMWordCompleterPrivate;
 
 typedef struct {
   GObject parent;
-  HildonIMWWordCompleterPrivate * priv;
-} HildonIMWWordCompleter;
+  HildonIMWordCompleterPrivate * priv;
+} HildonIMWordCompleter;
 
 typedef struct {
   GObjectClass parent;
-} HildonIMWWordCompleterClass;
+} HildonIMWordCompleterClass;
 
+void hildon_im_word_completer_configure(HildonIMWordCompleter *wc, HildonIMUI *ui);
+
+gboolean hildon_im_word_completer_is_interesting_key(HildonIMWordCompleter *wc, const gchar *key);
+
+void hildon_im_word_completer_save_data(HildonIMWordCompleter *wc);
+
+void hildon_im_word_completer_remove_word(HildonIMWordCompleter *wc, const gchar *word);
+
+gboolean hildon_im_word_completer_add_to_dictionary(HildonIMWordCompleter *wc, const gchar *word);
+
+gchar **hildon_im_word_completer_get_candidates(HildonIMWordCompleter *wc, const gchar *previous_word, const gchar *current_word);
+
+gboolean hildon_im_word_completer_hit_word(HildonIMWordCompleter *wc, const gchar *text, gboolean b);
+
+gchar *hildon_im_word_completer_get_one_candidate(HildonIMWordCompleter *wc, const gchar *previous_word, const gchar *current_word);
+
+gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWordCompleter *wc, gchar *previous_word, const gchar *current_word, gchar **out);
 
 gpointer hildon_im_word_completer_new(void);
-
-void hildon_im_word_completer_save_data(HildonIMWWordCompleter *hwc);
-
-void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI *ui);
-
-gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gchar *str, gboolean unk);
-
-gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *previous_word, const gchar *current_word, gchar **out);
-
-gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *previous_word, const gchar *current_word);
-
-gboolean hildon_im_word_completer_is_interesting_key(HildonIMWWordCompleter *wc, const gchar *key);
-
-void hildon_im_word_completer_remove_word(HildonIMWWordCompleter *wc, const gchar *word);
-
-void hildon_im_word_completer_save_data(HildonIMWWordCompleter *wc);
 
 #endif /* __HILDON_IM_WORD_COMPLETER_H_INCLUDED__ */

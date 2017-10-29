@@ -34,6 +34,7 @@
 #include <hildon-im-common.h>
 
 #include <hildon-im-vkbrenderer.h>
+#include <imlayouts.h>
 
 #include "hildon-im-western-fkb.h"
 #include "hildon-im-western-plugin-common.h"
@@ -85,7 +86,7 @@ typedef struct {
   gboolean dual_dictionary;
   int field_AC;
   int field_B0;
-  HildonIMWWordCompleter* hwc;
+  HildonIMWordCompleter* hwc;
   gboolean auto_capitalisation;
   gboolean word_completion;
   gboolean insert_space_after_word;
@@ -2372,7 +2373,7 @@ tracef
         }
       }
     }
-    hildon_im_word_completer_hit_word((HildonIMWWordCompleter *)priv->hwc, priv->field_94, 0);
+    hildon_im_word_completer_hit_word(priv->hwc, priv->field_94, 0);
     g_free(priv->predicted_word);
     priv->predicted_word = g_strdup(priv->field_94);
     word_completion_clear(fkb);

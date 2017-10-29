@@ -16,12 +16,12 @@
 #include <gtk/gtkcontainer.h>
 
 #include <hildon-im-ui.h>
+#include <imengines-wp.h>
 
-#include "hildon-im-western-fkb.h"
 #include "hildon-im-word-completer.h"
 
 static GType hildon_im_word_completer_type = 0;
-static HildonIMWWordCompleter *hildon_im_word_completer = NULL;
+static HildonIMWordCompleter *hildon_im_word_completer = NULL;
 static GObjectClass *parent_class = NULL;
 
 enum{
@@ -33,7 +33,7 @@ enum{
   HILDON_IM_WORD_COMPLETER_PROP_LAST
 };
 
-struct _HildonIMWWordCompleterPrivate{
+struct _HildonIMWordCompleterPrivate{
   gchar *lang[2];
   gboolean dual_dictionary;
   gint max_candidates;
@@ -41,8 +41,8 @@ struct _HildonIMWWordCompleterPrivate{
   gchar *base_dir;
 };
 
-static void hildon_im_word_completer_class_init(HildonIMWWordCompleterClass *klass);
-static void hildon_im_word_completer_init(HildonIMWWordCompleter *wc);
+static void hildon_im_word_completer_class_init(HildonIMWordCompleterClass *klass);
+static void hildon_im_word_completer_init(HildonIMWordCompleter *wc);
 
 static GObject* hildon_im_word_completer_constructor(GType gtype, guint n_properties, GObjectConstructParam *properties);
 static void hildon_im_word_completer_finalize(GObject *object);
@@ -53,13 +53,13 @@ static void hildon_im_word_completer_get_property(GObject *object,guint prop_id,
 GType hildon_im_word_completer_get_type()
 {
   static const GTypeInfo type_info = {
-    sizeof(HildonIMWWordCompleterClass),
+    sizeof(HildonIMWordCompleterClass),
     NULL, /* base_init */
     NULL, /* base_finalize */
     (GClassInitFunc) hildon_im_word_completer_class_init,
     NULL, /* class_finalize */
     NULL, /* class_data */
-    sizeof(HildonIMWWordCompleter),
+    sizeof(HildonIMWordCompleter),
     0, /* n_preallocs */
     (GInstanceInitFunc) hildon_im_word_completer_init,
     NULL
@@ -80,12 +80,12 @@ gpointer hildon_im_word_completer_new()
   return g_object_new(HILDON_IM_WORD_COMPLETER_TYPE, NULL);
 }
 
-static void hildon_im_word_completer_class_init(HildonIMWWordCompleterClass *klass)
+static void hildon_im_word_completer_class_init(HildonIMWordCompleterClass *klass)
 {
   GObjectClass *object_class;
 
   object_class = G_OBJECT_CLASS(klass);
-  g_type_class_add_private(klass, sizeof(HildonIMWWordCompleterPrivate));
+  g_type_class_add_private(klass, sizeof(HildonIMWordCompleterPrivate));
   parent_class = g_type_class_peek_parent(klass);
 
   object_class->constructor = hildon_im_word_completer_constructor;
@@ -138,9 +138,9 @@ static void hildon_im_word_completer_class_init(HildonIMWWordCompleterClass *kla
                                      G_PARAM_WRITABLE|G_PARAM_READABLE));
 }
 
-static void hildon_im_word_completer_init(HildonIMWWordCompleter *wc)
+static void hildon_im_word_completer_init(HildonIMWordCompleter *wc)
 {
-  HildonIMWWordCompleterPrivate *priv;
+  HildonIMWordCompleterPrivate *priv;
 
   priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (HILDON_IM_WORD_COMPLETER(wc));
 
@@ -185,8 +185,8 @@ static GObject* hildon_im_word_completer_constructor(GType gtype, guint n_proper
 
 static void hildon_im_word_completer_finalize(GObject *object)
 {
-  HildonIMWWordCompleter *wc;
-  HildonIMWWordCompleterPrivate *priv;
+  HildonIMWordCompleter *wc;
+  HildonIMWordCompleterPrivate *priv;
 
   wc = HILDON_IM_WORD_COMPLETER(object);
   priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
@@ -211,7 +211,7 @@ static void hildon_im_word_completer_set_property(GObject *object,
                                       const GValue *value,
                                       GParamSpec *pspec)
 {
-  HildonIMWWordCompleterPrivate *priv;
+  HildonIMWordCompleterPrivate *priv;
 
   g_return_if_fail(HILDON_IM_IS_WORD_COMPLETER(object));
 
@@ -313,7 +313,7 @@ hildon_im_word_completer_get_property(GObject *object,
                                       GValue *value,
                                       GParamSpec *pspec)
 {
-  HildonIMWWordCompleterPrivate *priv;
+  HildonIMWordCompleterPrivate *priv;
 
   g_return_if_fail(HILDON_IM_IS_WORD_COMPLETER(object));
 
@@ -342,13 +342,13 @@ hildon_im_word_completer_get_property(GObject *object,
   }
 }
 
-void hildon_im_word_completer_save_data(HildonIMWWordCompleter *hwc)
+void hildon_im_word_completer_save_data(HildonIMWordCompleter *wc)
 {
   imengines_wp_save_dictionary(1);
   imengines_wp_save_dictionary(2);
 }
 
-void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI *ui)
+void hildon_im_word_completer_configure(HildonIMWordCompleter *wc, HildonIMUI *ui)
 {
   guint lang_index;
 
@@ -358,7 +358,7 @@ void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI 
   const gchar *second_lang;
   const gchar *lang[2];
 
-  g_return_if_fail(ui != NULL && hwc != NULL);
+  g_return_if_fail(ui != NULL && wc != NULL);
 
   lang[0] = hildon_im_ui_get_language_setting(ui, 0);
   lang[1] = hildon_im_ui_get_language_setting(ui, 1);
@@ -374,16 +374,16 @@ void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI 
 
     if (value)
     {
-      g_object_set(hwc, "language", gconf_value_get_string(value), NULL);
+      g_object_set(wc, "language", gconf_value_get_string(value), NULL);
       gconf_value_free(value);
     }
     else
-      g_object_set(hwc, "language", "", NULL);
+      g_object_set(wc, "language", "", NULL);
 
     g_free(key);
   }
   else
-    g_object_set(hwc, "language", "", NULL);
+    g_object_set(wc, "language", "", NULL);
 
   if (second_lang && *second_lang)
   {
@@ -392,22 +392,22 @@ void hildon_im_word_completer_configure(HildonIMWWordCompleter *hwc, HildonIMUI 
 
     if (value)
     {
-      g_object_set(hwc, "second-language", gconf_value_get_string(value), NULL);
+      g_object_set(wc, "second-language", gconf_value_get_string(value), NULL);
       gconf_value_free(value);
     }
     else
-      g_object_set(hwc, "second-language", "", NULL);
+      g_object_set(wc, "second-language", "", NULL);
 
     g_free(key);
   }
   else
-    g_object_set(hwc, "second-language", "", NULL);
+    g_object_set(wc, "second-language", "", NULL);
 
   value = gconf_client_get(ui->client, "/apps/osso/inputmethod/dual-dictionary", NULL);
 
   if (value)
   {
-    g_object_set(hwc, "dual-dictionary", gconf_value_get_bool(value), NULL);
+    g_object_set(wc, "dual-dictionary", gconf_value_get_bool(value), NULL);
     gconf_value_free(value);
   }
 }
@@ -433,12 +433,12 @@ static gboolean hildon_im_word_completer_move_word(int dict, gchar *word, guint 
   return (imengines_wp_add_word(word, dict, index) == 0);
 }
 
-gboolean hildon_im_word_completer_hit_word(HildonIMWWordCompleter *wc, const gchar *text, gboolean unk)
+gboolean hildon_im_word_completer_hit_word(HildonIMWordCompleter *wc, const gchar *text, gboolean b)
 {
   gboolean has_lang;
-  gboolean v14;
+  gboolean ret;
   gchar *word;
-  HildonIMWWordCompleterPrivate *priv;
+  HildonIMWordCompleterPrivate *priv;
   gchar *p;
   gunichar last_char;
   const gchar *special_chars[6];
@@ -505,20 +505,20 @@ go_on:
     if ( *priv->lang[0] )
     {
       has_lang = TRUE;
-      if ( unk )
+      if ( b )
         goto LABEL_31;
     }
     else
     {
       has_lang = (*priv->lang[1] != 0);
-      if ( unk )
+      if ( b )
       {
 LABEL_31:
-        if ( unk != 1 )
+        if ( b != 1 )
           goto LABEL_32;
         if ( hildon_im_word_completer_word_at_index(1u, word, i) )
         {
-          v14 = hildon_im_word_completer_move_word(1, word, i);
+          ret = hildon_im_word_completer_move_word(1, word, i);
         }
         else
         {
@@ -527,10 +527,10 @@ LABEL_31:
           if ( !has_lang || !hildon_im_word_completer_word_at_index(0, word, i) )
           {
 LABEL_32:
-            v14 = FALSE;
+            ret = FALSE;
             goto LABEL_27;
           }
-          v14 = TRUE;
+          ret = TRUE;
         }
         goto LABEL_27;
       }
@@ -542,10 +542,10 @@ LABEL_32:
       if ( !hildon_im_word_completer_word_at_index(2u, word, i) )
         goto LABEL_32;
 LABEL_39:
-      v14 = hildon_im_word_completer_move_word(2, (gchar *)word, i);
+      ret = hildon_im_word_completer_move_word(2, (gchar *)word, i);
       goto LABEL_27;
     }
-    v14 = hildon_im_word_completer_word_at_index(2u, word, i) ? 0 : hildon_im_word_completer_move_word(
+    ret = hildon_im_word_completer_word_at_index(2u, word, i) ? 0 : hildon_im_word_completer_move_word(
                                                                         2,
                                                                         word,
                                                                         i);
@@ -554,17 +554,17 @@ LABEL_27:
     ++i;
     if ( (priv->dual_dictionary != 0) < i )
       break;
-    if ( v14 )
+    if ( ret )
       goto LABEL_42;
   }
-  if ( !v14 )
-    v14 = hildon_im_word_completer_move_word(1, word, 0);
+  if ( !ret )
+    ret = hildon_im_word_completer_move_word(1, word, 0);
 LABEL_42:
   g_free(word);
-  return v14;
+  return ret;
 }
 
-gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWWordCompleter *wc, gchar *previous_word, const gchar *current_word, gchar **out)
+gchar *hildon_im_word_completer_get_predicted_suffix(HildonIMWordCompleter *wc, gchar *previous_word, const gchar *current_word, gchar **out)
 {
   gchar *candidate = hildon_im_word_completer_get_one_candidate(wc, previous_word, current_word);
 
@@ -622,66 +622,58 @@ static gboolean str_contains_uppercase(const gchar *s)
   return result;
 }
 
-typedef struct {
-  guint len;
-  gunichar data[800];
-}im_wp_unk;
-
-gchar *hildon_im_word_completer_get_one_candidate(HildonIMWWordCompleter *wc, const gchar *unk, const gchar *p)
+gchar *hildon_im_word_completer_get_one_candidate(HildonIMWordCompleter *wc, const gchar *previous_word, const gchar *current_word)
 {
-  gchar *v4;
+  gchar *curtext;
   gchar *rv;
-  HildonIMWWordCompleterPrivate *priv;
-  gchar *text;
-  glong v9;
+  HildonIMWordCompleterPrivate *priv;
+  gchar *prevtext;
+  glong len;
   int i;
-  gchar *str;
-  im_wp_unk buf={0,};
+  imengines_wp_candidates candidates={0,};
 
   priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
 
-  v9 = g_utf8_strlen(p, -1);
-  if ( unk )
-    text = g_utf8_strdown(unk, -1);
+  len = g_utf8_strlen(current_word, -1);
+  if ( previous_word )
+    prevtext = g_utf8_strdown(previous_word, -1);
   else
-    text = 0;
-  if ( p )
-    v4 = g_utf8_strdown(p, -1);
+    prevtext = 0;
+  if ( current_word )
+    curtext = g_utf8_strdown(current_word, -1);
   else
-    v4 = 0;
-  if ( !imengines_wp_get_candidates(text, v4, &buf) && buf.len > 0 )
+    curtext = 0;
+  if ( !imengines_wp_get_candidates(prevtext, curtext, &candidates) && candidates.number_of_candidates > 0 )
   {
-    str = (gchar *)buf.data;
     i = 0;
     while ( 1 )
     {
-      if ( g_utf8_strlen(str, -1) - v9 < priv->max_suffix )
+      if ( g_utf8_strlen(candidates.candidate[i], -1) - len < priv->max_suffix )
       {
         rv = 0;
       }
       else
       {
-        if ( str_contains_uppercase(p) && g_utf8_strlen(p, -1) > 1 )
-          rv = g_utf8_strup(str, -1);
+        if ( str_contains_uppercase(current_word) && g_utf8_strlen(current_word, -1) > 1 )
+          rv = g_utf8_strup(candidates.candidate[i], -1);
         else
-          rv = g_strdup(str);
+          rv = g_strdup(candidates.candidate[i]);
         if ( rv )
           goto LABEL_7;
       }
       ++i;
-      str += 128;
-      if ( buf.len <= i )
+      if ( candidates.number_of_candidates <= i )
         goto LABEL_7;
     }
   }
   rv = 0;
 LABEL_7:
-  g_free(text);
-  g_free(v4);
+  g_free(prevtext);
+  g_free(curtext);
   return rv;
 }
 
-gboolean hildon_im_word_completer_is_interesting_key(HildonIMWWordCompleter *wc, const gchar *key)
+gboolean hildon_im_word_completer_is_interesting_key(HildonIMWordCompleter *wc, const gchar *key)
 {
   gboolean result;
 
@@ -694,16 +686,73 @@ gboolean hildon_im_word_completer_is_interesting_key(HildonIMWWordCompleter *wc,
   }
   else
   {
-    result = 1;
+    result = TRUE;
   }
   return result;
 }
 
-void hildon_im_word_completer_remove_word(HildonIMWWordCompleter *wc, const gchar *word)
+void hildon_im_word_completer_remove_word(HildonIMWordCompleter *wc, const gchar *word)
 {
   guint index;
 
   index = 0;
   if ( imengines_wp_word_exists(word, 1, &index) )
     imengines_wp_delete_word(word, 1, index);
+}
+
+gboolean hildon_im_word_completer_add_to_dictionary(HildonIMWordCompleter *wc, const gchar *word)
+{
+  gboolean exists;
+  if (imengines_wp_word_exists(word, 1, &exists))
+  {
+    imengines_wp_delete_word(word, 1, exists);
+  }
+  else if (!imengines_wp_word_exists(word, 0, &exists))
+  {
+    return TRUE;
+  }
+  imengines_wp_add_word(word, 2, exists);
+  return TRUE;
+}
+
+gchar **hildon_im_word_completer_get_candidates(HildonIMWordCompleter *wc, const gchar *previous_word, const gchar *current_word)
+{
+  gchar **rv;
+  int i;
+  int j;
+  gchar *curtext;
+  gchar *prevtext;
+  imengines_wp_candidates candidates={0,};
+
+  if ( previous_word )
+    prevtext = g_utf8_strdown(previous_word, -1);
+  else
+    prevtext = 0;
+  if ( current_word )
+    curtext = g_utf8_strdown(current_word, -1);
+  else
+    curtext = 0;
+  if ( imengines_wp_get_candidates(prevtext, curtext, &candidates) && candidates.number_of_candidates > 0 )
+  {
+    rv = 0;
+  }
+  else
+  {
+    rv = g_new(gchar *, candidates.number_of_candidates + 1);
+    if (candidates.number_of_candidates > 0)
+    {
+      i = 1;
+      do
+      {
+        if (str_contains_uppercase(current_word) && g_utf8_strlen(current_word, -1) > 1)
+          rv[i - 1] = g_strdup(candidates.candidate[i - 1]);
+        else
+          rv[i - 1] = g_utf8_strup(candidates.candidate[i - 1], -1);
+        j = i++;
+      } while (candidates.number_of_candidates > j);
+    }
+  }
+  g_free(prevtext);
+  g_free(curtext);
+  return rv;
 }
