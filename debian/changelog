@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.68-1+0m6) unstable; urgency=low
+
+  * Further cleanups for hildon-im-fkb
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sun, 29 Oct 2017 04:21:17 -0400
+
 hildon-input-method-plugins (3.9.68-1+0m5) unstable; urgency=low
 
   * Start depending on the new imlayouts and imengines dev packages and clean up/finish hildon_im_word_completer.
