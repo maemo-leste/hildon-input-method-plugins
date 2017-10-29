@@ -9,7 +9,7 @@ Standards-Version: 3.7.2
 
 Package: hildon-im-fkb
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libimlayouts0
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Western Finger Keyboard plugin
  This packages provides the Finger keyboard (FKB).
 
@@ -18,6 +18,18 @@ Section: devel
 Architecture: any
 Depends: hildon-im-fkb (= ${Source-Version})
 Description: Debugging symbols for Western Finger Keyboard plugin
+
+Package: hildon-im-keyboard-assistant
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Inline word completion plugin for the slide keyboard
+ This packages provides the word completion for the slide keyboard.
+
+Package: hildon-im-keyboard-assistant-dbg
+Section: devel
+Architecture: any
+Depends: hildon-im-keyboard-assistant (= ${Source-Version})
+Description: Debugging symbols for Inline word completion plugin for the slide keyboard
 
 Package: libhildon-im-western-plugin-common3
 Architecture: any
