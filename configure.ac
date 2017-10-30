@@ -1,4 +1,4 @@
-AC_INIT([hildon-input-method-plugins], [3.9.70])
+AC_INIT([hildon-input-method-plugins], [3.9.71])
 
 AM_INIT_AUTOMAKE
 

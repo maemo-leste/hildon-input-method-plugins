@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.71-1+0m5) unstable; urgency=low
+
+  * Implement hildon-im-keyboard-monitor
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Sun, 29 Oct 2017 20:51:31 -0400
+
 hildon-input-method-plugins (3.9.70-1+0m5) unstable; urgency=low
 
   * Move some files to a shared location
