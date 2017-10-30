@@ -28,9 +28,9 @@ ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -mthumb
 endif
 
-ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -DG_DISABLE_CAST_CHECKS
-endif
+# ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+# 	CFLAGS += -DG_DISABLE_CAST_CHECKS
+# endif
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0

@@ -20,16 +20,16 @@
 #ifndef __HILDON_IM_KEYBOARD_MONITOR_H__
 #define __HILDON_IM_KEYBOARD_MONITOR_H__
 
-#define HILDON_IM_KEYBOARD_MONITOR_TYPE (hildon_im_keyboard_monitor_get_type())
+#define HILDON_IM_TYPE_KEYBOARD_MONITOR (hildon_im_keyboard_monitor_get_type())
 
 #define HILDON_IM_KEYBOARD_MONITOR(obj) GTK_CHECK_CAST(obj, hildon_im_keyboard_monitor_get_type(), HildonIMKeyboardMonitor)
 #define HILDON_IM_KEYBOARD_MONITOR_CLASS(klass) \
         GTK_CHECK_CLASS_CAST(klass, hildon_im_keyboard_monitor_get_type, \
                              HildonIMKeyboardMonitorClass)
 #define HILDON_IM_IS_KEYBOARD_MONITOR(obj) \
-        GTK_CHECK_TYPE(obj, HILDON_IM_KEYBOARD_MONITOR_TYPE )
+        GTK_CHECK_TYPE(obj, HILDON_IM_TYPE_KEYBOARD_MONITOR)
 #define HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_KEYBOARD_MONITOR_TYPE,\
+        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_TYPE_KEYBOARD_MONITOR,\
                                       HildonIMKeyboardMonitorPrivate))
 
 typedef struct _HildonIMKeyboardMonitorPrivate HildonIMKeyboardMonitorPrivate;
