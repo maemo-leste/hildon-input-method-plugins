@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.73-1+0m5) unstable; urgency=low
+
+  * Implement hildon-keyboard-assistant
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Tue, 31 Oct 2017 04:37:26 -0400
+
 hildon-input-method-plugins (3.9.72-1+0m5) unstable; urgency=low
 
   * Implenent hildon-im-xkbtool

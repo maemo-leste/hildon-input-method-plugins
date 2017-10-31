@@ -16,7 +16,7 @@
 #include <glib.h>
 #include <assert.h>
 
-#include <gtk/gtkbox.h>
+#include <gtk/gtkvbox.h>
 
 #include <hildon/hildon.h>
 
