@@ -1,4 +1,4 @@
-AC_INIT([hildon-input-method-plugins], [3.9.71])
+AC_INIT([hildon-input-method-plugins], [3.9.72])
 
 AM_INIT_AUTOMAKE
 
@@ -18,4 +18,4 @@ PKG_CHECK_MODULES(DEPS, gtk+-2.0 >= 2.4.0 gconf-2.0 > 2.0 glib-2.0 >= 2.20.3 x11
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
-AC_OUTPUT([ Makefile hildon-im-western-plugin-common3/Makefile hildon-im-fkb/Makefile hildon-im-keyboard-monitor/Makefile])
+AC_OUTPUT([ Makefile hildon-im-western-plugin-common3/Makefile hildon-im-fkb/Makefile hildon-im-keyboard-monitor/Makefile hildon-im-xkbtool/Makefile])

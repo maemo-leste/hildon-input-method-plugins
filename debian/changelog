@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.72-1+0m5) unstable; urgency=low
+
+  * Implenent hildon-im-xkbtool
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Mon, 30 Oct 2017 22:09:14 -0400
+
 hildon-input-method-plugins (3.9.71-1+0m5) unstable; urgency=low
 
   * Implement hildon-im-keyboard-monitor
