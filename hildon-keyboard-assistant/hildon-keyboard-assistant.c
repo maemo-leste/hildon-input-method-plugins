@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <glib.h>
 #include <gdk/gdk.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkvbox.h>
 
 #include <hildon-im-widget-loader.h>
@@ -371,10 +372,48 @@ static GObject *hildon_im_keyboard_assistant_constructor(GType type, guint n_con
   return object;
 }
 
-static void hildon_im_keyboard_assistant_key_event(HildonIMPlugin *plugin, GdkEventType type, guint state, guint val, guint hardware_keycode)
+static gboolean
+entry_allowed(HildonIMKeyboardAssistant *assistant)
 {
-  assert(0);
-  //todo
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT(assistant)->priv;
+
+  if (priv->insert_space_after_word &&
+      (priv->input_mode & HILDON_GTK_INPUT_MODE_DICTIONARY))
+  {
+    return !(priv->input_mode & HILDON_GTK_INPUT_MODE_INVISIBLE);
+  }
+
+  return FALSE;
+}
+
+static void
+hildon_im_keyboard_assistant_key_event(HildonIMPlugin *plugin,
+                                       GdkEventType type, guint state,
+                                       guint val, guint hardware_keycode)
+{
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+
+  if (entry_allowed(HILDON_IM_KEYBOARD_ASSISTANT(plugin)) &&
+      type == GDK_KEY_PRESS && !(state & GDK_CONTROL_MASK))
+  {
+    if (val == GDK_KEY_Return || val == GDK_KP_Enter)
+    {
+      priv->i12 = FALSE;
+      hildon_im_ui_send_communication_message(priv->ui,
+                                              HILDON_IM_CONTEXT_REQUEST_SURROUNDING);
+    }
+    else
+    {
+      if (g_unichar_isprint(gdk_keyval_to_unicode(val)))
+      {
+        priv->i12 = TRUE;
+        hildon_im_ui_send_communication_message(priv->ui,
+                                                HILDON_IM_CONTEXT_REQUEST_SURROUNDING);
+      }
+    }
+  }
 }
 
 static void hildon_im_keyboard_assistant_notify_cb(GConfClient *client, guint cnxn_id, GConfEntry *entry, HildonIMPlugin *user_data)
