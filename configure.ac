@@ -11,6 +11,7 @@ AC_PROG_MAKE_SET
 AM_PROG_CC_STDC
 AC_PROG_LIBTOOL
 AC_HEADER_STDC
+AM_GCONF_SOURCE_2
 
 PKG_CHECK_MODULES(DEPS, gtk+-2.0 >= 2.4.0 gconf-2.0 > 2.0 glib-2.0 >= 2.20.3 x11 \
                         hildon-1 hildon-im-vkbrenderer3 hildon-input-method-framework-3.0 >= 2.1.44 \
@@ -18,4 +19,12 @@ PKG_CHECK_MODULES(DEPS, gtk+-2.0 >= 2.4.0 gconf-2.0 > 2.0 glib-2.0 >= 2.20.3 x11
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
-AC_OUTPUT([ Makefile hildon-im-western-plugin-common3/Makefile hildon-im-fkb/Makefile hildon-im-keyboard-monitor/Makefile hildon-im-xkbtool/Makefile hildon-keyboard-assistant/Makefile])
+AC_OUTPUT([
+	Makefile
+	hildon-im-western-plugin-common3/Makefile
+	hildon-im-fkb/Makefile
+	hildon-im-keyboard-monitor/Makefile
+	hildon-im-xkbtool/Makefile
+	hildon-keyboard-assistant/Makefile
+	data/Makefile
+])

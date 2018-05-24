@@ -1,0 +1,580 @@
+<gconfschemafile>
+  <schemalist>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/int_kb_repeat_delay</key>
+      <applyto>/apps/osso/inputmethod/int_kb_repeat_delay</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>600</default>
+      <locale name="C">
+        <short>Internal keyboard repeat delay</short>
+        <long>Delay in milliseconds before the first repeated key is recognize</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/int_kb_repeat_interval</key>
+      <applyto>/apps/osso/inputmethod/int_kb_repeat_interval</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>50</default>
+      <locale name="C">
+        <short>Internal keyboard repeat interval</short>
+        <long>Interval in milliseconds between repeated key events</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/int_kb_level_shifted</key>
+      <applyto>/apps/osso/inputmethod/int_kb_level_shifted</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Level shift the internal keyboard layout</short>
+        <long>When level shifted, the alternative keyset of a separate layer is used</long>
+      </locale>
+    </schema>
+
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/ext_kb_model</key>
+      <applyto>/apps/osso/inputmethod/ext_kb_model</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>nokiasu8w</default>
+      <locale name="C">
+        <short>External keyboard model</short>
+        <long>The xkb model of the external keyboard</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/ext_kb_layout</key>
+      <applyto>/apps/osso/inputmethod/ext_kb_layout</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>us</default>
+      <locale name="C">
+        <short>External keyboard layout</short>
+        <long>The xkb layout of the external keyboard</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/ext_kb_repeat_delay</key>
+      <applyto>/apps/osso/inputmethod/ext_kb_repeat_delay</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>600</default>
+      <locale name="C">
+        <short>External keyboard repeat delay</short>
+        <long>Delay in milliseconds before the first repeated key is recognize</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/ext_kb_repeat_interval</key>
+      <applyto>/apps/osso/inputmethod/ext_kb_repeat_interval</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>50</default>
+      <locale name="C">
+        <short>External keyboard repeat interval</short>
+        <long>Interval in milliseconds between repeated key events</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/ext_kb_repeat_enabled</key>
+      <applyto>/apps/osso/inputmethod/ext_kb_repeat_enabled</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Enables key repeating and disables level translation on external keyboard</short>
+        <long>Defines whether character keys are repeated or translated to other levels when long-pressed</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/ext_kb_long_press_timeout</key>
+      <applyto>/apps/osso/inputmethod/ext_kb_long_press_timeout</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>600</default>
+      <locale name="C">
+        <short>Timeout for level translation when long-pressing a key</short>
+        <long>Time in miliseconds before level translation occurs in a character key when it is held pressed</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/handwriting_timeout</key>
+      <applyto>/apps/osso/inputmethod/handwriting_timeout</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>400</default>
+      <locale name="C">
+        <short>Idle time for recognition</short>
+        <long>The amount of time elapses after the user releases its styllus to
+        start recognition</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/en_GB/word-completion</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/cs_CZ/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/da_DK/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/de_DE/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/el_GR/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_GB/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_US/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_ES/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_MX/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fi_FI/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_CA/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_FR/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/hu_HU/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/it_IT/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/nl_NL/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/no_NO/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pl_PL/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pt_PT/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/ru_RU/word-completion</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/sv_SE/word-completion</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Word completion support</short>
+        <long>The feature to help the user to complete the word in the current
+        selected language</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/en_GB/next-word-prediction</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/cs_CZ/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/da_DK/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/de_DE/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/el_GR/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_GB/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_US/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_ES/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_MX/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fi_FI/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_CA/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_FR/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/hu_HU/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/it_IT/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/nl_NL/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/no_NO/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pl_PL/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pt_PT/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/ru_RU/next-word-prediction</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/sv_SE/next-word-prediction</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Next word prediction support</short>
+        <long>The feature predicts the next word for the user in the current
+        selected language</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/en_GB/auto-capitalisation</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/cs_CZ/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/da_DK/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/de_DE/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/el_GR/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_GB/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_US/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_ES/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_MX/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fi_FI/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_CA/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_FR/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/hu_HU/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/it_IT/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/nl_NL/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/no_NO/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pl_PL/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pt_PT/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/ru_RU/auto-capitalisation</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/sv_SE/auto-capitalisation</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Auto capitalisation</short>
+        <long>Auto capitalisation</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/en_GB/insert-space-after-word</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/cs_CZ/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/da_DK/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/de_DE/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/el_GR/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_GB/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_US/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_ES/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_MX/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fi_FI/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_CA/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_FR/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/hu_HU/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/it_IT/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/nl_NL/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/no_NO/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pl_PL/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pt_PT/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/ru_RU/insert-space-after-word</applyto>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/sv_SE/insert-space-after-word</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Insert space after word</short>
+        <long>Insert space after word</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/cs_CZ/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/cs_CZ/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>cs_CZ</default>
+      <locale name="C">
+        <short>Default Dictionary for cs_CZ</short>
+        <long>Default Dictionary for cs_CZ</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/da_DK/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/da_DK/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>da_DK</default>
+      <locale name="C">
+        <short>Default Dictionary for da_DK</short>
+        <long>Default Dictionary for da_DK</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/de_DE/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/de_DE/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>de_DE</default>
+      <locale name="C">
+        <short>Default Dictionary for de_DE</short>
+        <long>Default Dictionary for de_DE</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/el_GR/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/el_GR/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>el_GR</default>
+      <locale name="C">
+        <short>Default Dictionary for el_GR</short>
+        <long>Default Dictionary for el_GR</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/en_GB/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_GB/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>en_GB</default>
+      <locale name="C">
+        <short>Default Dictionary for en_GB</short>
+        <long>Default Dictionary for en_GB</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/en_US/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/en_US/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>en_US</default>
+      <locale name="C">
+        <short>Default Dictionary for en_US</short>
+        <long>Default Dictionary for en_US</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/es_ES/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_ES/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>es_ES</default>
+      <locale name="C">
+        <short>Default Dictionary for es_ES</short>
+        <long>Default Dictionary for es_ES</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/es_MX/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/es_MX/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>es_MX</default>
+      <locale name="C">
+        <short>Default Dictionary for es_MX</short>
+        <long>Default Dictionary for es_MX</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/fi_FI/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fi_FI/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>fi_FI</default>
+      <locale name="C">
+        <short>Default Dictionary for fi_FI</short>
+        <long>Default Dictionary for fi_FI</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/fr_CA/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_CA/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>fr_CA</default>
+      <locale name="C">
+        <short>Default Dictionary for fr_CA</short>
+        <long>Default Dictionary for fr_CA</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/fr_FR/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/fr_FR/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>fr_FR</default>
+      <locale name="C">
+        <short>Default Dictionary for fr_FR</short>
+        <long>Default Dictionary for fr_FR</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/hu_HU/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/hu_HU/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>hu_HU</default>
+      <locale name="C">
+        <short>Default Dictionary for hu_HU</short>
+        <long>Default Dictionary for hu_HU</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/it_IT/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/it_IT/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>it_IT</default>
+      <locale name="C">
+        <short>Default Dictionary for it_IT</short>
+        <long>Default Dictionary for it_IT</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/nl_NL/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/nl_NL/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>nl_NL</default>
+      <locale name="C">
+        <short>Default Dictionary for nl_NL</short>
+        <long>Default Dictionary for nl_NL</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/no_NO/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/no_NO/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>no_NO</default>
+      <locale name="C">
+        <short>Default Dictionary for no_NO</short>
+        <long>Default Dictionary for no_NO</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/pl_PL/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pl_PL/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>pl_PL</default>
+      <locale name="C">
+        <short>Default Dictionary for pl_PL</short>
+        <long>Default Dictionary for pl_PL</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/pt_PT/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/pt_PT/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>pt_PT</default>
+      <locale name="C">
+        <short>Default Dictionary for pt_PT</short>
+        <long>Default Dictionary for pt_PT</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/ru_RU/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/ru_RU/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>ru_RU</default>
+      <locale name="C">
+        <short>Default Dictionary for ru_RU</short>
+        <long>Default Dictionary for ru_RU</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/hildon-im-languages/sv_SE/dictionary</key>
+      <applyto>/apps/osso/inputmethod/hildon-im-languages/sv_SE/dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>sv_SE</default>
+      <locale name="C">
+        <short>Default Dictionary for sv_SE</short>
+        <long>Default Dictionary for sv_SE</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/dual-dictionary</key>
+      <applyto>/apps/osso/inputmethod/dual-dictionary</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Dual Dictionary support</short>
+        <long>The feature to help user enable dual dictionary for word completion</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/completion_area_pos</key>
+      <applyto>/apps/osso/inputmethod/completion_area_pos</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Word completion position</short>
+        <long>It defines where the word completion will be placed in VKB.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/display_after_entering</key>
+      <applyto>/apps/osso/inputmethod/display_after_entering</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>1</default>
+      <locale name="C">
+        <short>Number of characters</short>
+        <long>The number of characters the word completion needs to make
+        prediction base on.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/space_after</key>
+      <applyto>/apps/osso/inputmethod/space_after</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Auto space insertion</short>
+        <long>A space will be automatically inserted after each time the user
+        has selected a candidate from the word completion</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/input_method_plugin</key>
+      <applyto>/apps/osso/inputmethod/input_method_plugin</applyto>
+      <owner>hildon-input-method</owner>
+      <type>string</type>
+      <default>hildon_keyboard_assistant</default>
+      <locale name="C">
+        <short>Current input method</short>
+        <long>ID of the selected input method.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/osso/inputmethod/case_correction</key>
+      <applyto>/apps/osso/inputmethod/case_correction</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Case correction</short>
+        <long>Automatically correct case of character entered with handwriting
+        recognition input mode</long>
+      </locale>
+    </schema>
+
+   <schema>
+     <key>/schemas/apps/osso/inputmethod/hwr_punct_mode</key>
+     <applyto>/apps/osso/inputmethod/hwr_punct_mode</applyto>
+     <owner>hildon-input-method</owner>
+     <type>bool</type>
+     <list_type>string</list_type>
+     <default>false</default>
+     <locale name="C">
+       <short>Punctuation mode state.</short>
+       <long>Punctuation/special characters mode state.</long>
+     </locale>
+   </schema>
+
+  <schema>
+      <key>/schemas/apps/osso/inputmethod/start_recognize_after</key>
+      <applyto>/apps/osso/inputmethod/start_recognize_after</applyto>
+      <owner>hildon-input-method</owner>
+      <type>int</type>
+      <default>2</default>
+      <locale name="C">
+        <short>Number of characters stroked before HWR start to recognize</short>
+        <long>Number of characters stroked before HWR start to recognize</long>
+      </locale>
+    </schema>
+  <schema>
+      <key>/schemas/apps/osso/inputmethod/auto_correction</key>
+      <applyto>/apps/osso/inputmethod/auto_correction</applyto>
+      <owner>hildon-input-method</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Auto correction</short>
+        <long>Automatically correct " ." or "  " to ". "</long>
+      </locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>

@@ -2,9 +2,10 @@ Source: hildon-input-method-plugins
 Section: x11
 Priority: optional
 Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
-Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake1.9 | automake1.8,
+Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake,
   libgtk2.0-dev, libglib2.0-dev, libx11-dev, hildon-input-method-framework-dev (>= 2.1.61),
-  libimlayouts0-dev, libimengines4-dev
+  libimlayouts0-dev, libimengines4-dev, hildon-im-vkbrenderer3-dev, libhildon-im-ui-dev,
+  libxkbfile-dev
 Standards-Version: 3.7.2
 
 Package: hildon-im-fkb
@@ -16,7 +17,7 @@ Description: Western Finger Keyboard plugin
 Package: hildon-im-fkb-dbg
 Section: devel
 Architecture: any
-Depends: hildon-im-fkb (= ${Source-Version})
+Depends: hildon-im-fkb (= ${binary:Version})
 Description: Debugging symbols for Western Finger Keyboard plugin
 
 Package: hildon-im-keyboard-assistant
@@ -28,7 +29,7 @@ Description: Inline word completion plugin for the slide keyboard
 Package: hildon-im-keyboard-assistant-dbg
 Section: devel
 Architecture: any
-Depends: hildon-im-keyboard-assistant (= ${Source-Version})
+Depends: hildon-im-keyboard-assistant (= ${binary:Version})
 Description: Debugging symbols for Inline word completion plugin for the slide keyboard
 
 Package: libhildon-im-western-plugin-common3
@@ -40,5 +41,10 @@ Description: Common functionality in western Hildon IM plugins
 Package: libhildon-im-western-plugin-common3-dbg
 Section: devel
 Architecture: any
-Depends: libhildon-im-western-plugin-common3 (= ${Source-Version})
+Depends: libhildon-im-western-plugin-common3 (= ${binary:Version})
 Description: Debugging symbols for Common functionality in western Hildon IM plugins
+
+Package: hildon-im-plugin-base-settings
+Architecture: all
+Description: Base settings for the Hildon Input Method plugins.
+ This packages provides the base settings for the Hildon Input Method plugins.
