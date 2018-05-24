@@ -6,9 +6,12 @@
 #include <X11/extensions/XInput.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKBrules.h>
+#include <X11/extensions/XInput2.h>
 
 #include "hildon-im-xkb.h"
+
 Display *display;
+
 int hildon_im_xkb_open_display(void)
 {
   int result;
@@ -21,9 +24,27 @@ int hildon_im_xkb_open_display(void)
   display = XkbOpenDisplay(disp, &ev_rtn, &err_rtn, 0, 0, &reason);
   if (display)
   {
-    XQueryInputVersion(display, 2, 0);
-    XSynchronize(display, 1);
-    result = 0;
+    int rc;
+    int major = 2;
+    int minor = 0;
+
+    rc = XIQueryVersion(display, &major, &minor);
+
+    if (rc == BadRequest)
+    {
+      g_log(0, G_LOG_LEVEL_WARNING, "No XI2 support. (%d.%d only)\n", major, minor);
+      result = -1;
+    }
+    else if (rc != Success)
+    {
+      g_log(0, G_LOG_LEVEL_WARNING, "Internal error\n");
+      result = -1;
+    }
+    else
+    {
+      XSynchronize(display, 1);
+      result = 0;
+    }
   }
   else
   {
@@ -66,7 +87,7 @@ void hildon_im_xkb_print_devices()
         count = 0;
         do
         {
-          g_print("ID %d, Name: \"%s\"\n", deviceinfo->id, deviceinfo->name);
+          g_print("ID %lu, Name: \"%s\"\n", deviceinfo->id, deviceinfo->name);
           ++count;
           ++deviceinfo;
         } while (ndevices > count);

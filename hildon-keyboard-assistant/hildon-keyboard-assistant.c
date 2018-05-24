@@ -469,7 +469,7 @@ static void hildon_im_keyboard_assistant_read_settings(HildonIMKeyboardAssistant
   }
   else
   {
-    priv->word_completion = (gboolean)client2;
+    priv->word_completion = FALSE;
   }
   g_free(str1);
   str2 = g_strdup_printf(

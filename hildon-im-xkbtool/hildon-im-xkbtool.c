@@ -16,7 +16,7 @@
 #include "hildon-im-xkb.h"
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
-#include <X11/extensions/XInput.h>
+#include <X11/extensions/XInput2.h>
 
 static Display *xdisplay;
 static gchar *name;
@@ -47,7 +47,9 @@ static gchar *gconf_get_string(const gchar *key)
   GError *err;
 
   err = 0;
-  g_type_init();
+#if !GLIB_CHECK_VERSION(2,35,0)
+  g_type_init ();
+#endif
   client = gconf_client_get_default();
   if (!client)
     return 0;
@@ -71,7 +73,9 @@ static gint gconf_get_int(const gchar *key)
   GError *err;
 
   err = 0;
-  g_type_init();
+#if !GLIB_CHECK_VERSION(2,35,0)
+  g_type_init ();
+#endif
   client = gconf_client_get_default();
   if (!client)
     return 0;
@@ -101,6 +105,9 @@ int main(int argc, const char *argv[])
   int err_rtrn;
   int ev_rtrn;
   GError *error;
+  int rc;
+  int major = 2;
+  int minor = 0;
 
   error = 0;
   d = getenv("DISPLAY");
@@ -112,7 +119,20 @@ int main(int argc, const char *argv[])
     g_log(0, G_LOG_LEVEL_WARNING, "Couldn't open display %d", reason);
     return -1;
   }
-  XQueryInputVersion(xdisplay, 2, 0);
+
+  rc = XIQueryVersion(xdisplay, &major, &minor);
+
+  if (rc == BadRequest)
+  {
+    g_log(0, G_LOG_LEVEL_WARNING, "No XI2 support. (%d.%d only)\n", major, minor);
+    return -1;
+  }
+  else if (rc != Success)
+  {
+    g_log(0, G_LOG_LEVEL_WARNING, "Internal error\n");
+    return -1;
+  }
+
   context = g_option_context_new("- Hildon IM XKB configurator");
   g_option_context_add_main_entries(context, options, 0);
   g_option_context_parse(context, &argc, (gchar ***)&argv, &error);
