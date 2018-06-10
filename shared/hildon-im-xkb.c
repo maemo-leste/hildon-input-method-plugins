@@ -67,11 +67,41 @@ hildon_im_xkb_set_sticky(int sticky, const gchar *name)
 }
 
 gchar *
-hildon_im_xkb_get_name(void)
+hildon_im_xkb_get_name(int id)
 {
-  assert(0);
-  return NULL;
-  //todo
+  gchar *name = NULL;
+  XDeviceInfo *devices;
+  int ndevices = 0;
+
+  if (hildon_im_xkb_open_display())
+    return NULL;
+
+  devices = XListInputDevices(display, &ndevices);
+
+  if (devices)
+  {
+    XDeviceInfo *device = devices;
+    int i;
+
+    for (i = 0; i < ndevices; i++)
+    {
+      if (device->id == id)
+      {
+        name = g_strdup(device->name);
+        break;
+      }
+
+      device++;
+    }
+
+    XFreeDeviceList(devices);
+  }
+  else
+    g_warning("Couldn't get devices");
+
+  XCloseDisplay(display);
+
+  return name;
 }
 
 GSList *

@@ -88,35 +88,24 @@ static gint gconf_get_int(const gchar *key)
 
 int main(int argc, const char *argv[])
 {
-  const char *d;
   GOptionContext *context;
-  gchar *newmodel;
-  gchar *newlayout;
-  gchar *int_kb_model;
-  gchar *int_kb_layout;
-  gint int_kb_repeat_delay;
-  gint int_kb_repeat_interval;
-  gchar *ext_kb_model;
-  gchar *ext_kb_layout;
-  gint ext_kb_repeat_delay;
-  gint ext_kb_repeat_interval;
-  int result;
   int reason;
   int err_rtrn;
   int ev_rtrn;
-  GError *error;
   int rc;
   int major = 2;
   int minor = 0;
+  char *d = getenv("DISPLAY");
+  GError *error = NULL;
 
-  error = 0;
-  d = getenv("DISPLAY");
-  if ( !d )
+  if (!d)
     d = ":0.0";
-  xdisplay = XkbOpenDisplay((char *)d, &ev_rtrn, &err_rtrn, 0, 0, &reason);
-  if ( !xdisplay )
+
+  xdisplay = XkbOpenDisplay(d, &ev_rtrn, &err_rtrn, NULL, NULL, &reason);
+
+  if (!xdisplay)
   {
-    g_log(0, G_LOG_LEVEL_WARNING, "Couldn't open display %d", reason);
+    g_warning("Couldn't open display %d", reason);
     return -1;
   }
 
@@ -124,94 +113,84 @@ int main(int argc, const char *argv[])
 
   if (rc == BadRequest)
   {
-    g_log(0, G_LOG_LEVEL_WARNING, "No XI2 support. (%d.%d only)\n", major, minor);
+    g_warning("No XI2 support. (%d.%d only)\n", major, minor);
     return -1;
   }
   else if (rc != Success)
   {
-    g_log(0, G_LOG_LEVEL_WARNING, "Internal error\n");
+    g_warning("Internal error\n");
     return -1;
   }
 
   context = g_option_context_new("- Hildon IM XKB configurator");
   g_option_context_add_main_entries(context, options, 0);
   g_option_context_parse(context, &argc, (gchar ***)&argv, &error);
-  if ( error )
+
+  if (error)
   {
-    g_log(0, G_LOG_LEVEL_WARNING, "%s\n", error->message);
+    g_warning("%s\n", error->message);
     return -1;
   }
-  if ( id != -1 && !name )
-    name = hildon_im_xkb_get_name();
-  if ( get_conf )
+
+  if (id != -1 && !name)
+    name = hildon_im_xkb_get_name(id);
+
+  if (get_conf)
   {
-    int_kb_model = gconf_get_string("/apps/osso/inputmethod/int_kb_model");
-    int_kb_layout = gconf_get_string("/apps/osso/inputmethod/int_kb_layout");
-    int_kb_repeat_delay = gconf_get_int("/apps/osso/inputmethod/int_kb_repeat_delay");
-    int_kb_repeat_interval = gconf_get_int("/apps/osso/inputmethod/int_kb_repeat_interval");
+    gchar *kb_model = gconf_get_string(HILDON_IM_GCONF_INT_KB_MODEL);
+    gchar *kb_layout = gconf_get_string(HILDON_IM_GCONF_INT_KB_LAYOUT);
+    int repeat_delay = gconf_get_int(HILDON_IM_GCONF_INT_KB_REPEAT_DELAY);
+    int repeat_interval = gconf_get_int(HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL);
+
     g_print("Internal keyboard:\n");
-    g_print(
-      "Model: %s\nLayout: %s\nDelay: %d\nInterval: %d\n\n",
-      int_kb_model,
-      int_kb_layout,
-      int_kb_repeat_delay,
-      int_kb_repeat_interval);
-    ext_kb_model = gconf_get_string("/apps/osso/inputmethod/ext_kb_model");
-    ext_kb_layout = gconf_get_string("/apps/osso/inputmethod/ext_kb_layout");
-    ext_kb_repeat_delay = gconf_get_int("/apps/osso/inputmethod/ext_kb_repeat_delay");
-    ext_kb_repeat_interval = gconf_get_int("/apps/osso/inputmethod/ext_kb_repeat_interval");
+    g_print("Model: %s\nLayout: %s\nDelay: %d\nInterval: %d\n\n",
+            kb_model, kb_layout, repeat_delay, repeat_interval);
+
+    kb_model = gconf_get_string("/apps/osso/inputmethod/ext_kb_model");
+    kb_layout = gconf_get_string("/apps/osso/inputmethod/ext_kb_layout");
+    repeat_delay = gconf_get_int("/apps/osso/inputmethod/ext_kb_repeat_delay");
+    repeat_interval = gconf_get_int("/apps/osso/inputmethod/ext_kb_repeat_interval");
     g_print("External keyboard:\n");
-    g_print(
-      "Model: %s\nLayout: %s\nDelay: %d\nInterval: %d\n",
-      ext_kb_model,
-      ext_kb_layout,
-      ext_kb_repeat_delay,
-      ext_kb_repeat_interval);
-    g_free(ext_kb_model);
-    g_free(ext_kb_layout);
+    g_print("Model: %s\nLayout: %s\nDelay: %d\nInterval: %d\n",
+            kb_model, kb_layout, repeat_delay, repeat_interval);
+    g_free(kb_model);
+    g_free(kb_layout);
   }
-  if ( set_conf )
+
+  if (set_conf)
   {
-    newmodel = gconf_get_string("/apps/osso/inputmethod/int_kb_model");
-    newlayout = gconf_get_string("/apps/osso/inputmethod/int_kb_layout");
-    if ( newmodel == 0 || newlayout == 0)
+    gchar *kb_model = gconf_get_string(HILDON_IM_GCONF_INT_KB_MODEL);
+    gchar *kb_layout = gconf_get_string(HILDON_IM_GCONF_INT_KB_LAYOUT);
+
+    if (!kb_model || !kb_layout)
       g_print("Error getting default layout values\n");
     else
-      hildon_im_xkb_set_map(newmodel, newlayout, 0);
-    g_free(newmodel);
-    g_free(newlayout);
+      hildon_im_xkb_set_map(kb_model, kb_layout, NULL);
+
+    g_free(kb_model);
+    g_free(kb_layout);
   }
-  if ( !layout )
+
+  if (layout && !model)
   {
-    if ( !model )
-      goto LABEL_14;
-LABEL_19:
     g_print("Please specify both layout and model\n");
     exit(-1);
   }
-  if ( !model )
-    goto LABEL_19;
-  hildon_im_xkb_set_map(model, layout, name);
-LABEL_14:
-  if ( delay )
+
+  if (layout && model)
+    hildon_im_xkb_set_map(model, layout, name);
+
+  if (delay && !interval)
   {
-    if ( !interval )
-    {
-LABEL_16:
-      g_print("Please specify both delay and interval\n");
-      exit(-1);
-    }
+    g_print("Please specify both delay and interval\n");
+    exit(-1);
+  }
+
+  if (delay && interval)
     hildon_im_xkb_set_rate(delay, interval, name);
-  }
-  else if ( interval )
-  {
-    goto LABEL_16;
-  }
-  result = list;
-  if ( list )
-  {
+
+  if (list)
     hildon_im_xkb_print_devices();
-    result = 0;
-  }
-  return result;
+
+  return 0;
 }
