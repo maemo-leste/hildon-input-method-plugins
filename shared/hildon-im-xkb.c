@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XInput.h>
 #include <X11/XKBlib.h>
