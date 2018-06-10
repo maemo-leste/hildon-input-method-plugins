@@ -148,8 +148,77 @@ hildon_im_xkb_print_devices()
 void
 hildon_im_xkb_set_rate(gint delay, gint interval, const gchar *name)
 {
-  assert(0);
-  //todo
+  XDeviceInfo *devices;
+  int ndevices = 0;
+
+  g_return_if_fail(delay > 0);
+  g_return_if_fail(interval > 0);
+
+  if (hildon_im_xkb_open_display())
+    return;
+
+  devices = XListInputDevices(display, &ndevices);
+
+  if (devices)
+  {
+    int i;
+    struct _XkbDesc *desc = NULL;
+    XDeviceInfo *device = devices;
+
+    for (i = 0; i < ndevices; i++)
+    {
+
+      if ((device->use == IsXKeyboard || device->use == IsXExtensionKeyboard) &&
+          (!name || !strcmp(device->name, name)))
+      {
+        XkbControlsPtr ctrls;
+        struct _XkbComponentNames comp_names;
+
+        memset(&comp_names, 0, sizeof(comp_names));
+
+        g_print("Setting rate for %s\n", name);
+
+        if (desc)
+          XkbFreeKeyboard(desc, 0, True);
+
+        desc = XkbGetKeyboardByName(display, device->id, &comp_names,
+                                    XkbGBN_AllComponentsMask,
+                                    XkbGBN_AllComponentsMask &
+                                    (~XkbGBN_GeometryMask),
+                                    False);
+
+        if (!desc)
+        {
+          g_warning("Error loading keyboard description\n");
+          break;
+        }
+
+        XkbGetControls(display, XkbRepeatKeysMask, desc);
+        ctrls = desc->ctrls;
+        ctrls->repeat_interval = interval;
+        ctrls->repeat_delay = delay;
+
+        if (!XkbSetControls(display, XkbRepeatKeysMask, desc))
+        {
+          g_print("Error setting repeat rate\n");
+          break;
+        }
+
+        g_print("Set rate for device %s\n", device->name);
+      }
+
+      device++;
+    }
+
+    if (desc)
+      XkbFreeKeyboard(desc, 0, True);
+
+    XFreeDeviceList(devices);
+  }
+  else
+    g_warning("Couldn't get devices");
+
+  XCloseDisplay(display);
 }
 
 void
