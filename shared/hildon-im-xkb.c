@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XInput.h>
 #include <X11/XKBlib.h>
@@ -153,8 +154,103 @@ hildon_im_xkb_set_rate(gint delay, gint interval, const gchar *name)
 void
 hildon_im_xkb_set_map(gchar *model, gchar *layout, const gchar *name)
 {
-  assert(0);
-  //todo
+  char *lc_curr;
+  XkbRF_VarDefsRec var_defs;
+  char *rules_file = NULL;
+
+  g_return_if_fail(model != NULL);
+  g_return_if_fail(layout != NULL);
+
+  if (hildon_im_xkb_open_display())
+    return;
+
+  lc_curr = setlocale(LC_ALL, NULL);
+
+  memset(&var_defs, 0, sizeof(var_defs));
+
+  XkbRF_GetNamesProp(display, &rules_file, &var_defs);
+
+  if (rules_file)
+  {
+    struct _XkbRF_Rules *rules;
+    gchar *file =
+        g_strconcat("/usr/share/X11/xkb/rules", "/", rules_file, NULL);
+
+    var_defs.model = model;
+    var_defs.layout = layout;
+    rules = XkbRF_Load(file, lc_curr, True, True);
+
+    if (rules)
+    {
+      struct _XkbComponentNames comp_names;
+      struct _XkbDesc *desc = NULL;
+
+      memset(&comp_names, 0, sizeof(comp_names));
+
+      if (XkbRF_GetComponents(rules, &var_defs, &comp_names))
+      {
+        int ndevices = 0;
+        XDeviceInfo *devices = XListInputDevices(display, &ndevices);
+
+        if (devices )
+        {
+          int i;
+          XDeviceInfo *device = devices;
+
+          for(i = 0; i < ndevices; i++)
+          {
+            if (device->use == IsXKeyboard ||
+                device->use == IsXExtensionKeyboard)
+            {
+              if (!name || !strcmp(device->name, name))
+              {
+                g_print("Applying keymap to %s\n", device->name);
+
+                if (desc)
+                  XkbFreeKeyboard(desc, 0, True);
+
+                desc = XkbGetKeyboardByName(
+                      display, device->id, &comp_names,
+                      XkbGBN_AllComponentsMask,
+                      XkbGBN_AllComponentsMask & (~XkbGBN_GeometryMask),
+                      True);
+
+                if (desc)
+                {
+                  if (!XkbRF_SetNamesProp(display, rules_file, &var_defs))
+                    g_warning("Error updating XKB names property");
+                }
+                else
+                  g_warning("Error loading keyboard description");
+
+                break;
+              }
+            }
+          }
+
+          XFreeDeviceList(devices);
+        }
+        else
+          g_warning("Couldn't get devices");
+      }
+      else
+        g_warning("Couldn't get components");
+
+      XkbRF_Free(rules, True);
+
+      if (desc)
+        XkbFreeKeyboard(desc, 0, True);
+    }
+    else
+      g_warning("Couldn't get rules");
+
+    g_free(file);
+  }
+  else
+    g_warning("Couldn't get rules' name");
+
+  g_free(rules_file);
+  XCloseDisplay(display);
 }
 
 const gchar *
