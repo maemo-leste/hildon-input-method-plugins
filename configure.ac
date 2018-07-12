@@ -19,6 +19,9 @@ PKG_CHECK_MODULES(DEPS, gtk+-2.0 >= 2.4.0 gconf-2.0 > 2.0 glib-2.0 >= 2.20.3 x11
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
+himplugindir=`$PKG_CONFIG --variable=himplugindir hildon-input-method-ui-3.0`
+AC_SUBST(himplugindir)
+
 AC_OUTPUT([
 	Makefile
 	hildon-im-western-plugin-common3/Makefile

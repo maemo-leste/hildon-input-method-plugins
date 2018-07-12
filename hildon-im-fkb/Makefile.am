@@ -1,8 +1,7 @@
 INCLUDES = \
        $(DEPS_CFLAGS)
 
-hildon_western_fkb_LTLIBRARIES = hildon_western_fkb.la
-hildon_western_fkbdir = /usr/lib/hildon-input-method
+himplugin_LTLIBRARIES = hildon_western_fkb.la
 
 hildon_western_fkb_la_SOURCES =  $(srcdir)/../shared/hildon-im-word-completer.c hildon-im-western-fkb.c
 hildon_western_fkb_la_CFLAGS = $(HILDONINPUPMETHODPLUGINS_CFLAGS) -I$(srcdir)/../include
