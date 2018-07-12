@@ -2,7 +2,7 @@ hildon-input-method-plugins (3.9.75-1) unstable; urgency=low
 
   * Implement hildon_im_xkb_set_rate
 
- -- Merlijn Wajer <merlijn@wizzup.org>  Wed, 10 July 2018 11:40:00 +0200
+ -- Merlijn Wajer <merlijn@wizzup.org>  Wed, 10 Jul 2018 11:40:00 +0200
 
 hildon-input-method-plugins (3.9.74-1) unstable; urgency=low
 
