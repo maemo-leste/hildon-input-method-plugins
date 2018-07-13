@@ -373,10 +373,85 @@ cvim_settings_create_language_additional_widget(HildonIMSettingsPlugin *plugin,
   return dual_dictionary_cbutton;
 }
 
+static gint
+language_compare(HildonIMLanguage *a, HildonIMLanguage *b)
+{
+  return g_utf8_collate(a->description, b->description);
+}
+
 static GtkWidget *
 cvim_settings_create_language_picker_widget(gchar *language)
 {
-  return NULL;
+  GSList *available_languages;
+  GtkListStore *list_store;
+  gchar *dict = NULL;
+  GSList *l;
+  GtkTreeIter *selected_iter = NULL;
+  HildonTouchSelectorColumn *column;
+  GtkWidget *picker;
+  GtkWidget *selector;
+  GtkTreeIter iter;
+
+  available_languages = hildon_im_get_available_languages();
+  picker = hildon_picker_button_new(HILDON_SIZE_FINGER_HEIGHT,
+                                    HILDON_BUTTON_ARRANGEMENT_VERTICAL);
+  hildon_button_set_alignment(HILDON_BUTTON(picker), 0.0, 0.5, 1.0, 0.0);
+  hildon_button_set_title(HILDON_BUTTON(picker),
+                          dgettext("osso-applet-textinput",
+                                   "tein_fi_settings_dictionary"));
+
+  selector = hildon_touch_selector_new();
+
+  available_languages = g_slist_sort(available_languages,
+                                     (GCompareFunc)language_compare);
+
+  list_store = gtk_list_store_new(2, 64, 64);
+  dict = get_language_dictionary(language);
+
+  for (l = available_languages; l; l = l->next)
+  {
+    HildonIMLanguage *lang = l->data;
+
+    gtk_list_store_append(list_store, &iter);
+    gtk_list_store_set(list_store, &iter,
+                       0, lang->description,
+                       1, lang->language_code,
+                       -1);
+
+    if (dict && !selected_iter &&
+        !g_ascii_strcasecmp(lang->language_code, dict))
+    {
+      selected_iter = gtk_tree_iter_copy(&iter);
+    }
+  }
+
+  g_free(dict);
+  hildon_im_free_available_languages(available_languages);
+  gtk_list_store_append(list_store, &iter);
+  gtk_list_store_set(list_store, &iter,
+                     0, dgettext("osso-applet-textinput",
+                                 "tein_fi_word_completion_language_empty"),
+                     1, NULL,
+                     -1);
+
+  if (!selected_iter)
+    selected_iter = gtk_tree_iter_copy(&iter);
+
+  column = hildon_touch_selector_append_text_column(
+        HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store), 1);
+  g_object_set(G_OBJECT(column), "text-column", 0, NULL);
+
+  if (selected_iter)
+  {
+    hildon_touch_selector_select_iter(HILDON_TOUCH_SELECTOR(selector), 0,
+                                      selected_iter, TRUE);
+    gtk_tree_iter_free(selected_iter);
+  }
+
+  hildon_picker_button_set_selector(HILDON_PICKER_BUTTON(picker),
+                                    HILDON_TOUCH_SELECTOR(selector));
+
+  return picker;
 }
 
 static GtkWidget *
