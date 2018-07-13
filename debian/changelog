@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.76-1) unstable; urgency=low
+
+  * Adds hildon-im-common-virtual-settings
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Fri, 13 Jul 2018 23:29:00 +0200
+
 hildon-input-method-plugins (3.9.75-1) unstable; urgency=low
 
   * Implement hildon_im_xkb_set_rate
