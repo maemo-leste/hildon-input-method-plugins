@@ -417,7 +417,7 @@ cvim_settings_create_widget(HildonIMSettingsPlugin *plugin,
   GConfValue *val;
   int i;
   GtkListStore *list_store;
-  GtkTreeIter *selected_layout;
+  GtkTreeIter *selected_layout = NULL;
   HildonTouchSelectorColumn *column;
   GtkWidget *vbox;
   gchar *int_kb_layout;
