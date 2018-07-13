@@ -30,7 +30,7 @@ static GtkWidget *word_completion_cbutton;
 static GtkWidget *auto_caps_cbutton;
 static GtkWidget *use_fkb_cbutton;
 static GtkWidget *insert_space_cbutton;
-gboolean has_second_language;
+static gboolean has_second_language;
 static char *selected_language;
 
 struct keyboard_layout
@@ -39,7 +39,7 @@ struct keyboard_layout
   gchar *layout;
 };
 
-struct keyboard_layout keyboard_layouts[] =
+static struct keyboard_layout keyboard_layouts[] =
 {
   { "Čeština", "cz" },
   { "Dansk, Norsk", "dano" },
