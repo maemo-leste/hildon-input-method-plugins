@@ -1,4 +1,4 @@
-himplugin_LTLIBRARIES = western-common-vim-settings.la
+himplugin_LTLIBRARIES = western_common_vim_settings.la
 
 western_common_vim_settings_la_SOURCES = western-common-vim-settings.c
 western_common_vim_settings_la_CFLAGS = $(DEPS_CFLAGS) -I../include

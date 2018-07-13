@@ -48,3 +48,15 @@ Package: hildon-im-plugin-base-settings
 Architecture: all
 Description: Base settings for the Hildon Input Method plugins.
  This packages provides the base settings for the Hildon Input Method plugins.
+
+Package: hildon-im-common-virtual-settings
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Western word completion Text Input Settings plugin
+ This packages provides the word completion Text Input Settings plugin.
+
+Package: hildon-im-common-virtual-settings-dbg
+Section: devel
+Architecture: any
+Depends: hildon-im-common-virtual-settings (= ${binary:Version})
+Description: Debugging symbols for Western word completion Text Input Settings plugin
