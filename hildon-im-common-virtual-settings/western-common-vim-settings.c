@@ -70,6 +70,17 @@ cvim_settings_init(HildonIMWesternCommonVIMSettings *self)
 static void
 cvim_settings_finalize(GObject *object)
 {
+  second_dictionary_picker = NULL;
+  first_dictionary_picker = NULL;
+  dual_dictionary_cbutton = NULL;
+  cb_layout = NULL;
+  word_completion_cbutton = NULL;
+  auto_caps_cbutton = NULL;
+  use_fkb_cbutton = NULL;
+  insert_space_cbutton = NULL;
+  has_second_language = NULL;
+  selected_language = NULL;
+
   if (G_OBJECT_CLASS(cvim_settings_parent_class)->finalize)
     G_OBJECT_CLASS(cvim_settings_parent_class)->finalize(object);
 }
@@ -279,8 +290,11 @@ cvim_settings_value_changed(HildonIMSettingsPlugin *plugin, const gchar *key,
           {
             hildon_touch_selector_select_iter(HILDON_TOUCH_SELECTOR(selector),
                                               0, &iter, TRUE);
+            g_free(candidate_dict);
             break;
           }
+
+          g_free(candidate_dict);
 
           if (!gtk_tree_model_iter_next(model, &iter))
             break;
@@ -438,7 +452,7 @@ cvim_settings_create_language_picker_widget(gchar *language)
     selected_iter = gtk_tree_iter_copy(&iter);
 
   column = hildon_touch_selector_append_text_column(
-        HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store), 1);
+        HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store), TRUE);
   g_object_set(G_OBJECT(column), "text-column", 0, NULL);
 
   if (selected_iter)
@@ -556,7 +570,7 @@ cvim_settings_create_widget(HildonIMSettingsPlugin *plugin,
     }
 
     column = hildon_touch_selector_append_text_column(
-          HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store), 1);
+          HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store), TRUE);
     g_object_set(G_OBJECT(column), "text-column", 0, NULL);
 
     if (selected_layout)
