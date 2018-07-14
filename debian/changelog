@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.77-1) unstable; urgency=low
+
+  * Fix memory leaks and invalid memory accesses
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Sat, 14 Jul 2018 10:04:00 +0200
+
 hildon-input-method-plugins (3.9.76-1) unstable; urgency=low
 
   * Adds hildon-im-common-virtual-settings
