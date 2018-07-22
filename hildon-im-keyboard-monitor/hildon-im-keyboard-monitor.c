@@ -36,6 +36,8 @@
 #define OSSO_AF_KEYBOARD_ATTACHED OSSO_AF_GCONF_DIR "/keyboard-attached"
 #define OSSO_AF_SLIDE_OPEN        OSSO_AF_GCONF_DIR "/slide-open"
 
+#define g_zap(a) if (a) {g_free(a); a = NULL;}
+
 struct _HildonIMKeyboardMonitorPrivate
 {
   HildonIMUI *ui;
@@ -75,11 +77,11 @@ static void hildon_im_keyboard_monitor_settings_changed(HildonIMPlugin *plugin, 
 static void hildon_im_keyboard_monitor_language(HildonIMPlugin *plugin);
 static GObject *hildon_im_keyboard_monitor_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_properties);
 static void hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type, guint state, guint val, guint hardware_keycode);
-static void hildon_im_keyboard_monitor_gconf_notify_cb(GConfClient *client, guint cnxn_id, GConfEntry *entry, HildonIMPlugin *user_data);
+static void hildon_im_keyboard_monitor_gconf_notify_cb(GConfClient *client, guint cnxn_id, GConfEntry *entry, gpointer user_data);
 static void hildon_im_keyboard_monitor_update_keyboard_state(HildonIMKeyboardMonitor *monitor);
 static void hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *monitor);
 static void hildon_im_keyboard_monitor_set_lock_level(HildonIMKeyboardMonitor *monitor);
-static gboolean hildon_im_keyboard_monitor_timeout_cb(HildonIMKeyboardMonitor *monitor);
+static gboolean hildon_im_keyboard_monitor_timeout_cb(gpointer userdata);
 
 GType
 hildon_im_keyboard_monitor_get_type (void)
@@ -90,9 +92,7 @@ hildon_im_keyboard_monitor_get_type (void)
 GObject *hildon_im_keyboard_monitor_new(HildonIMUI *ui)
 {
   return g_object_new(HILDON_IM_TYPE_KEYBOARD_MONITOR,
-                                 HILDON_IM_PROP_UI_DESCRIPTION,
-                                 ui,
-                                 0);
+                      HILDON_IM_PROP_UI_DESCRIPTION, ui, NULL);
 }
 
 HildonIMPlugin*
@@ -157,13 +157,14 @@ hildon_im_keyboard_monitor_class_init(HildonIMKeyboardMonitorClass *klass)
   object_class->constructor = hildon_im_keyboard_monitor_constructor;
   object_class->finalize = hildon_im_keyboard_monitor_finalize;
 
-  g_object_class_install_property(object_class, HILDON_IM_PROP_UI,
-                                  g_param_spec_object(
-                                    HILDON_IM_PROP_UI_DESCRIPTION,
-                                    HILDON_IM_PROP_UI_DESCRIPTION,
-                                    "UI that uses plugin",
-                                    HILDON_IM_TYPE_UI,
-                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+  g_object_class_install_property(
+        object_class, HILDON_IM_PROP_UI,
+        g_param_spec_object(
+          HILDON_IM_PROP_UI_DESCRIPTION,
+          HILDON_IM_PROP_UI_DESCRIPTION,
+          "UI that uses plugin",
+          HILDON_IM_TYPE_UI,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -172,7 +173,8 @@ hildon_im_keyboard_monitor_iface_init(HildonIMPluginIface *iface)
   iface->key_event = hildon_im_keyboard_monitor_key_event;
   iface->enable = hildon_im_keyboard_monitor_enable;
   iface->disable = hildon_im_keyboard_monitor_disable;
-  iface->client_widget_changed = hildon_im_keyboard_monitor_client_widget_changed;
+  iface->client_widget_changed =
+      hildon_im_keyboard_monitor_client_widget_changed;
   iface->save_data = hildon_im_keyboard_monitor_save_data;
   iface->settings_changed = hildon_im_keyboard_monitor_settings_changed;
   iface->language = hildon_im_keyboard_monitor_language;
@@ -180,7 +182,8 @@ hildon_im_keyboard_monitor_iface_init(HildonIMPluginIface *iface)
 
 static void hildon_im_keyboard_monitor_init(HildonIMKeyboardMonitor *monitor)
 {
-  monitor->priv = HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE (HILDON_IM_KEYBOARD_MONITOR(monitor));
+  monitor->priv = HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(
+        HILDON_IM_KEYBOARD_MONITOR(monitor));
   monitor->priv->banner = NULL;
 }
 
@@ -204,17 +207,26 @@ hildon_im_keyboard_monitor_enable(HildonIMPlugin *plugin, gboolean init)
   priv->keyboard_attached =
       gconf_client_get_bool(gconf, OSSO_AF_KEYBOARD_ATTACHED, NULL);
   hildon_im_ui_set_context_options(priv->ui, HILDON_IM_AUTOLEVEL_NUMERIC, TRUE);
-  priv->int_kb_model = gconf_client_get_string(gconf, HILDON_IM_GCONF_INT_KB_MODEL, NULL);
-  priv->int_kb_layout = gconf_client_get_string(gconf, HILDON_IM_GCONF_INT_KB_LAYOUT, 0);
-  priv->int_kb_repeat_delay = gconf_client_get_int(gconf, HILDON_IM_GCONF_INT_KB_REPEAT_DELAY, 0);
-  priv->int_kb_repeat_interval = gconf_client_get_int(gconf, HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL, 0);
-  priv->int_kb_level_shifted = gconf_client_get_bool(gconf, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, 0);
-  priv->ext_kb_model = gconf_client_get_string(gconf, HILDON_IM_GCONF_EXT_KB_MODEL, 0);
-  priv->ext_kb_layout = gconf_client_get_string(gconf, HILDON_IM_GCONF_EXT_KB_LAYOUT, 0);
-  priv->ext_kb_repeat_delay = gconf_client_get_int(gconf, HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY, 0);
+  priv->int_kb_model =
+      gconf_client_get_string(gconf, HILDON_IM_GCONF_INT_KB_MODEL, NULL);
+  priv->int_kb_layout =
+      gconf_client_get_string(gconf, HILDON_IM_GCONF_INT_KB_LAYOUT, NULL);
+  priv->int_kb_repeat_delay =
+      gconf_client_get_int(gconf, HILDON_IM_GCONF_INT_KB_REPEAT_DELAY, NULL);
+  priv->int_kb_repeat_interval =
+      gconf_client_get_int(gconf, HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL, NULL);
+  priv->int_kb_level_shifted =
+      gconf_client_get_bool(gconf, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, NULL);
+  priv->ext_kb_model =
+      gconf_client_get_string(gconf, HILDON_IM_GCONF_EXT_KB_MODEL, NULL);
+  priv->ext_kb_layout =
+      gconf_client_get_string(gconf, HILDON_IM_GCONF_EXT_KB_LAYOUT, NULL);
+  priv->ext_kb_repeat_delay =
+      gconf_client_get_int(gconf, HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY, NULL);
   priv->ext_setting_changed = TRUE;
   priv->int_setting_changed = TRUE;
-  priv->ext_kb_repeat_interval = gconf_client_get_int(gconf, HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL, 0);
+  priv->ext_kb_repeat_interval =
+      gconf_client_get_int(gconf, HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL, NULL);
   hildon_im_keyboard_monitor_update_keyboard_state(monitor);
   hildon_im_keyboard_monitor_update_settings(monitor);
 }
@@ -262,7 +274,8 @@ hildon_im_keyboard_monitor_set_property(GObject *object,
   }
 }
 
-static void hildon_im_keyboard_monitor_finalize(GObject *object)
+static void
+hildon_im_keyboard_monitor_finalize(GObject *object)
 {
   HildonIMKeyboardMonitorPrivate *priv;
   priv = HILDON_IM_KEYBOARD_MONITOR(object)->priv;
@@ -272,6 +285,7 @@ static void hildon_im_keyboard_monitor_finalize(GObject *object)
     gtk_widget_destroy(priv->banner);
     priv->banner = NULL;
   }
+
   if (G_OBJECT_CLASS(hildon_im_keyboard_monitor_parent_class)->finalize)
     G_OBJECT_CLASS(hildon_im_keyboard_monitor_parent_class)->finalize(object);
 }
@@ -279,30 +293,14 @@ static void hildon_im_keyboard_monitor_finalize(GObject *object)
 static void
 hildon_im_keyboard_monitor_disable(HildonIMPlugin *plugin)
 {
-  HildonIMKeyboardMonitorPrivate *priv;
+  HildonIMKeyboardMonitorPrivate *priv =
+      HILDON_IM_KEYBOARD_MONITOR(plugin)->priv;
 
-  priv = HILDON_IM_KEYBOARD_MONITOR(plugin)->priv;
-  if (priv->int_kb_model)
-  {
-    g_free(priv->int_kb_model);
-    priv->int_kb_model = 0;
-  }
+  g_zap(priv->int_kb_model);
+  g_zap(priv->int_kb_layout);
+  g_zap(priv->ext_kb_model);
+  g_zap(priv->ext_kb_layout);
 
-  if (priv->int_kb_layout)
-  {
-    g_free(priv->int_kb_layout);
-    priv->int_kb_layout = 0;
-  }
-  if (priv->ext_kb_model)
-  {
-    g_free(priv->ext_kb_model);
-    priv->ext_kb_model = 0;
-  }
-  if (priv->ext_kb_layout)
-  {
-    g_free(priv->ext_kb_layout);
-    priv->ext_kb_layout = 0;
-  }
   g_print("KEYBOARD MONITOR DISABLED\n");
 }
 
@@ -311,89 +309,84 @@ hildon_im_keyboard_monitor_client_widget_changed(HildonIMPlugin *plugin)
 {
 }
 
-static void hildon_im_keyboard_monitor_settings_changed(HildonIMPlugin *plugin, const gchar *key, const GConfValue *value)
+static void
+hildon_im_keyboard_monitor_settings_changed(HildonIMPlugin *plugin,
+                                            const gchar *key,
+                                            const GConfValue *value)
 {
-  HildonIMKeyboardMonitor *monitor;
-  HildonIMKeyboardMonitorPrivate *priv;
+  HildonIMKeyboardMonitor *monitor = HILDON_IM_KEYBOARD_MONITOR(plugin);
+  HildonIMKeyboardMonitorPrivate *priv = monitor->priv;
 
-  monitor = HILDON_IM_KEYBOARD_MONITOR(plugin);
-  priv = monitor->priv;
-  if (value->type != GCONF_VALUE_STRING)
+  if (value->type == GCONF_VALUE_STRING)
   {
-    if (value->type != GCONF_VALUE_INT)
+    if (!strcmp(key, HILDON_IM_GCONF_INT_KB_MODEL))
     {
-      if (value->type == GCONF_VALUE_BOOL && !strcmp(key, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED))
-      {
-        priv->int_kb_level_shifted = gconf_value_get_bool(value);
-        hildon_im_keyboard_monitor_set_lock_level(monitor);
-      }
-      goto LABEL_4;
+      if (priv->int_kb_model)
+        g_free(priv->int_kb_model);
+
+      priv->int_setting_changed = TRUE;
+      priv->int_kb_model = g_strdup(gconf_value_get_string(value));
     }
+    else if (!strcmp(key, HILDON_IM_GCONF_INT_KB_LAYOUT))
+    {
+      if (priv->int_kb_layout)
+        g_free(priv->int_kb_layout);
+
+      priv->int_setting_changed = TRUE;
+      priv->int_kb_layout = g_strdup(gconf_value_get_string(value));
+    }
+    else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_MODEL))
+    {
+      if (priv->ext_kb_model)
+        g_free(priv->ext_kb_model);
+
+      priv->ext_setting_changed = TRUE;
+      priv->ext_kb_model = g_strdup(gconf_value_get_string(value));
+    }
+    else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_LAYOUT))
+    {
+      if (priv->ext_kb_layout)
+        g_free(priv->ext_kb_layout);
+
+      priv->ext_setting_changed = TRUE;
+      priv->ext_kb_layout = g_strdup(gconf_value_get_string(value));
+    }
+  }
+  else if (value->type == GCONF_VALUE_INT)
+  {
     if (!strcmp(key, HILDON_IM_GCONF_INT_KB_REPEAT_DELAY))
     {
-      priv->int_setting_changed = 1;
+      priv->int_setting_changed = TRUE;
       priv->int_kb_repeat_delay = gconf_value_get_int(value);
-      goto LABEL_5;
     }
-    if (strcmp(key, HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL))
+    else if (!strcmp(key, HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL))
     {
-      if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY))
-      {
-        priv->ext_setting_changed = 1;
-        priv->ext_kb_repeat_delay = gconf_value_get_int(value);
-      }
-      else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL))
-      {
-        priv->ext_setting_changed = 1;
-        priv->ext_kb_repeat_interval = gconf_value_get_int(value);
-      }
-      goto LABEL_4;
+      priv->int_setting_changed = TRUE;
+      priv->int_kb_repeat_interval = gconf_value_get_int(value);
     }
-    priv->int_setting_changed = 1;
-    priv->int_kb_repeat_interval = gconf_value_get_int(value);
-LABEL_5:
-    if (priv->timer)
-      return;
-    goto LABEL_6;
+    else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY))
+    {
+      priv->ext_setting_changed = TRUE;
+      priv->ext_kb_repeat_delay = gconf_value_get_int(value);
+    }
+    else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL))
+    {
+      priv->ext_setting_changed = TRUE;
+      priv->ext_kb_repeat_interval = gconf_value_get_int(value);
+    }
   }
-  if (!strcmp(key, HILDON_IM_GCONF_INT_KB_MODEL))
+  else if (value->type == GCONF_VALUE_BOOL &&
+           !strcmp(key, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED))
   {
-    if (priv->int_kb_model)
-      g_free(priv->int_kb_model);
-    priv->int_setting_changed = 1;
-    priv->int_kb_model = g_strdup(gconf_value_get_string(value));
-    if (!priv->timer)
-      goto LABEL_6;
-    return;
+    priv->int_kb_level_shifted = gconf_value_get_bool(value);
+    hildon_im_keyboard_monitor_set_lock_level(monitor);
   }
-  if (!strcmp(key, HILDON_IM_GCONF_INT_KB_LAYOUT))
+
+  if ((priv->int_setting_changed || priv->ext_setting_changed) && !priv->timer)
   {
-    if (priv->int_kb_layout)
-      g_free(priv->int_kb_layout);
-    priv->int_setting_changed = 1;
-    priv->int_kb_layout = g_strdup(gconf_value_get_string(value));
-    goto LABEL_5;
+    priv->timer =
+        g_timeout_add(500, hildon_im_keyboard_monitor_timeout_cb, monitor);
   }
-  if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_MODEL))
-  {
-    if (priv->ext_kb_model)
-      g_free(priv->ext_kb_model);
-    priv->ext_setting_changed = 1;
-    priv->ext_kb_model = g_strdup(gconf_value_get_string(value));
-  }
-  else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_LAYOUT))
-  {
-    if (priv->ext_kb_layout)
-      g_free(priv->ext_kb_layout);
-    priv->ext_setting_changed = 1;
-    priv->ext_kb_layout = g_strdup(gconf_value_get_string(value));
-  }
-LABEL_4:
-  if (priv->int_setting_changed)
-    goto LABEL_5;
-  if (priv->ext_setting_changed && !priv->timer)
-LABEL_6:
-    priv->timer = g_timeout_add(0x1F4, (GSourceFunc)hildon_im_keyboard_monitor_timeout_cb, monitor);
 }
 
 static void hildon_im_keyboard_monitor_language(HildonIMPlugin *plugin)
@@ -402,10 +395,9 @@ static void hildon_im_keyboard_monitor_language(HildonIMPlugin *plugin)
   g_return_if_fail(HILDON_IM_IS_KEYBOARD_MONITOR(plugin));
 
   priv = HILDON_IM_KEYBOARD_MONITOR(plugin)->priv;
+
   if (priv->language_switched)
-  {
     priv->language_switched = FALSE;
-  }
   else
   {
     hildon_im_ui_get_active_language(priv->ui);
@@ -417,9 +409,7 @@ static void hildon_im_keyboard_monitor_language(HildonIMPlugin *plugin)
 static void
 hildon_im_keyboard_monitor_save_data(HildonIMPlugin *plugin)
 {
-  HildonIMKeyboardMonitorPrivate *priv;
-  g_return_if_fail(HILDON_IM_KEYBOARD_MONITOR(plugin));
-  priv = HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(HILDON_IM_KEYBOARD_MONITOR(plugin));
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_MONITOR(plugin));
 }
 
 const HildonIMPluginInfo *hildon_im_plugin_get_info(void)
@@ -529,7 +519,7 @@ LABEL_30:
 static void
 hildon_im_keyboard_monitor_gconf_notify_cb(GConfClient *client, guint cnxn_id,
                                            GConfEntry *entry,
-                                           HildonIMPlugin *user_data)
+                                           gpointer user_data)
 {
   HildonIMKeyboardMonitor *monitor = HILDON_IM_KEYBOARD_MONITOR(user_data);
   GConfValue *value = gconf_entry_get_value(entry);
@@ -616,6 +606,7 @@ static void hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *
       }
     }
   }
+
   if (priv->ext_setting_changed && priv->keyboard_attached && priv->ext_kb_model)
   {
     if (priv->ext_kb_layout)
@@ -623,24 +614,28 @@ static void hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *
   }
 }
 
-static void hildon_im_keyboard_monitor_set_lock_level(HildonIMKeyboardMonitor *monitor)
+static void
+hildon_im_keyboard_monitor_set_lock_level(HildonIMKeyboardMonitor *monitor)
 {
-  HildonIMKeyboardMonitorPrivate *priv;
-  gchar *layout;
+  HildonIMKeyboardMonitorPrivate *priv = monitor->priv;
+  gchar *layout = priv->int_kb_layout;
 
-  priv = monitor->priv;
-  layout = priv->int_kb_layout;
+  /* WTF ?!? */
   if (layout && !strcmp("ru", layout))
-    hildon_im_ui_set_context_options(priv->ui, HILDON_IM_LOCK_LEVEL, priv->int_kb_level_shifted);
+    hildon_im_ui_set_context_options(priv->ui, HILDON_IM_LOCK_LEVEL,
+                                     priv->int_kb_level_shifted);
   else
     hildon_im_ui_set_context_options(priv->ui, HILDON_IM_LOCK_LEVEL, 0);
 }
 
-static gboolean hildon_im_keyboard_monitor_timeout_cb(HildonIMKeyboardMonitor *monitor)
+static gboolean
+hildon_im_keyboard_monitor_timeout_cb(gpointer userdata)
 {
-  HildonIMKeyboardMonitor *m = HILDON_IM_KEYBOARD_MONITOR(monitor);
-  HildonIMKeyboardMonitorPrivate *priv = m->priv;
-  hildon_im_keyboard_monitor_update_settings(m);
+  HildonIMKeyboardMonitor *monitor = HILDON_IM_KEYBOARD_MONITOR(userdata);
+  HildonIMKeyboardMonitorPrivate *priv = monitor->priv;
+
+  hildon_im_keyboard_monitor_update_settings(monitor);
   priv->timer = 0;
+
   return FALSE;
 }
