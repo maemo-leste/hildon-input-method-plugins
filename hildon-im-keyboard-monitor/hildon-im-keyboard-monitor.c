@@ -180,7 +180,8 @@ hildon_im_keyboard_monitor_iface_init(HildonIMPluginIface *iface)
   iface->language = hildon_im_keyboard_monitor_language;
 }
 
-static void hildon_im_keyboard_monitor_init(HildonIMKeyboardMonitor *monitor)
+static void
+hildon_im_keyboard_monitor_init(HildonIMKeyboardMonitor *monitor)
 {
   monitor->priv = HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(
         HILDON_IM_KEYBOARD_MONITOR(monitor));
@@ -389,9 +390,11 @@ hildon_im_keyboard_monitor_settings_changed(HildonIMPlugin *plugin,
   }
 }
 
-static void hildon_im_keyboard_monitor_language(HildonIMPlugin *plugin)
+static void
+hildon_im_keyboard_monitor_language(HildonIMPlugin *plugin)
 {
   HildonIMKeyboardMonitorPrivate *priv;
+
   g_return_if_fail(HILDON_IM_IS_KEYBOARD_MONITOR(plugin));
 
   priv = HILDON_IM_KEYBOARD_MONITOR(plugin)->priv;
@@ -431,16 +434,21 @@ const HildonIMPluginInfo *hildon_im_plugin_get_info(void)
       0,                                                  /* plugin height */
       HILDON_IM_TRIGGER_NONE                              /* trigger */
     };
+
   return &info;
 }
 
-gchar **hildon_im_plugin_get_available_languages(gboolean *free)
+gchar **
+hildon_im_plugin_get_available_languages(gboolean *free)
 {
-  *free = 0;
+  *free = FALSE;
+
   return NULL;
 }
 
-static GObject *hildon_im_keyboard_monitor_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_properties)
+static GObject *
+hildon_im_keyboard_monitor_constructor(GType type, guint n_construct_properties,
+                                       GObjectConstructParam *construct_properties)
 {
   GObjectClass *object_class;
   GObject *object;
@@ -450,70 +458,96 @@ static GObject *hildon_im_keyboard_monitor_constructor(GType type, guint n_const
   return object;
 }
 
-static void hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type, guint state, guint val, guint hardware_keycode)
+static void
+hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
+                                     guint state, guint val,
+                                     guint hardware_keycode)
 {
+  HildonIMKeyboardMonitorPrivate *priv;
+
   g_return_if_fail(HILDON_IM_IS_KEYBOARD_MONITOR(plugin));
-  HildonIMKeyboardMonitorPrivate *priv = HILDON_IM_KEYBOARD_MONITOR(plugin)->priv;
-  if (type != GDK_KEY_PRESS)
-    goto LABEL_30;
-  if (priv->banner)
+
+  priv = HILDON_IM_KEYBOARD_MONITOR(plugin)->priv;
+
+  if (type == GDK_KEY_PRESS)
   {
-    gtk_widget_destroy(priv->banner);
-    priv->banner = NULL;
-  }
-  if (state & (val == GDK_space))
-    gconf_client_set_bool(priv->ui->client, OSSO_AF_SLIDE_OPEN, priv->slide_open == 0, 0);
-  if ((val == GDK_space) & (state >> 2))
-  {
-    if (priv->int_kb_layout && !strcmp("ru", priv->int_kb_layout))
+    if (priv->banner)
     {
-      gboolean level_shifted = priv->int_kb_level_shifted == 0;
-      priv->int_kb_level_shifted = level_shifted;
-	  const gchar *layout;
-      if (level_shifted)
-        layout = "Pyccknn"; //todo, cant figure out how to get the right Russian chars in here
-      else
-        layout = "Latin";
-      const gchar *message = g_strdup_printf(dcgettext(0, "inpu_ib_quick_layout_switch", 5), layout);
-      gconf_client_set_bool(
-        priv->ui->client,
-        HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
-        priv->int_kb_level_shifted,
-        NULL);
-      priv->banner = hildon_banner_show_information(GTK_WIDGET(&priv->ui->parent.bin.container.widget), NULL, message);
+      gtk_widget_destroy(priv->banner);
+      priv->banner = NULL;
     }
-    else
+
+    if (state && val == GDK_space)
     {
-      const gchar *language = hildon_im_ui_get_language_setting(priv->ui, (hildon_im_ui_get_active_language_index(priv->ui) == 0));
-      if (language && *language)
+      gconf_client_set_bool(priv->ui->client, OSSO_AF_SLIDE_OPEN,
+                            priv->slide_open == 0, NULL);
+    }
+
+    if (val == GDK_space && (state & GDK_CONTROL_MASK))
+    {
+      if (priv->int_kb_layout && !strcmp("ru", priv->int_kb_layout))
       {
-        gchar *language_desc = hildon_im_get_language_description(language);
-        const gchar *message = g_strdup_printf(dcgettext(0, "inpu_ib_quick_layout_language", 5), language_desc);
-        g_free(language_desc);
-        priv->language_switched = 1;
-        hildon_im_ui_set_active_language_index(priv->ui, (hildon_im_ui_get_active_language_index(priv->ui) == 0));
-        priv->banner = hildon_banner_show_information(GTK_WIDGET(&priv->ui->parent.bin.container.widget), NULL, message);
+        const gchar *layout;
+        gchar *message;
+
+        priv->int_kb_level_shifted = !priv->int_kb_level_shifted;
+
+        if (priv->int_kb_level_shifted)
+          layout = "Pycckий"; //todo, cant figure out how to get the right Russian chars in here
+        else
+          layout = "Latin";
+
+        message = g_strdup_printf(
+              dgettext(NULL, "inpu_ib_quick_layout_switch"), layout);
+
+        gconf_client_set_bool(
+              priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
+              priv->int_kb_level_shifted, NULL);
+
+        priv->banner =
+            hildon_banner_show_information(GTK_WIDGET(priv->ui), NULL, message);
+
+        g_free(message);
+      }
+      else
+      {
+        const gchar *language = hildon_im_ui_get_language_setting(
+              priv->ui, !hildon_im_ui_get_active_language_index(priv->ui));
+
+        if (language && *language)
+        {
+          gchar *language_desc = hildon_im_get_language_description(language);
+          gchar *message = g_strdup_printf(
+                dgettext(NULL, "inpu_ib_quick_layout_language"), language_desc);
+
+          g_free(language_desc);
+          priv->language_switched = TRUE;
+
+          hildon_im_ui_set_active_language_index(
+                priv->ui, !hildon_im_ui_get_active_language_index(priv->ui));
+          priv->banner = hildon_banner_show_information(
+                GTK_WIDGET(priv->ui), NULL, message);
+
+          g_free(message);
+        }
       }
     }
+  }
+  else if (type == GDK_KEY_RELEASE && val == GDK_Multi_key)
+  {
+    if (activate_special_plugin == TRUE)
+    {
+      hildon_im_ui_toggle_special_plugin(priv->ui);
+      hildon_im_ui_set_level_sticky(priv->ui, FALSE);
+      hildon_im_ui_send_communication_message(priv->ui,
+                                              HILDON_IM_CONTEXT_LEVEL_UNSTICKY);
+    }
+
+    activate_special_plugin = val == GDK_Multi_key;
   }
   else
-  {
-LABEL_30:
-    if (type == GDK_KEY_RELEASE && val == GDK_Multi_key)
-    {
-      if (activate_special_plugin == TRUE)
-      {
-        hildon_im_ui_toggle_special_plugin(priv->ui);
-        hildon_im_ui_set_level_sticky(priv->ui, 0);
-        hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_LEVEL_UNSTICKY);
-      }
-      activate_special_plugin = val == GDK_Multi_key;
-    }
-    else
-    {
-      activate_special_plugin = val == GDK_Multi_key;
-    }
-  }
+    activate_special_plugin = val == GDK_Multi_key;
+
 }
 
 static void
@@ -539,78 +573,77 @@ hildon_im_keyboard_monitor_gconf_notify_cb(GConfClient *client, guint cnxn_id,
         hildon_im_keyboard_monitor_update_settings(monitor);
       }
     }
+
     hildon_im_keyboard_monitor_update_keyboard_state(monitor);
   }
 }
 
-static void hildon_im_keyboard_monitor_update_keyboard_state(HildonIMKeyboardMonitor *monitor)
+static void
+hildon_im_keyboard_monitor_update_keyboard_state(
+    HildonIMKeyboardMonitor *monitor)
 {
   HildonIMKeyboardMonitorPrivate *priv = monitor->priv;
-  gboolean b;
-  if (priv->slide_open)
-  {
-    b = TRUE;
-  }
-  else
-  {
-    b = priv->keyboard_attached;
-    if (priv->keyboard_attached)
-      b = TRUE;
-  }
-  hildon_im_ui_set_keyboard_state(priv->ui, b);
+
+  hildon_im_ui_set_keyboard_state(priv->ui,
+                                  priv->slide_open || priv->keyboard_attached);
 }
 
-static void hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *monitor)
+static void
+hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *monitor)
 {
-  HildonIMKeyboardMonitorPrivate *priv;
-  gchar *model;
-  gchar *layout;
-  GConfValue *shifted;
-  GError *error;
+  HildonIMKeyboardMonitorPrivate *priv = monitor->priv;
 
-  priv = monitor->priv;
   if (priv->int_setting_changed)
   {
-    model = priv->int_kb_model;
-    if (model)
+    if (priv->int_kb_model && priv->int_kb_layout)
     {
-      layout = priv->int_kb_layout;
-      if (layout)
+      GConfValue *shifted;
+      GError *error = NULL;
+      gboolean int_kb_level_shifted;
+
+      hildon_im_xkb_set_map(priv->int_kb_model, priv->int_kb_layout, NULL);
+      hildon_im_xkb_set_rate(priv->int_kb_repeat_delay,
+                             priv->int_kb_repeat_interval, NULL);
+
+      shifted = gconf_client_get_default_from_schema(
+            priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, NULL);
+
+      if (shifted)
       {
-        hildon_im_xkb_set_map(model, layout, 0);
-        hildon_im_xkb_set_rate(priv->int_kb_repeat_delay, priv->int_kb_repeat_interval, 0);
-        shifted = gconf_client_get_default_from_schema(
-                    priv->ui->client,
-                    HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
-                    NULL);
-        if (shifted)
-        {
-          if (shifted->type == GCONF_VALUE_BOOL)
-            priv->int_kb_level_shifted = gconf_value_get_bool(shifted);
-          else
-            priv->int_kb_level_shifted = 1;
-          gconf_value_free(shifted);
-        }
+        if (shifted->type == GCONF_VALUE_BOOL)
+          priv->int_kb_level_shifted = gconf_value_get_bool(shifted);
         else
-        {
-          priv->int_kb_level_shifted = 1;
-        }
-        error = 0;
-        if (gconf_client_get_bool(priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, &error) != priv->int_kb_level_shifted || error)
-          gconf_client_set_bool(priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, priv->int_kb_level_shifted, 0);
-        else
-          hildon_im_keyboard_monitor_set_lock_level(monitor);
-        if (error)
-          g_error_free(error);
-        priv->int_setting_changed = 0;
+          priv->int_kb_level_shifted = TRUE;
+
+        gconf_value_free(shifted);
       }
+      else
+        priv->int_kb_level_shifted = TRUE;
+
+      int_kb_level_shifted = gconf_client_get_bool(
+            priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, &error);
+
+      if (int_kb_level_shifted != priv->int_kb_level_shifted || error)
+      {
+        gconf_client_set_bool(priv->ui->client,
+                              HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
+                              priv->int_kb_level_shifted, NULL);
+      }
+      else
+        hildon_im_keyboard_monitor_set_lock_level(monitor);
+
+      if (error)
+        g_error_free(error);
+
+      priv->int_setting_changed = FALSE;
     }
   }
 
-  if (priv->ext_setting_changed && priv->keyboard_attached && priv->ext_kb_model)
+  if (priv->ext_setting_changed &&
+      priv->keyboard_attached && priv->ext_kb_model)
   {
     if (priv->ext_kb_layout)
-      priv->ext_setting_changed = 0;
+      priv->ext_setting_changed = FALSE;
   }
 }
 
