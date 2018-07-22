@@ -146,10 +146,10 @@ int main(int argc, const char *argv[])
     g_print("Model: %s\nLayout: %s\nDelay: %d\nInterval: %d\n\n",
             kb_model, kb_layout, repeat_delay, repeat_interval);
 
-    kb_model = gconf_get_string("/apps/osso/inputmethod/ext_kb_model");
-    kb_layout = gconf_get_string("/apps/osso/inputmethod/ext_kb_layout");
-    repeat_delay = gconf_get_int("/apps/osso/inputmethod/ext_kb_repeat_delay");
-    repeat_interval = gconf_get_int("/apps/osso/inputmethod/ext_kb_repeat_interval");
+    kb_model = gconf_get_string(HILDON_IM_GCONF_EXT_KB_MODEL);
+    kb_layout = gconf_get_string(HILDON_IM_GCONF_EXT_KB_LAYOUT);
+    repeat_delay = gconf_get_int(HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY);
+    repeat_interval = gconf_get_int(HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL);
     g_print("External keyboard:\n");
     g_print("Model: %s\nLayout: %s\nDelay: %d\nInterval: %d\n",
             kb_model, kb_layout, repeat_delay, repeat_interval);

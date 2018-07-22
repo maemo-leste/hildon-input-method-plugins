@@ -32,6 +32,10 @@
 #include "hildon-im-western-plugin-common.h"
 #include "hildon-im-xkb.h"
 
+#define OSSO_AF_GCONF_DIR "/system/osso/af"
+#define OSSO_AF_KEYBOARD_ATTACHED OSSO_AF_GCONF_DIR "/keyboard-attached"
+#define OSSO_AF_SLIDE_OPEN        OSSO_AF_GCONF_DIR "/slide-open"
+
 struct _HildonIMKeyboardMonitorPrivate
 {
   HildonIMUI *ui;
@@ -183,28 +187,34 @@ static void hildon_im_keyboard_monitor_init(HildonIMKeyboardMonitor *monitor)
 static void
 hildon_im_keyboard_monitor_enable(HildonIMPlugin *plugin, gboolean init)
 {
-  HildonIMKeyboardMonitor *monitor;
-  HildonIMKeyboardMonitorPrivate *priv;
+  HildonIMKeyboardMonitor *monitor= HILDON_IM_KEYBOARD_MONITOR(plugin);
+  HildonIMKeyboardMonitorPrivate *priv = monitor->priv;
+  GConfClient *gconf = priv->ui->client;
 
-  monitor = HILDON_IM_KEYBOARD_MONITOR(plugin);
-  priv = monitor->priv;
-  gconf_client_add_dir(priv->ui->client, "/system/osso/af", 0, 0);
-  gconf_client_notify_add(priv->ui->client,"/system/osso/af/keyboard-attached",(GConfClientNotifyFunc)hildon_im_keyboard_monitor_gconf_notify_cb,(gpointer)plugin,0,0);
-  gconf_client_notify_add(priv->ui->client,"/system/osso/af/slide-open",(GConfClientNotifyFunc)hildon_im_keyboard_monitor_gconf_notify_cb,(gpointer)plugin,0,0);
-  priv->slide_open = gconf_client_get_bool(priv->ui->client, "/system/osso/af/slide-open", 0);
-  priv->keyboard_attached = gconf_client_get_bool(priv->ui->client, "/system/osso/af/keyboard-attached", 0);
-  hildon_im_ui_set_context_options(priv->ui, HILDON_IM_AUTOLEVEL_NUMERIC, 1);
-  priv->int_kb_model = gconf_client_get_string(priv->ui->client, "/apps/osso/inputmethod/int_kb_model", 0);
-  priv->int_kb_layout = gconf_client_get_string(priv->ui->client, "/apps/osso/inputmethod/int_kb_layout", 0);
-  priv->int_kb_repeat_delay = gconf_client_get_int(priv->ui->client, "/apps/osso/inputmethod/int_kb_repeat_delay", 0);
-  priv->int_kb_repeat_interval = gconf_client_get_int(priv->ui->client, "/apps/osso/inputmethod/int_kb_repeat_interval", 0);
-  priv->int_kb_level_shifted = gconf_client_get_bool(priv->ui->client, "/apps/osso/inputmethod/int_kb_level_shifted", 0);
-  priv->ext_kb_model = gconf_client_get_string(priv->ui->client, "/apps/osso/inputmethod/ext_kb_model", 0);
-  priv->ext_kb_layout = gconf_client_get_string(priv->ui->client, "/apps/osso/inputmethod/ext_kb_layout", 0);
-  priv->ext_kb_repeat_delay = gconf_client_get_int(priv->ui->client, "/apps/osso/inputmethod/ext_kb_repeat_delay", 0);
+  gconf_client_add_dir(gconf, OSSO_AF_GCONF_DIR,
+                       GCONF_CLIENT_PRELOAD_NONE, NULL);
+  gconf_client_notify_add(gconf, OSSO_AF_KEYBOARD_ATTACHED,
+                          hildon_im_keyboard_monitor_gconf_notify_cb,
+                          plugin, NULL, NULL);
+  gconf_client_notify_add(gconf,OSSO_AF_SLIDE_OPEN,
+                          hildon_im_keyboard_monitor_gconf_notify_cb, plugin,
+                          NULL, NULL);
+  priv->slide_open =
+      gconf_client_get_bool(gconf, OSSO_AF_SLIDE_OPEN, NULL);
+  priv->keyboard_attached =
+      gconf_client_get_bool(gconf, OSSO_AF_KEYBOARD_ATTACHED, NULL);
+  hildon_im_ui_set_context_options(priv->ui, HILDON_IM_AUTOLEVEL_NUMERIC, TRUE);
+  priv->int_kb_model = gconf_client_get_string(gconf, HILDON_IM_GCONF_INT_KB_MODEL, NULL);
+  priv->int_kb_layout = gconf_client_get_string(gconf, HILDON_IM_GCONF_INT_KB_LAYOUT, 0);
+  priv->int_kb_repeat_delay = gconf_client_get_int(gconf, HILDON_IM_GCONF_INT_KB_REPEAT_DELAY, 0);
+  priv->int_kb_repeat_interval = gconf_client_get_int(gconf, HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL, 0);
+  priv->int_kb_level_shifted = gconf_client_get_bool(gconf, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, 0);
+  priv->ext_kb_model = gconf_client_get_string(gconf, HILDON_IM_GCONF_EXT_KB_MODEL, 0);
+  priv->ext_kb_layout = gconf_client_get_string(gconf, HILDON_IM_GCONF_EXT_KB_LAYOUT, 0);
+  priv->ext_kb_repeat_delay = gconf_client_get_int(gconf, HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY, 0);
   priv->ext_setting_changed = TRUE;
   priv->int_setting_changed = TRUE;
-  priv->ext_kb_repeat_interval = gconf_client_get_int(priv->ui->client, "/apps/osso/inputmethod/ext_kb_repeat_interval", 0);
+  priv->ext_kb_repeat_interval = gconf_client_get_int(gconf, HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL, 0);
   hildon_im_keyboard_monitor_update_keyboard_state(monitor);
   hildon_im_keyboard_monitor_update_settings(monitor);
 }
@@ -312,27 +322,27 @@ static void hildon_im_keyboard_monitor_settings_changed(HildonIMPlugin *plugin, 
   {
     if (value->type != GCONF_VALUE_INT)
     {
-      if (value->type == GCONF_VALUE_BOOL && !strcmp(key, "/apps/osso/inputmethod/int_kb_level_shifted"))
+      if (value->type == GCONF_VALUE_BOOL && !strcmp(key, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED))
       {
         priv->int_kb_level_shifted = gconf_value_get_bool(value);
         hildon_im_keyboard_monitor_set_lock_level(monitor);
       }
       goto LABEL_4;
     }
-    if (!strcmp(key, "/apps/osso/inputmethod/int_kb_repeat_delay"))
+    if (!strcmp(key, HILDON_IM_GCONF_INT_KB_REPEAT_DELAY))
     {
       priv->int_setting_changed = 1;
       priv->int_kb_repeat_delay = gconf_value_get_int(value);
       goto LABEL_5;
     }
-    if (strcmp(key, "/apps/osso/inputmethod/int_kb_repeat_interval"))
+    if (strcmp(key, HILDON_IM_GCONF_INT_KB_REPEAT_INTERVAL))
     {
-      if (!strcmp(key, "/apps/osso/inputmethod/ext_kb_repeat_delay"))
+      if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_REPEAT_DELAY))
       {
         priv->ext_setting_changed = 1;
         priv->ext_kb_repeat_delay = gconf_value_get_int(value);
       }
-      else if (!strcmp(key, "/apps/osso/inputmethod/ext_kb_repeat_interval"))
+      else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_REPEAT_INTERVAL))
       {
         priv->ext_setting_changed = 1;
         priv->ext_kb_repeat_interval = gconf_value_get_int(value);
@@ -346,7 +356,7 @@ LABEL_5:
       return;
     goto LABEL_6;
   }
-  if (!strcmp(key, "/apps/osso/inputmethod/int_kb_model"))
+  if (!strcmp(key, HILDON_IM_GCONF_INT_KB_MODEL))
   {
     if (priv->int_kb_model)
       g_free(priv->int_kb_model);
@@ -356,7 +366,7 @@ LABEL_5:
       goto LABEL_6;
     return;
   }
-  if (!strcmp(key, "/apps/osso/inputmethod/int_kb_layout"))
+  if (!strcmp(key, HILDON_IM_GCONF_INT_KB_LAYOUT))
   {
     if (priv->int_kb_layout)
       g_free(priv->int_kb_layout);
@@ -364,14 +374,14 @@ LABEL_5:
     priv->int_kb_layout = g_strdup(gconf_value_get_string(value));
     goto LABEL_5;
   }
-  if (!strcmp(key, "/apps/osso/inputmethod/ext_kb_model"))
+  if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_MODEL))
   {
     if (priv->ext_kb_model)
       g_free(priv->ext_kb_model);
     priv->ext_setting_changed = 1;
     priv->ext_kb_model = g_strdup(gconf_value_get_string(value));
   }
-  else if (!strcmp(key, "/apps/osso/inputmethod/ext_kb_layout"))
+  else if (!strcmp(key, HILDON_IM_GCONF_EXT_KB_LAYOUT))
   {
     if (priv->ext_kb_layout)
       g_free(priv->ext_kb_layout);
@@ -462,7 +472,7 @@ static void hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEven
     priv->banner = NULL;
   }
   if (state & (val == GDK_space))
-    gconf_client_set_bool(priv->ui->client, "/system/osso/af/slide-open", priv->slide_open == 0, 0);
+    gconf_client_set_bool(priv->ui->client, OSSO_AF_SLIDE_OPEN, priv->slide_open == 0, 0);
   if ((val == GDK_space) & (state >> 2))
   {
     if (priv->int_kb_layout && !strcmp("ru", priv->int_kb_layout))
@@ -477,9 +487,9 @@ static void hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEven
       const gchar *message = g_strdup_printf(dcgettext(0, "inpu_ib_quick_layout_switch", 5), layout);
       gconf_client_set_bool(
         priv->ui->client,
-        "/apps/osso/inputmethod/int_kb_level_shifted",
+        HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
         priv->int_kb_level_shifted,
-        0);
+        NULL);
       priv->banner = hildon_banner_show_information(GTK_WIDGET(&priv->ui->parent.bin.container.widget), NULL, message);
     }
     else
@@ -516,25 +526,28 @@ LABEL_30:
   }
 }
 
-static void hildon_im_keyboard_monitor_gconf_notify_cb(GConfClient *client, guint cnxn_id, GConfEntry *entry, HildonIMPlugin *user_data)
+static void
+hildon_im_keyboard_monitor_gconf_notify_cb(GConfClient *client, guint cnxn_id,
+                                           GConfEntry *entry,
+                                           HildonIMPlugin *user_data)
 {
   HildonIMKeyboardMonitor *monitor = HILDON_IM_KEYBOARD_MONITOR(user_data);
   GConfValue *value = gconf_entry_get_value(entry);
+
   if (value)
   {
     const char *key = gconf_entry_get_key(entry);
-    if (!strcmp(key, "/system/osso/af/slide-open"))
+
+    if (value->type == GCONF_VALUE_BOOL)
     {
-      if (value->type == GCONF_VALUE_BOOL)
-      {
+      if (!strcmp(key, OSSO_AF_SLIDE_OPEN))
         monitor->priv->slide_open = gconf_value_get_bool(value);
+      else if (!strcmp(key, OSSO_AF_KEYBOARD_ATTACHED))
+      {
+        monitor->priv->ext_setting_changed = TRUE;
+        monitor->priv->keyboard_attached = gconf_value_get_bool(value);
+        hildon_im_keyboard_monitor_update_settings(monitor);
       }
-    }
-    else if (!strcmp(key, "/system/osso/af/keyboard-attached") && value->type == GCONF_VALUE_BOOL)
-    {
-      monitor->priv->ext_setting_changed = TRUE;
-      monitor->priv->keyboard_attached = gconf_value_get_bool(value);
-      hildon_im_keyboard_monitor_update_settings(monitor);
     }
     hildon_im_keyboard_monitor_update_keyboard_state(monitor);
   }
@@ -578,8 +591,8 @@ static void hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *
         hildon_im_xkb_set_rate(priv->int_kb_repeat_delay, priv->int_kb_repeat_interval, 0);
         shifted = gconf_client_get_default_from_schema(
                     priv->ui->client,
-                    "/apps/osso/inputmethod/int_kb_level_shifted",
-                    0);
+                    HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
+                    NULL);
         if (shifted)
         {
           if (shifted->type == GCONF_VALUE_BOOL)
@@ -593,8 +606,8 @@ static void hildon_im_keyboard_monitor_update_settings(HildonIMKeyboardMonitor *
           priv->int_kb_level_shifted = 1;
         }
         error = 0;
-        if (gconf_client_get_bool(priv->ui->client, "/apps/osso/inputmethod/int_kb_level_shifted", &error) != priv->int_kb_level_shifted || error)
-          gconf_client_set_bool(priv->ui->client, "/apps/osso/inputmethod/int_kb_level_shifted", priv->int_kb_level_shifted, 0);
+        if (gconf_client_get_bool(priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, &error) != priv->int_kb_level_shifted || error)
+          gconf_client_set_bool(priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED, priv->int_kb_level_shifted, 0);
         else
           hildon_im_keyboard_monitor_set_lock_level(monitor);
         if (error)
