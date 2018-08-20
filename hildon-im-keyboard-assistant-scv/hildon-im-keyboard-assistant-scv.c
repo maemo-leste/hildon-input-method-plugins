@@ -12,7 +12,8 @@
 #define OSSO_AF_GCONF_DIR "/system/osso/af"
 #define OSSO_AF_SLIDE_OPEN OSSO_AF_GCONF_DIR "/slide-open"
 
-#define HILDON_IM_GCONF_INT_KB_MODEL HILDON_IM_GCONF_DIR "/int_kb_model"
+#define HILDON_IM_GCONF_INT_KB_MODEL  HILDON_IM_GCONF_DIR "/int_kb_model"
+#define HILDON_IM_GCONF_INT_KB_LAYOUT HILDON_IM_GCONF_DIR "/int_kb_layout"
 
 #define VKB_WIDTH 800
 #define VKB_HEIGHT 288
@@ -61,10 +62,134 @@ static void close_scv(HildonIMKeyboardAssistantSCV *scv);
 static GType hildon_im_type_keyboard_assistant_scv;
 static gpointer parent_class;
 
+static gchar *
+hildon_im_keyboard_assistant_scv_get_layout_value(HildonIMPlugin *plugin)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+  gchar *layout;
+  GError *err = NULL;
+
+  g_return_val_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin), NULL);
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  if (!priv->ui->client)
+    return NULL;
+
+  layout = gconf_client_get_string(priv->ui->client,
+                                   HILDON_IM_GCONF_INT_KB_LAYOUT, &err);
+
+  if (err)
+  {
+    g_warning("Error occured when getting %s from GConf.",
+              HILDON_IM_GCONF_INT_KB_LAYOUT);
+    g_error_free(err);
+  }
+  else if (!layout)
+  {
+    g_warning("Can not get %s value from GConf. \n",
+              HILDON_IM_GCONF_INT_KB_LAYOUT);
+  }
+
+  if (!layout)
+    layout = g_strdup("us");
+
+  return layout;
+}
+
 static void
 hildon_im_keyboard_assistant_scv_language(HildonIMPlugin *plugin)
 {
-  assert(0);
+  gchar *layout;
+
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+
+  layout = g_utf8_strdown(
+        hildon_im_keyboard_assistant_scv_get_layout_value(plugin), -1);
+
+  if (layout && g_strcmp0(layout, priv->int_kb_layout))
+  {
+    gchar *coll;
+
+    g_free(priv->int_kb_layout);
+    priv->int_kb_layout = g_strdup(layout);
+    coll = g_strconcat("/usr/share/scv_layouts", "/", layout, ".vkb", NULL);
+    g_object_set(priv->vkb_renderer,
+                 "collection", coll,
+                 "layout", 1,
+                 "sub", 0,
+                 NULL);
+    gtk_widget_queue_draw(priv->vkb_renderer);
+    g_free(coll);
+  }
+
+  g_free(layout);
+}
+
+static gunichar
+hildon_im_keyboard_assistant_scv_get_additional_char(gunichar utf8ch)
+{
+  gunichar unich;
+
+  switch(utf8ch)
+  {
+    case 0x7E:
+      unich = 0x303;
+      break;
+    case 0x5E:
+      unich = 0x302;
+      break;
+    case 0x60:
+      unich = 0x300;
+      break;
+    case 0x22:
+      unich = 0x30B;
+      break;
+    case 0xAF:
+      unich = 0x304;
+      break;
+    case 0xA8:
+      unich = 0x308;
+      break;
+    case 0xB0:
+    case 0x2DA:
+      unich = 0x30A;
+      break;
+    case 0xB4:
+      unich = 0x301;
+      break;
+    case 0x2C8:
+      unich = 0x30D;
+      break;
+    case 0x2BD:
+      unich = 0x314;
+      break;
+    case 0x2C7:
+      unich = 0x30C;
+      break;
+    case 0xB8u:
+      unich = 0x327;
+      break;
+    case 0x2D9:
+      unich = 0x307;
+      break;
+    case 0x2D8:
+      unich = 0x306;
+      break;
+    default:
+      unich = 0;
+  }
+
+  return unich;
 }
 
 static void
@@ -72,7 +197,132 @@ hildon_im_keyboard_assistant_scv_key_event(HildonIMPlugin *plugin,
                                            GdkEventType type, guint state,
                                            guint val, guint hardware_keycode)
 {
-  assert(0);
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+
+  if (!priv->vkb_renderer)
+    g_warning("NULL VKB renderer for keyboard assistant SCV \n");
+
+  if ((val == GDK_KEY_Shift_L || val == GDK_KEY_Shift_R) &&
+      type == GDK_KEY_PRESS)
+  {
+    hildon_vkb_renderer_set_variance_layout(
+          HILDON_VKB_RENDERER(priv->vkb_renderer));
+    priv->shift = priv->shift == 0;
+  }
+
+  if (val == GDK_KEY_Multi_key && type == GDK_KEY_PRESS)
+    goto out;
+
+  if (type != GDK_KEY_RELEASE)
+    return;
+
+  switch (val)
+  {
+    case GDK_KEY_Tab:
+    {
+      hildon_im_ui_send_communication_message(priv->ui,
+                                              HILDON_IM_CONTEXT_HANDLE_TAB);
+      break;
+    }
+    case GDK_KEY_Return:
+    case GDK_KEY_KP_Enter:
+    {
+      hildon_im_ui_send_communication_message(priv->ui,
+                                              HILDON_IM_CONTEXT_HANDLE_ENTER);
+      break;
+    }
+    case GDK_KEY_BackSpace:
+    {
+      hildon_im_ui_send_communication_message(
+            priv->ui, HILDON_IM_CONTEXT_HANDLE_BACKSPACE);
+      break;
+    }
+    case ' ':
+    {
+      if (priv->combining_input)
+      {
+        hildon_im_ui_send_utf8(priv->ui, priv->combining_input);
+        hildon_im_ui_append_plugin_buffer(priv->ui, priv->combining_input);
+        g_free(priv->combining_input);
+        priv->combining_input = NULL;
+      }
+      else
+      {
+        hildon_im_ui_send_communication_message(priv->ui,
+                                                HILDON_IM_CONTEXT_HANDLE_SPACE);
+      }
+      break;
+    }
+    default:
+    {
+      gunichar uc = gdk_keyval_to_unicode(val);
+      gchar *utf8;
+      char utf8buf[7];
+
+      if (!g_unichar_isprint(uc))
+        return;
+
+      if (priv->shift)
+        uc = g_unichar_toupper(uc);
+
+      utf8buf[g_unichar_to_utf8(uc, utf8buf)] = '\0';
+
+      utf8 = g_strdup(utf8buf);
+
+      if (priv->combining_input)
+      {
+        gunichar unitext[2];
+        gchar *utf8text;
+        gchar *norm;
+        gunichar utf8ch;
+
+        unitext[0] = g_utf8_get_char(utf8buf);
+        unitext[1] = hildon_im_keyboard_assistant_scv_get_additional_char(
+              g_utf8_get_char(priv->combining_input));
+
+        utf8text = g_ucs4_to_utf8(unitext, 2, NULL, NULL, NULL);
+        norm = g_utf8_normalize(utf8text, -1, G_NORMALIZE_DEFAULT_COMPOSE);
+        utf8ch = g_utf8_get_char(norm);
+
+        if (strlen(utf8text) > strlen(norm) && strcmp(utf8text, norm))
+        {
+          cairo_t *cr = gdk_cairo_create(GTK_WIDGET(scv)->window);
+          char tmp[7];
+          gint len = g_unichar_to_utf8(utf8ch, tmp);
+          PangoLayout *pango_layout = pango_cairo_create_layout(cr);
+          int unk_glyphs;
+
+          pango_layout_set_text(pango_layout, tmp, len);
+          unk_glyphs = pango_layout_get_unknown_glyphs_count(pango_layout);
+          g_object_unref(pango_layout);
+          cairo_destroy(cr);
+
+          if (!unk_glyphs)
+          {
+            g_free(utf8);
+            utf8 = g_strdup(norm);
+          }
+        }
+
+        g_free(utf8text);
+        g_free(norm);
+      }
+
+      hildon_im_ui_send_utf8(priv->ui, utf8);
+      hildon_im_ui_append_plugin_buffer(priv->ui, utf8);
+      g_free(utf8);
+    }
+  }
+
+out:
+  close_scv(scv);
 }
 
 static void
