@@ -1,0 +1,639 @@
+#include <hildon/hildon.h>
+
+#include <imlayouts.h>
+#include <hildon-im-plugin.h>
+#include <hildon-im-vkbrenderer.h>
+#include <hildon-im-widget-loader.h>
+
+#include <string.h>
+
+#include "hildon-im-keyboard-assistant-scv.h"
+
+#define OSSO_AF_GCONF_DIR "/system/osso/af"
+#define OSSO_AF_SLIDE_OPEN OSSO_AF_GCONF_DIR "/slide-open"
+
+#define HILDON_IM_GCONF_INT_KB_MODEL HILDON_IM_GCONF_DIR "/int_kb_model"
+
+#define VKB_WIDTH 800
+#define VKB_HEIGHT 288
+
+enum
+{
+  HILDON_IM_KEYBOARD_ASSISTANT_SCV_PROP_UI = 1
+};
+
+struct _HildonIMKeyboardAssistantSCV
+{
+  GtkDialog parent;
+  int field_A0;
+};
+
+struct _HildonIMKeyboardAssistantSCVClass
+{
+  GtkDialogClass parent_class;
+};
+
+typedef struct _HildonIMKeyboardAssistantSCVClass HildonIMKeyboardAssistantSCVClass;
+
+struct _HildonIMKeyboardAssistantSCVPrivate
+{
+  HildonIMUI *ui;
+  gboolean shift;
+  gint input_mode;
+  GtkWidget *hbox;
+  GtkWidget *vkb_renderer;
+  gint num_layouts;
+  gint numeric_sub;
+  gint layout_type;
+  gchar *int_kb_layout;
+  gulong key_press_event_id;
+  gulong key_release_event_id;
+  gulong delete_event_id;
+  gchar *combining_input;
+};
+
+typedef struct _HildonIMKeyboardAssistantSCVPrivate HildonIMKeyboardAssistantSCVPrivate;
+
+static void hildon_im_keyboard_assistant_scv_iface_init(HildonIMPluginIface *iface);
+
+static void close_scv(HildonIMKeyboardAssistantSCV *scv);
+
+static GType hildon_im_type_keyboard_assistant_scv;
+static gpointer parent_class;
+
+static void
+hildon_im_keyboard_assistant_scv_language(HildonIMPlugin *plugin)
+{
+  assert(0);
+}
+
+static void
+hildon_im_keyboard_assistant_scv_key_event(HildonIMPlugin *plugin,
+                                           GdkEventType type, guint state,
+                                           guint val, guint hardware_keycode)
+{
+  assert(0);
+}
+
+static void
+hildon_im_keyboard_assistant_scv_input_mode_changed(HildonIMPlugin *plugin)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  priv->input_mode = hildon_im_ui_get_current_input_mode(priv->ui);
+
+  if (priv->vkb_renderer)
+  {
+    g_object_set(priv->vkb_renderer, "mode",
+                 KEY_TYPE_ALPHA | KEY_TYPE_NUMERIC | KEY_TYPE_HEXA |
+                 KEY_TYPE_TELE | KEY_TYPE_SPECIAL | KEY_TYPE_DEAD |
+                 KEY_TYPE_WHITESPACE | KEY_TYPE_TAB,
+                 NULL);
+  }
+}
+
+static gboolean
+on_key_event_cb(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+  hildon_im_keyboard_assistant_scv_key_event(HILDON_IM_PLUGIN(widget),
+                                             event->type,
+                                             event->state,
+                                             event->keyval,
+                                             event->hardware_keycode);
+
+  return FALSE;
+}
+
+static gboolean
+on_delete_event_cb(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+  g_return_val_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(widget), FALSE);
+
+  close_scv(HILDON_IM_KEYBOARD_ASSISTANT_SCV(widget));
+
+  return TRUE;
+}
+
+static void
+hildon_im_keyboard_assistant_scv_enable(HildonIMPlugin *plugin, gboolean init)
+{
+  gboolean old_shift;
+  gboolean shift = FALSE;
+  gint numeric_sub;
+  HildonVKBRendererLayoutInfo *layout_info = NULL;
+
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  hildon_im_ui_parse_rc_file(priv->ui, "/usr/share/hildon-input-method/himrc");
+  hildon_im_ui_send_communication_message(
+        priv->ui, HILDON_IM_CONTEXT_CONFIRM_SENTENCE_START);
+
+  priv->combining_input = NULL;
+  priv->input_mode = hildon_im_ui_get_current_input_mode(priv->ui);
+
+  hildon_im_keyboard_assistant_scv_language(plugin);
+  hildon_im_keyboard_assistant_scv_input_mode_changed(plugin);
+
+  g_object_get(priv->vkb_renderer,
+               "subs", &layout_info,
+               "sub", &numeric_sub,
+               NULL);
+
+  if (layout_info)
+  {
+    gint height = VKB_HEIGHT;
+
+    priv->numeric_sub = numeric_sub;
+    priv->num_layouts = layout_info->num_layouts;
+    priv->layout_type = layout_info->type[numeric_sub];
+
+    if (layout_info->num_rows > 0)
+      height = 72 * layout_info->num_rows;
+
+    gtk_widget_set_size_request(
+          GTK_WIDGET(priv->vkb_renderer), VKB_WIDTH, height);
+
+    layout_info_free(layout_info);
+  }
+
+  old_shift = priv->shift;
+
+  if (hildon_im_ui_get_shift_sticky(priv->ui) ||
+      hildon_im_ui_get_shift_locked(priv->ui))
+  {
+    shift = TRUE;
+  }
+
+  priv->shift = shift;
+
+  if (shift != old_shift)
+  {
+    g_object_get(priv->vkb_renderer, "sub", &numeric_sub, NULL);
+
+    if (numeric_sub != hildon_vkb_renderer_get_numeric_sub(
+          HILDON_VKB_RENDERER(priv->vkb_renderer)))
+    {
+      g_object_set(priv->vkb_renderer,
+                   "sub", hildon_vkb_renderer_get_numeric_sub(
+                     HILDON_VKB_RENDERER(priv->vkb_renderer)), NULL);
+      gtk_widget_queue_draw(priv->vkb_renderer);
+    }
+
+    if (priv->shift )
+    {
+      hildon_vkb_renderer_set_variance_layout(
+            HILDON_VKB_RENDERER(priv->vkb_renderer));
+    }
+    else
+      g_object_set(priv->vkb_renderer, "sub", 0, NULL);
+  }
+
+  priv->key_press_event_id =
+      g_signal_connect(G_OBJECT(plugin), "key-press-event",
+                       G_CALLBACK(on_key_event_cb), NULL);
+  priv->key_release_event_id =
+      g_signal_connect(G_OBJECT(plugin), "key-release-event",
+                       G_CALLBACK(on_key_event_cb), NULL);
+  priv->delete_event_id =
+      g_signal_connect(G_OBJECT(plugin), "delete-event",
+                       G_CALLBACK(on_delete_event_cb), NULL);
+
+  gtk_widget_show_all(GTK_WIDGET(scv));
+}
+
+static void
+hildon_im_keyboard_assistant_scv_disable(HildonIMPlugin *plugin)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  g_free(priv->combining_input);
+  priv->combining_input = NULL;
+
+  priv->shift = FALSE;
+
+  if (g_signal_handler_is_connected(G_OBJECT(plugin), priv->key_press_event_id))
+    g_signal_handler_disconnect(G_OBJECT(plugin), priv->key_press_event_id);
+
+  if (g_signal_handler_is_connected(G_OBJECT(plugin),
+                                    priv->key_release_event_id))
+  {
+    g_signal_handler_disconnect(G_OBJECT(plugin), priv->key_release_event_id);
+  }
+
+  if (g_signal_handler_is_connected(G_OBJECT(plugin), priv->delete_event_id))
+    g_signal_handler_disconnect(G_OBJECT(plugin), priv->delete_event_id);
+
+  gtk_widget_hide(GTK_WIDGET(scv));
+}
+
+static void
+hildon_im_keyboard_assistant_scv_clear(HildonIMPlugin *plugin)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  hildon_im_ui_send_communication_message(
+        priv->ui, HILDON_IM_CONTEXT_CONFIRM_SENTENCE_START);
+  hildon_im_ui_clear_plugin_buffer(priv->ui);
+}
+
+static void
+close_scv(HildonIMKeyboardAssistantSCV *scv)
+{
+  g_return_if_fail(scv != NULL);
+
+  gtk_widget_hide(GTK_WIDGET(scv));
+  hildon_im_ui_restore_previous_mode(
+        HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv)->ui);
+}
+
+static void
+hildon_im_keyboard_assistant_scv_client_widget_changed(HildonIMPlugin *plugin)
+{
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+
+  close_scv(HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin));
+}
+
+static void
+hildon_im_keyboard_assistant_scv_save_data(HildonIMPlugin *plugin)
+{
+}
+
+static void
+hildon_im_keyboard_assistant_scv_language_settings_changed(
+    HildonIMPlugin *plugin, gint index)
+{
+  hildon_im_keyboard_assistant_scv_language(plugin);
+}
+
+static void
+hildon_im_keyboard_assistant_scv_fullscreen(HildonIMPlugin *plugin,
+                                            gboolean fullscreen)
+{
+}
+
+static void
+hildon_im_keyboard_assistant_scv_settings_changed(HildonIMPlugin *plugin,
+                                                  const gchar *key,
+                                                  const GConfValue *value)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(plugin));
+  g_return_if_fail(key != NULL);
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(plugin);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  if (!strcmp(key, OSSO_AF_SLIDE_OPEN))
+  {
+    if (value->type == GCONF_VALUE_BOOL && !gconf_value_get_bool(value))
+      close_scv(scv);
+  }
+  else if (!strcmp(key, HILDON_IM_GCONF_INT_KB_MODEL))
+  {
+    hildon_im_ui_send_communication_message(
+          priv->ui, HILDON_IM_CONTEXT_CONFIRM_SENTENCE_START);
+  }
+}
+
+static void
+hildon_im_keyboard_assistant_scv_iface_init(HildonIMPluginIface *iface)
+{
+  iface->key_event = hildon_im_keyboard_assistant_scv_key_event;
+  iface->enable = hildon_im_keyboard_assistant_scv_enable;
+  iface->disable = hildon_im_keyboard_assistant_scv_disable;
+  iface->clear = hildon_im_keyboard_assistant_scv_clear;
+  iface->input_mode_changed =
+      hildon_im_keyboard_assistant_scv_input_mode_changed;
+  iface->client_widget_changed =
+      hildon_im_keyboard_assistant_scv_client_widget_changed;
+  iface->save_data = hildon_im_keyboard_assistant_scv_save_data;
+  iface->language = hildon_im_keyboard_assistant_scv_language;
+  iface->language_settings_changed =
+      hildon_im_keyboard_assistant_scv_language_settings_changed;
+  iface->fullscreen = hildon_im_keyboard_assistant_scv_fullscreen;
+  iface->settings_changed = hildon_im_keyboard_assistant_scv_settings_changed;
+}
+
+GType
+hildon_im_keyboard_assistant_scv_get_type()
+{
+  return hildon_im_type_keyboard_assistant_scv;
+}
+
+static void
+hildon_im_keyboard_assistant_scv_finalize(GObject *object)
+{
+  HildonIMKeyboardAssistantSCV *scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(object);
+  HildonIMKeyboardAssistantSCVPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  g_free(priv->int_kb_layout);
+  priv->int_kb_layout = NULL;
+
+  g_free(priv->combining_input);
+  priv->combining_input = NULL;
+
+  if (G_OBJECT_CLASS(parent_class))
+  {
+    G_OBJECT_CLASS(parent_class)->finalize(object);
+  }
+}
+
+static void
+hildon_im_keyboard_assistant_scv_set_property(GObject *object, guint prop_id,
+                                              const GValue *value,
+                                              GParamSpec *pspec)
+{
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(object));
+
+  switch (prop_id)
+  {
+    case HILDON_IM_KEYBOARD_ASSISTANT_SCV_PROP_UI:
+      HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(object)->ui =
+          (HildonIMUI *)g_value_get_object(value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+hildon_im_keyboard_assistant_scv_get_property(GObject *object, guint prop_id,
+                                              GValue *value, GParamSpec *pspec)
+{
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(object));
+
+  switch (prop_id)
+  {
+    case HILDON_IM_KEYBOARD_ASSISTANT_SCV_PROP_UI:
+      g_value_set_object(
+            value, HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(object)->ui);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+hildon_im_keyboard_assistant_scv_class_init(
+    HildonIMKeyboardAssistantSCVClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS(klass);
+
+  parent_class = g_type_class_peek_parent(klass);
+
+  g_type_class_add_private(klass, sizeof(HildonIMKeyboardAssistantSCVPrivate));
+
+  object_class->set_property = hildon_im_keyboard_assistant_scv_set_property;
+  object_class->get_property = hildon_im_keyboard_assistant_scv_get_property;
+  object_class->finalize = hildon_im_keyboard_assistant_scv_finalize;
+
+  g_object_class_install_property(
+        object_class, HILDON_IM_KEYBOARD_ASSISTANT_SCV_PROP_UI,
+        g_param_spec_object(
+          "UI",
+          "UI",
+          "Keyboard that uses plugin",
+          HILDON_IM_TYPE_UI,
+          G_PARAM_CONSTRUCT_ONLY|G_PARAM_WRITABLE|G_PARAM_READABLE));
+}
+
+static void
+renderer_character_send(HildonVKBRenderer *vkb, gchar *input, gboolean unk,
+                        gpointer data)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(data));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(data);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  if (*input)
+    hildon_im_ui_send_utf8(priv->ui, input);
+  else
+    hildon_im_ui_send_utf8(priv->ui, "\t");
+
+  hildon_im_ui_append_plugin_buffer(priv->ui, input);
+  hildon_im_ui_set_shift_sticky(priv->ui, FALSE);
+  hildon_im_ui_send_communication_message(priv->ui,
+                                          HILDON_IM_CONTEXT_SHIFT_UNSTICKY);
+  hildon_im_ui_set_level_sticky(priv->ui, FALSE);
+  hildon_im_ui_send_communication_message(priv->ui,
+                                          HILDON_IM_CONTEXT_LEVEL_UNSTICKY);
+  close_scv(scv);
+}
+
+static void
+illegal_input(HildonVKBRenderer *vkb, gchar *input, gpointer data)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(data));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(data);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  hildon_im_ui_play_sound(priv->ui, HILDON_IM_ILLEGAL_INPUT_SOUND);
+}
+
+static void
+combining_input(HildonVKBRenderer *vkb, gchar *input, gpointer data)
+{
+  HildonIMKeyboardAssistantSCV *scv;
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(data));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(data);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  if (input && *input)
+  {
+    g_free(priv->combining_input);
+    priv->combining_input = g_strdup(input);
+  }
+  else
+  {
+    g_free(priv->combining_input);
+    priv->combining_input = NULL;
+  }
+}
+
+static void
+hildon_im_keyboard_assistant_scv_init(HildonIMKeyboardAssistantSCV *scv)
+{
+  HildonIMKeyboardAssistantSCVPrivate *priv;
+  GtkRequisition dimension = {VKB_WIDTH, VKB_HEIGHT};
+  HildonVKBRendererLayoutInfo *layout_info = NULL;
+  gint height = VKB_HEIGHT;
+
+  g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(scv));
+
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+
+  priv->hbox = gtk_hbox_new(FALSE, 0);
+  priv->vkb_renderer = hildon_im_widget_load("vkbrenderer",
+                                             "vkb_renderer",
+                                             "dimension",
+                                             &dimension,
+                                             "repeat_interval",
+                                             0,
+                                             NULL);
+  gtk_window_set_title(GTK_WINDOW(scv), "");
+  gtk_window_set_modal(GTK_WINDOW(scv), TRUE);
+
+  g_return_if_fail(priv->vkb_renderer != NULL);
+
+  gtk_widget_set_name(priv->vkb_renderer, "osso-im-scv-renderer");
+  g_object_set(priv->vkb_renderer, "style_normal", "hildon-scv-button", NULL);
+  g_object_set(priv->vkb_renderer, "style_special", "hildon-scv-button", NULL);
+  g_object_set(priv->vkb_renderer, "style_tab", "hildon-scv-tab-button", NULL);
+
+  g_signal_connect(priv->vkb_renderer, "input",
+                   G_CALLBACK(renderer_character_send), scv);
+  g_signal_connect(priv->vkb_renderer, "illegal_input",
+                   G_CALLBACK(illegal_input), scv);
+  g_signal_connect(priv->vkb_renderer, "combining_input",
+                   G_CALLBACK(combining_input), scv);
+
+  gtk_box_pack_start(GTK_BOX(priv->hbox), priv->vkb_renderer, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(scv)->vbox), priv->hbox, TRUE, TRUE, 0);
+
+  g_object_get(priv->vkb_renderer, "subs", &layout_info, NULL);
+
+  if (layout_info && layout_info->num_rows)
+  {
+    height = 72 * layout_info->num_rows;
+    layout_info_free(layout_info);
+  }
+
+  gtk_widget_set_size_request(
+        GTK_WIDGET(priv->vkb_renderer), VKB_WIDTH, height);
+
+  priv->numeric_sub = 0;
+  priv->combining_input = NULL;
+  priv->key_press_event_id = 0;
+  priv->key_release_event_id = 0;
+  priv->int_kb_layout = g_strdup("");
+
+  if (priv->ui)
+    priv->input_mode = hildon_im_ui_get_current_input_mode(priv->ui);
+}
+
+HildonIMKeyboardAssistantSCV *
+hildon_im_keyboard_assistant_scv_new(HildonIMUI *ui)
+{
+  return g_object_new(HILDON_IM_TYPE_KEYBOARD_ASSISTANT_SCV, "type", 0,
+                      "UI", ui, NULL);
+}
+
+void
+module_init(GTypeModule *module)
+{
+  static const GTypeInfo type_info = {
+    sizeof(HildonIMKeyboardAssistantSCVClass),
+    NULL, /* base_init */
+    NULL, /* base_finalize */
+    (GClassInitFunc)hildon_im_keyboard_assistant_scv_class_init,
+    NULL, /* class_finalize */
+    NULL, /* class_data */
+    sizeof(HildonIMKeyboardAssistantSCV),
+    0, /* n_preallocs */
+    (GInstanceInitFunc)hildon_im_keyboard_assistant_scv_init,
+    NULL
+  };
+
+  static const GInterfaceInfo iface_info = {
+    (GInterfaceInitFunc)hildon_im_keyboard_assistant_scv_iface_init,
+    NULL, /* interface_finalize */
+    NULL, /* interface_data */
+  };
+
+  hildon_im_type_keyboard_assistant_scv =
+          g_type_module_register_type(module,
+                                      GTK_TYPE_DIALOG,
+                                      "HildonIMKeyboardAssistantSCV",
+                                      &type_info,
+                                      0);
+
+  g_type_module_add_interface(module,
+                              HILDON_IM_TYPE_KEYBOARD_ASSISTANT_SCV,
+                              HILDON_IM_TYPE_PLUGIN,
+                              &iface_info);
+}
+
+HildonIMPlugin*
+module_create (HildonIMUI *ui)
+{
+  return HILDON_IM_PLUGIN(hildon_im_keyboard_assistant_scv_new(ui));
+}
+
+void
+module_exit(void)
+{
+  /* empty */
+}
+
+gchar **
+hildon_im_plugin_get_available_languages(gboolean *free)
+{
+  *free = FALSE;
+
+  return NULL;
+}
+
+HildonIMPluginInfo *
+hildon_im_plugin_get_info()
+{
+  static HildonIMPluginInfo info =
+  {
+    "(c) 2007 Nokia Corporation. All rights reserved", /* description */
+    "hildon_keyboard_assistant_scv",                   /* name */
+    "On Screen SCV",                                   /* menu title */
+    NULL,                                              /* gettext domain */
+    FALSE,                                             /* visible in menu */
+    FALSE,                                             /* cached */
+    HILDON_IM_TYPE_SPECIAL_STANDALONE,                 /* UI type */
+    HILDON_IM_GROUP_LATIN,                             /* group */
+    -1,                                                /* priority */
+    NULL,                                              /* special character plugin */
+    NULL,                                              /* help page */
+    TRUE,                                              /* disable common UI buttons */
+    0,                                                 /* plugin height */
+    HILDON_IM_TRIGGER_NONE                             /* trigger */
+  };
+
+  return &info;
+}

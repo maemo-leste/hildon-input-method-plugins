@@ -29,6 +29,7 @@ AC_OUTPUT([
 	hildon-im-keyboard-monitor/Makefile
 	hildon-im-xkbtool/Makefile
 	hildon-keyboard-assistant/Makefile
+	hildon-im-keyboard-assistant-scv/Makefile
 	hildon-im-common-virtual-settings/Makefile
 	data/Makefile
 ])
