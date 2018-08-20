@@ -1,0 +1,91 @@
+<keyboards file="pl" version="1" lang="pl_PL" name="Polski" wc="">
+	<screen>
+		<mode name="NORMAL"/>
+		<mode name="FULL"/>
+	</screen>
+	<keysizes>
+		<size height="72" baseline="41" width="110" margin_top="0" margin_left="0" />
+	</keysizes>
+	<keyboard layout="SPECIAL" default_key_size="0">
+		<sublayout type="LOWERCASE" variance_index="1" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">&lt;</key>
+					<key size="0" special="SPECIAL">&gt;</key>
+					<key size="0" special="SPECIAL">[</key>
+					<key size="0" special="SPECIAL">]</key>
+					<key size="0" special="SPECIAL">{</key>
+					<key size="0" special="SPECIAL">}</key>
+					<key size="0" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="0" tab="TAB"></key>
+					<key size="0" special="SPECIAL">¥</key>
+					<key size="0" special="SPECIAL">§</key>
+					<key size="0" special="SPECIAL">©</key>
+					<key size="0" special="SPECIAL">®</key>
+					<key size="0" special="SPECIAL">%</key>
+					<key size="0" special="SPECIAL">½</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">ą</key>
+					<key size="0" special="SPECIAL">ć</key>
+					<key size="0" special="SPECIAL">ę</key>
+					<key size="0" special="SPECIAL">ł</key>
+					<key size="0" special="SPECIAL">ń</key>
+					<key size="0" special="SPECIAL">ó</key>
+					<key size="0" special="SPECIAL">ś</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ź</key>
+					<key size="0" alpha="ALPHA">ż</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">`</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">¨</key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">&lt;</key>
+					<key size="0" special="SPECIAL">&gt;</key>
+					<key size="0" special="SPECIAL">[</key>
+					<key size="0" special="SPECIAL">]</key>
+					<key size="0" special="SPECIAL">{</key>
+					<key size="0" special="SPECIAL">}</key>
+					<key size="0" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="0" tab="TAB"></key>
+					<key size="0" special="SPECIAL">¥</key>
+					<key size="0" special="SPECIAL">§</key>
+					<key size="0" special="SPECIAL">©</key>
+					<key size="0" special="SPECIAL">®</key>
+					<key size="0" special="SPECIAL">%</key>
+					<key size="0" special="SPECIAL">½</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">Ą</key>
+					<key size="0" special="SPECIAL">Ć</key>
+					<key size="0" special="SPECIAL">Ę</key>
+					<key size="0" special="SPECIAL">Ł</key>
+					<key size="0" special="SPECIAL">Ń</key>
+					<key size="0" special="SPECIAL">Ó</key>
+					<key size="0" special="SPECIAL">Ś</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">Ź</key>
+					<key size="0" alpha="ALPHA">Ż</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">`</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">¨</key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+</keyboards>

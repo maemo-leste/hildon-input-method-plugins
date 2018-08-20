@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
 Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake,
   libgtk2.0-dev, libglib2.0-dev, libx11-dev, hildon-input-method-framework-dev (>= 2.1.61),
-  libimlayouts0-dev, libimengines4-dev, hildon-im-vkbrenderer3-dev, libhildon-im-ui-dev,
+  libimlayouts0-dev (>= 1.6.0), libimengines4-dev, hildon-im-vkbrenderer3-dev, libhildon-im-ui-dev,
   libxkbfile-dev, cdbs, libgconf2-dev, libhildon1-dev, libimengines-wp4-dev, libosso-dev
 Standards-Version: 3.7.2
 
@@ -31,6 +31,18 @@ Section: devel
 Architecture: any
 Depends: hildon-im-keyboard-assistant (= ${binary:Version})
 Description: Debugging symbols for Inline word completion plugin for the slide keyboard
+
+Package: hildon-im-keyboard-assistant-scv
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Special character view for the slide keyboard
+ This packages provides the special character view for the slide keyboard
+
+Package: hildon-im-keyboard-assistant-scv-dbg
+Section: devel
+Architecture: any
+Depends: hildon-im-keyboard-assistant-scv (= ${binary:Version})
+Description: Debugging symbols for Special character view for the slide keyboard
 
 Package: libhildon-im-western-plugin-common3
 Architecture: any

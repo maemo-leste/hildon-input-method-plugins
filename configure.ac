@@ -32,4 +32,5 @@ AC_OUTPUT([
 	hildon-im-keyboard-assistant-scv/Makefile
 	hildon-im-common-virtual-settings/Makefile
 	data/Makefile
+	scv_layouts/Makefile
 ])

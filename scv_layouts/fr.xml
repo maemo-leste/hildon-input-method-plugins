@@ -1,0 +1,91 @@
+<keyboards file="fr" version="1" lang="French" name="French" wc="fr">
+	<screen>
+		<mode name="NORMAL"/>
+		<mode name="FULL"/>
+	</screen>
+	<keysizes>
+		<size height="72" baseline="41" width="110" margin_top="0" margin_left="0" />
+	</keysizes>
+	<keyboard layout="SPECIAL" default_key_size="0">
+		<sublayout type="LOWERCASE" variance_index="1" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">&lt;</key>
+					<key size="0" special="SPECIAL">&gt;</key>
+					<key size="0" special="SPECIAL">[</key>
+					<key size="0" special="SPECIAL">]</key>
+					<key size="0" special="SPECIAL">{</key>
+					<key size="0" special="SPECIAL">}</key>
+					<key size="0" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="0" tab="TAB"></key>
+					<key size="0" special="SPECIAL">£</key>
+					<key size="0" special="SPECIAL">¥</key>
+					<key size="0" special="SPECIAL">§</key>
+					<key size="0" special="SPECIAL">%</key>
+					<key size="0" special="SPECIAL">&amp;</key>
+					<key size="0" special="SPECIAL">\</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">`</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">¨</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">°</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">ˇ</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">æ</key>
+					<key size="0" special="SPECIAL">œ</key>
+					<key size="0" special="SPECIAL">μ</key>
+					<key size="0" special="SPECIAL">²</key>
+					<key size="0" special="SPECIAL">³</key>
+					<key size="0" special="SPECIAL">½</key>
+					<key size="0" special="SPECIAL">=</key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">&lt;</key>
+					<key size="0" special="SPECIAL">&gt;</key>
+					<key size="0" special="SPECIAL">[</key>
+					<key size="0" special="SPECIAL">]</key>
+					<key size="0" special="SPECIAL">{</key>
+					<key size="0" special="SPECIAL">}</key>
+					<key size="0" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="0" tab="TAB"></key>
+					<key size="0" special="SPECIAL">£</key>
+					<key size="0" special="SPECIAL">¥</key>
+					<key size="0" special="SPECIAL">§</key>
+					<key size="0" special="SPECIAL">%</key>
+					<key size="0" special="SPECIAL">&amp;</key>
+					<key size="0" special="SPECIAL">\</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">`</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">¨</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">°</key>
+					<key size="0" alpha="ALPHA" special="SPECIAL" dead="DEAD">ˇ</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">Æ</key>
+					<key size="0" special="SPECIAL">Œ</key>
+					<key size="0" special="SPECIAL">μ</key>
+					<key size="0" special="SPECIAL">²</key>
+					<key size="0" special="SPECIAL">³</key>
+					<key size="0" special="SPECIAL">½</key>
+					<key size="0" special="SPECIAL">=</key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+</keyboards>
