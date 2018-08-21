@@ -1,3 +1,10 @@
+hildon-input-method-plugins (3.9.78-1) unstable; urgency=low
+
+  * Refactor hildon-im-keyboard-monitor
+  * Initial hildon-im-keyboard-assistant-scv
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Tue, 21 Aug 2018 22:11:30 +0200
+
 hildon-input-method-plugins (3.9.77-1) unstable; urgency=low
 
   * Fix memory leaks and invalid memory accesses
