@@ -561,19 +561,116 @@ hildon_im_keyboard_assistant_read_settings(HildonIMKeyboardAssistant *assistant)
   hildon_im_word_completer_configure(priv->hwc, priv->ui);
 }
 
-static void 
-hildon_im_keyboard_assistant_surrounding_received(HildonIMPlugin *plugin,
-                                                  const gchar *surrounding,
-                                                  gint offset)
-{
-  assert(0);
-  //todo
-}
-
 static void
 hildon_im_keyboard_assistant_list_free(gpointer data, gpointer user_data)
 {
   g_free(data);
+}
+
+static void
+hildon_im_keyboard_assistant_surrounding_received(HildonIMPlugin *plugin,
+                                                  const gchar *surrounding,
+                                                  gint offset)
+{
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
+  HildonIMKeyboardAssistantPrivate *priv = assistant->priv;
+
+  if (entry_allowed(assistant))
+  {
+    if (!surrounding || offset <=0 || offset > g_utf8_strlen(surrounding, -1))
+    {
+      hildon_im_ui_send_communication_message(priv->ui,
+                                              HILDON_IM_CONTEXT_CANCEL_PREEDIT);
+    }
+    else
+    {
+      GList *list;
+
+      g_free(priv->word);
+      priv->word = NULL;
+      g_free(priv->predicted_suffix);
+      priv->predicted_suffix = NULL;
+
+      list = utf8_split_in_words(surrounding, offset);
+
+      if (list)
+      {
+        GList *last = g_list_last(list);
+        gchar *curr_word = NULL;
+        gchar *curr_word_lc = NULL;
+        gchar *prev_word = NULL;
+        gchar *p, *q;
+        gunichar pch, qch;
+
+        if (last && last->data)
+        {
+          GList *prev = last->prev;
+
+          curr_word = g_utf8_next_char(last->data);
+          curr_word_lc = g_utf8_strdown(curr_word, -1);
+
+          if (prev && prev->data)
+            prev_word = g_utf8_strdown(prev->data, -1);
+        }
+
+        p = g_utf8_offset_to_pointer(surrounding, offset - 1);
+        pch = g_utf8_get_char_validated(p, -1);
+        q = g_utf8_offset_to_pointer(surrounding, offset);
+        qch = g_utf8_get_char_validated(q, -1);
+
+        if (char_is_part_of_dictionary_word(p) &&
+            (!q || !*q || (qch + 2 > 1 && g_unichar_isspace(qch))) && priv->b)
+        {
+          if (g_utf8_strlen(curr_word_lc, -1) >= priv->display_after_entering)
+          {
+            gchar *predicted_suffix =
+                hildon_im_word_completer_get_predicted_suffix(priv->hwc,
+                                                              prev_word,
+                                                              curr_word,
+                                                              &priv->word);
+            priv->predicted_suffix = predicted_suffix;
+
+            if (predicted_suffix && g_utf8_strlen(predicted_suffix, -1) > 0)
+            {
+              hildon_im_ui_send_communication_message(
+                    priv->ui, HILDON_IM_CONTEXT_PREEDIT_MODE);
+              hildon_im_ui_send_utf8(priv->ui, priv->predicted_suffix);
+            }
+            else
+            {
+              hildon_im_ui_send_communication_message(
+                    priv->ui, HILDON_IM_CONTEXT_CANCEL_PREEDIT);
+            }
+
+            g_free(priv->str2);
+            priv->str2 = g_strdup(curr_word_lc);
+          }
+        }
+        else
+        {
+          if (!priv->str1 || g_strcmp0(priv->str1, curr_word_lc))
+          {
+            if (g_unichar_isspace(pch))
+            {
+              hildon_im_word_completer_hit_word(priv->hwc, curr_word_lc, TRUE);
+              g_free(priv->str1);
+              priv->str1 = g_strdup(curr_word_lc);
+            }
+            else
+            {
+              g_free(priv->str2);
+              priv->str2 = NULL;
+            }
+          }
+        }
+
+        g_free(curr_word_lc);
+        g_free(prev_word);
+        g_list_foreach(list, hildon_im_keyboard_assistant_list_free, NULL);
+        g_list_free(list);
+      }
+    }
+  }
 }
 
 static void
