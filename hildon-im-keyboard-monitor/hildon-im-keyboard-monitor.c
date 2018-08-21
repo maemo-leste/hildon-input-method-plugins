@@ -532,6 +532,8 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
         }
       }
     }
+
+    activate_special_plugin = val == GDK_Multi_key;
   }
   else if (type == GDK_KEY_RELEASE && val == GDK_Multi_key)
   {
@@ -545,9 +547,6 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
 
     activate_special_plugin = val == GDK_Multi_key;
   }
-  else
-    activate_special_plugin = val == GDK_Multi_key;
-
 }
 
 static void
