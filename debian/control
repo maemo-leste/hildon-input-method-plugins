@@ -72,3 +72,9 @@ Section: devel
 Architecture: any
 Depends: hildon-im-common-virtual-settings (= ${binary:Version})
 Description: Debugging symbols for Western word completion Text Input Settings plugin
+
+Package: hildon-im-virtual-keyboard-layouts
+Architecture: any
+Conflicts: hildon-im-vkb
+Description: VKB layouts
+ This packages provides the VKB layouts
