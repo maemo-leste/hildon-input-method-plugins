@@ -78,7 +78,7 @@ cvim_settings_finalize(GObject *object)
   auto_caps_cbutton = NULL;
   use_fkb_cbutton = NULL;
   insert_space_cbutton = NULL;
-  has_second_language = NULL;
+  has_second_language = FALSE;
   selected_language = NULL;
 
   if (G_OBJECT_CLASS(cvim_settings_parent_class)->finalize)
@@ -498,112 +498,142 @@ cvim_settings_create_language_widget(HildonIMSettingsPlugin *plugin,
 }
 
 static GtkWidget *
-cvim_settings_create_widget(HildonIMSettingsPlugin *plugin,
-                            HildonIMSettingsCategory category,
-                            GtkSizeGroup *size_group, gint *width)
+cvim_settings_create_onscreen_widget(HildonIMSettingsPlugin *plugin,
+                                     gint *width)
 {
-  gboolean have_int_kbd;
+  GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
+
+  use_fkb_cbutton = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
+
+  gtk_button_set_label(GTK_BUTTON(use_fkb_cbutton),
+                       dgettext("osso-applet-textinput",
+                                "tein_fi_use_virtual_keyboard"));
+
+  hildon_check_button_set_active(
+        HILDON_CHECK_BUTTON(use_fkb_cbutton),
+        gconf_client_get_bool(get_gconf(),
+                              HILDON_IM_GCONF_DIR "/use_finger_kb", NULL));
+
+  gtk_box_pack_start(GTK_BOX(vbox), use_fkb_cbutton, FALSE, FALSE, 0);
+
+  *width = 0;
+
+  gtk_widget_show_all(vbox);
+
+  return vbox;
+}
+
+static GtkWidget *
+cvim_settings_create_hardware_widget(HildonIMSettingsPlugin *plugin,
+                                     gint *width)
+{
   GConfValue *val;
   int i;
   GtkListStore *list_store;
   GtkTreeIter *selected_layout = NULL;
   HildonTouchSelectorColumn *column;
-  GtkWidget *vbox;
   gchar *int_kb_layout;
   GtkWidget *selector;
   GtkTreeIter iter;
+  GtkWidget *vbox;
 
-  have_int_kbd = gconf_client_get_bool(
-        get_gconf(), HILDON_IM_GCONF_DIR "/have-internal-keyboard", NULL);
+  *width = 0;
 
-  if (category != HILDON_IM_SETTINGS_HARDWARE || !have_int_kbd)
+  if (!gconf_client_get_bool(get_gconf(),
+                             HILDON_IM_GCONF_DIR "/have-internal-keyboard",
+                             NULL))
   {
-    if (category == HILDON_IM_SETTINGS_LANGUAGE_GENERAL)
-      return cvim_settings_create_language_general_widget(plugin, width);
-    else if (category == HILDON_IM_SETTINGS_LANGUAGE_ADDITIONAL)
-      return cvim_settings_create_language_additional_widget(plugin, width);
-    else
-      return cvim_settings_create_language_widget(plugin, category, width);
+    return NULL;
+  }
+
+  vbox = gtk_vbox_new(FALSE, 0);
+
+  cb_layout = hildon_picker_button_new(HILDON_SIZE_FINGER_HEIGHT,
+                                       HILDON_BUTTON_ARRANGEMENT_VERTICAL);
+  hildon_button_set_title(HILDON_BUTTON(cb_layout),
+                          dgettext("osso-applet-textinput",
+                                   "tein_fi_keyboard_layout"));
+  hildon_button_set_alignment(HILDON_BUTTON(cb_layout), 0.0, 0.5, 1.0, 0.0);
+
+  selector = hildon_touch_selector_new();
+
+  val = gconf_client_get(get_gconf(),
+                         HILDON_IM_GCONF_DIR "/int_kb_layout", NULL);
+
+  if (val)
+  {
+    int_kb_layout = g_strdup(gconf_value_get_string(val));
+    gconf_value_free(val);
   }
   else
   {
-    vbox = gtk_vbox_new(FALSE, 0);
-    cb_layout = hildon_picker_button_new(HILDON_SIZE_FINGER_HEIGHT,
-                                         HILDON_BUTTON_ARRANGEMENT_VERTICAL);
-    hildon_button_set_title(HILDON_BUTTON(cb_layout),
-                            dgettext("osso-applet-textinput",
-                                     "tein_fi_keyboard_layout"));
-    hildon_button_set_alignment(HILDON_BUTTON(cb_layout), 0.0, 0.5, 1.0, 0.0);
+    g_warning("there is no gconf value available from [%s] \n",
+              HILDON_IM_GCONF_DIR "/int_kb_layout");
 
-    selector = hildon_touch_selector_new();
-
-    val = gconf_client_get(get_gconf(), HILDON_IM_GCONF_DIR "/int_kb_layout",
-                           NULL);
-
-    if (val)
-    {
-      int_kb_layout = g_strdup(gconf_value_get_string(val));
-      gconf_value_free(val);
-    }
-    else
-    {
-      g_warning("there is no gconf value available from [%s] \n",
-                HILDON_IM_GCONF_DIR "/int_kb_layout");
-
-      int_kb_layout = g_strdup("us");
-    }
-
-    list_store = gtk_list_store_new(2, 64, 64);
-
-    for (i = 0; i < G_N_ELEMENTS(keyboard_layouts); i++)
-    {
-      const gchar *layout = keyboard_layouts[i].layout;
-
-      gtk_list_store_append(list_store, &iter);
-      gtk_list_store_set(list_store, &iter,
-                         0, keyboard_layouts[i].language,
-                         1, layout,
-                         -1);
-
-      if (!g_ascii_strcasecmp(int_kb_layout, layout))
-        selected_layout = gtk_tree_iter_copy(&iter);
-    }
-
-    column = hildon_touch_selector_append_text_column(
-          HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store), TRUE);
-    g_object_set(G_OBJECT(column), "text-column", 0, NULL);
-
-    if (selected_layout)
-    {
-      hildon_touch_selector_select_iter(HILDON_TOUCH_SELECTOR(selector), 0,
-                                        selected_layout, TRUE);
-      gtk_tree_iter_free(selected_layout);
-    }
-
-    hildon_picker_button_set_selector(HILDON_PICKER_BUTTON(cb_layout),
-                                      HILDON_TOUCH_SELECTOR(selector));
-    g_free(int_kb_layout);
-
-    gtk_box_pack_start(GTK_BOX(vbox), cb_layout, FALSE, FALSE, 0);
-
-    use_fkb_cbutton = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
-    gtk_button_set_label(GTK_BUTTON(use_fkb_cbutton),
-                         dgettext("osso-applet-textinput",
-                                  "tein_fi_use_virtual_keyboard"));
-
-    hildon_check_button_set_active(
-          HILDON_CHECK_BUTTON(use_fkb_cbutton),
-          gconf_client_get_bool(get_gconf(),
-                                HILDON_IM_GCONF_DIR "/use_finger_kb", NULL));
-
-    gtk_box_pack_start(GTK_BOX(vbox), use_fkb_cbutton, FALSE, FALSE, 0);
-
-    *width = 0;
-
-    gtk_widget_show_all(vbox);
-
-    return vbox;
+    int_kb_layout = g_strdup("us");
   }
+
+  list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+
+  for (i = 0; i < G_N_ELEMENTS(keyboard_layouts); i++)
+  {
+    const gchar *layout = keyboard_layouts[i].layout;
+
+    gtk_list_store_append(list_store, &iter);
+    gtk_list_store_set(list_store, &iter,
+                       0, keyboard_layouts[i].language,
+                       1, layout,
+                       -1);
+
+    if (!g_ascii_strcasecmp(int_kb_layout, layout))
+      selected_layout = gtk_tree_iter_copy(&iter);
+  }
+
+  column = hildon_touch_selector_append_text_column(
+        HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store),
+        TRUE);
+  g_object_set(G_OBJECT(column), "text-column", 0, NULL);
+
+  if (selected_layout)
+  {
+    hildon_touch_selector_select_iter(HILDON_TOUCH_SELECTOR(selector), 0,
+                                      selected_layout, TRUE);
+    gtk_tree_iter_free(selected_layout);
+  }
+
+  hildon_picker_button_set_selector(HILDON_PICKER_BUTTON(cb_layout),
+                                    HILDON_TOUCH_SELECTOR(selector));
+  g_free(int_kb_layout);
+
+  gtk_box_pack_start(GTK_BOX(vbox), cb_layout, FALSE, FALSE, 0);
+  gtk_widget_show_all(vbox);
+
+  return vbox;
+}
+
+static GtkWidget *
+cvim_settings_create_widget(HildonIMSettingsPlugin *plugin,
+                            HildonIMSettingsCategory category,
+                            GtkSizeGroup *size_group, gint *width)
+{
+  switch (category)
+  {
+    case HILDON_IM_SETTINGS_HARDWARE:
+      return cvim_settings_create_hardware_widget(plugin, width);
+    case HILDON_IM_SETTINGS_ONSCREEN:
+      return cvim_settings_create_onscreen_widget(plugin, width);
+    case HILDON_IM_SETTINGS_LANGUAGE_GENERAL:
+      return cvim_settings_create_language_general_widget(plugin, width);
+    case HILDON_IM_SETTINGS_LANGUAGE_ADDITIONAL:
+      return cvim_settings_create_language_additional_widget(plugin, width);
+    case HILDON_IM_SETTINGS_PRIMARY_LANGUAGE_SETTINGS_WIDGET:
+    case HILDON_IM_SETTINGS_SECONDARY_LANGUAGE_SETTINGS_WIDGET:
+      return cvim_settings_create_language_widget(plugin, category, width);
+    default:
+      break;
+  }
+
+  return NULL;
 }
 
 static void
@@ -637,12 +667,12 @@ cvim_settings_save_data(HildonIMSettingsPlugin *plugin,
                             int_kb_layout, NULL);
 
     g_free(int_kb_layout);
-
-    gconf_client_set_bool(
-          get_gconf(), HILDON_IM_GCONF_DIR "/use_finger_kb",
-          hildon_check_button_get_active(HILDON_CHECK_BUTTON(use_fkb_cbutton)),
-          NULL);
   }
+
+  gconf_client_set_bool(
+        get_gconf(), HILDON_IM_GCONF_DIR "/use_finger_kb",
+        hildon_check_button_get_active(HILDON_CHECK_BUTTON(use_fkb_cbutton)),
+        NULL);
 
   available_languages = hildon_im_get_available_languages();
 
