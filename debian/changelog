@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.80) unstable; urgency=low
+
+  * cvim-settings: always append "use fkb", no matter is there internal kbd
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Sun, 02 Dec 2018 13:28:32 +0200
+
 hildon-input-method-plugins (3.9.79-1) unstable; urgency=low
 
   * add virtual keyboard layouts
