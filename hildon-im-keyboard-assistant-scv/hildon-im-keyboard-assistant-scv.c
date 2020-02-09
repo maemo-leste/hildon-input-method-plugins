@@ -622,6 +622,7 @@ hildon_im_keyboard_assistant_scv_finalize(GObject *object)
   HildonIMKeyboardAssistantSCV *scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(object);
   HildonIMKeyboardAssistantSCVPrivate *priv =
       HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv);
+  GObjectClass *object_class;
 
   g_free(priv->int_kb_layout);
   priv->int_kb_layout = NULL;
@@ -629,8 +630,10 @@ hildon_im_keyboard_assistant_scv_finalize(GObject *object)
   g_free(priv->combining_input);
   priv->combining_input = NULL;
 
-  G_OBJECT_CLASS(hildon_im_keyboard_assistant_scv_parent_class)->
-      finalize(object);
+  object_class = G_OBJECT_CLASS(hildon_im_keyboard_assistant_scv_parent_class);
+
+  if (object_class->finalize)
+      object_class->finalize(object);
 }
 
 static void
