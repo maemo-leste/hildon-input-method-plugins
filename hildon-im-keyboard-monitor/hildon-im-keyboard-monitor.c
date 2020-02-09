@@ -252,17 +252,22 @@ hildon_im_keyboard_monitor_set_property(GObject *object,
 }
 
 static void
-hildon_im_keyboard_monitor_finalize(GObject *object)
+destroy_banner(HildonIMKeyboardMonitorPrivate *priv)
 {
-  HildonIMKeyboardMonitor *monitor = HILDON_IM_KEYBOARD_MONITOR(object);
-  HildonIMKeyboardMonitorPrivate *priv =
-      HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(monitor);
-
   if (priv->banner)
   {
     gtk_widget_destroy(priv->banner);
+    g_object_unref(priv->banner);
     priv->banner = NULL;
   }
+}
+
+static void
+hildon_im_keyboard_monitor_finalize(GObject *object)
+{
+  HildonIMKeyboardMonitor *monitor = HILDON_IM_KEYBOARD_MONITOR(object);
+
+  destroy_banner(HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(monitor));
 
   if (G_OBJECT_CLASS(hildon_im_keyboard_monitor_parent_class)->finalize)
     G_OBJECT_CLASS(hildon_im_keyboard_monitor_parent_class)->finalize(object);
@@ -453,11 +458,7 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
 
   if (type == GDK_KEY_PRESS)
   {
-    if (priv->banner)
-    {
-      gtk_widget_destroy(priv->banner);
-      priv->banner = NULL;
-    }
+    destroy_banner(priv);
 
     if (state && val == GDK_space)
     {
@@ -486,9 +487,9 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
               priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
               priv->int_kb_level_shifted, NULL);
 
-        priv->banner =
-            hildon_banner_show_information(GTK_WIDGET(priv->ui), NULL, message);
-
+        priv->banner = hildon_banner_show_information(
+              GTK_WIDGET(priv->ui), NULL, message);
+        g_object_ref(priv->banner);
         g_free(message);
       }
       else
@@ -509,7 +510,7 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
                 priv->ui, !hildon_im_ui_get_active_language_index(priv->ui));
           priv->banner = hildon_banner_show_information(
                 GTK_WIDGET(priv->ui), NULL, message);
-
+          g_object_ref(priv->banner);
           g_free(message);
         }
       }
