@@ -28,15 +28,9 @@
                              HildonIMKeyboardMonitorClass)
 #define HILDON_IM_IS_KEYBOARD_MONITOR(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_TYPE_KEYBOARD_MONITOR)
-#define HILDON_IM_KEYBOARD_MONITOR_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_TYPE_KEYBOARD_MONITOR,\
-                                      HildonIMKeyboardMonitorPrivate))
-
-typedef struct _HildonIMKeyboardMonitorPrivate HildonIMKeyboardMonitorPrivate;
 
 typedef struct {
   GtkVBox parent;
-  HildonIMKeyboardMonitorPrivate *priv;
 } HildonIMKeyboardMonitor;
 
 typedef struct {
