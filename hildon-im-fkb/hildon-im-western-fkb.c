@@ -2102,7 +2102,8 @@ LABEL_6:
   g_object_get(priv->vkb, "subs", &priv->layout_info, NULL);
 }
 
-static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
+static void
+input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
 {
   HildonIMWesternFKB *fkb;
   HildonIMWesternFKBPrivate *priv;
@@ -2111,131 +2112,145 @@ static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer d
   gboolean b;
   gchar *dead_key;
   gboolean update;
-tracef
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  if ( input )
+  if (!input)
+    return;
+
+  if (hildon_im_ui_get_shift_sticky(priv->ui))
   {
-    if ( hildon_im_ui_get_shift_sticky(priv->ui) )
+    hildon_im_ui_send_communication_message(priv->ui,
+                                            HILDON_IM_CONTEXT_SHIFT_UNSTICKY);
+    hildon_im_ui_set_shift_sticky(priv->ui, FALSE);
+  }
+
+  if (hildon_im_ui_get_level_sticky(priv->ui))
+  {
+    hildon_im_ui_send_communication_message(priv->ui,
+                                            HILDON_IM_CONTEXT_LEVEL_UNSTICKY);
+    hildon_im_ui_set_level_sticky(priv->ui, FALSE);
+  }
+
+  if (priv->field_B0)
+    b = (priv->field_AC != 0);
+  else
+    b = FALSE;
+
+  priv->field_B0 = FALSE;
+  text_buffer_offset = get_text_buffer_offset(fkb);
+
+  if (!*input || (*input == ' '))
+  {
+    HildonVKBRenderer *renderer = HILDON_VKB_RENDERER(priv->vkb);
+
+    pressed_key_mode = hildon_vkb_renderer_get_pressed_key_mode(renderer);
+    dead_key = hildon_vkb_renderer_get_dead_key(renderer);
+
+    if (pressed_key_mode & KEY_TYPE_BACKSPACE)
+      goto backspace;
+
+    if (pressed_key_mode & KEY_TYPE_SHIFT)
     {
-      hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_SHIFT_UNSTICKY);
-      hildon_im_ui_set_shift_sticky(priv->ui, 0);
-    }
-    if ( hildon_im_ui_get_level_sticky(priv->ui) )
-    {
-      hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_LEVEL_UNSTICKY);
-      hildon_im_ui_set_level_sticky(priv->ui, 0);
-    }
-    if ( priv->field_B0)
-      b = (priv->field_AC != 0);
-    else
-       b = FALSE;
-
-    priv->field_B0 = FALSE;
-    text_buffer_offset = get_text_buffer_offset(fkb);
-
-    if ( *input && (*input != ' '))
-    {
-      if ( *input != '\n' )
-      {
-        if ( *input != '\b' )
-        {
-          if ( priv->field_34 && (text_buffer_offset == priv->offset))
-            fkb_backspace(fkb, 1);
-
-          if ( priv->field_34 && unk )
-            update = (text_buffer_offset != priv->offset);
-          else
-            update = FALSE;
-
-          if (unk && b && hildon_im_common_should_be_appended_after_letter(input) && (text_buffer_offset == priv->offset))
-          {
-            fkb_backspace(fkb, 1);
-            word_completion_update(fkb, input);
-            word_completion_update(fkb, " ");
-
-            if(hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
-            {
-              hildon_im_ui_send_utf8(priv->ui, input);
-              hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_HANDLE_SPACE);
-            }
-          }
-          else
-          {
-            if ( !update)
-            {
-              word_completion_update(fkb, input);
-
-              if(hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
-                hildon_im_ui_send_utf8(priv->ui, input);
-            }
-          }
-          priv->field_34 = (unk == 0);
-          if ( !unk )
-          {
-            if ( b )
-              priv->field_B0 = TRUE;
-          }
-          priv->offset = get_text_buffer_offset(fkb);
-          goto LABEL_22;
-        }
-LABEL_42:
-        fkb_backspace(fkb, 1);
-        return;
-      }
-      fkb_enter(fkb);
-    }
-    else
-    {
-      pressed_key_mode = hildon_vkb_renderer_get_pressed_key_mode(HILDON_VKB_RENDERER(priv->vkb));
-      dead_key = hildon_vkb_renderer_get_dead_key(HILDON_VKB_RENDERER(priv->vkb));
-
-      if ( pressed_key_mode & 0x800 )
-        goto LABEL_42;
-
-      if ( pressed_key_mode & 0x1000 )
-      {
-        if ( hildon_vkb_renderer_get_shift_active(HILDON_VKB_RENDERER(priv->vkb)) )
-        {
-          hildon_im_ui_set_shift_locked(priv->ui, 1);
-        }
-        else
-        {
-          hildon_im_ui_set_shift_locked(priv->ui, 0);
-          hildon_im_ui_set_shift_sticky(priv->ui, 0);
-          priv->field_20 = TRUE;
-        }
-LABEL_22:
-        set_layout(fkb);
-        return;
-      }
-
-      if(dead_key)
-      {
-        hildon_vkb_renderer_clear_dead_key(HILDON_VKB_RENDERER(priv->vkb));
-        word_completion_update(fkb, dead_key);
-        if ( hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT )
-          hildon_im_ui_send_utf8(priv->ui, dead_key);
-        g_free(dead_key);
-      }
+      if (hildon_vkb_renderer_get_shift_active(renderer))
+        hildon_im_ui_set_shift_locked(priv->ui, TRUE);
       else
       {
-        if ( pressed_key_mode & 0x40 )
-        {
-          word_completion_update(fkb, " ");
-          if ( hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT )
-            hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_HANDLE_SPACE);
-          goto LABEL_22;
-        }
+        hildon_im_ui_set_shift_locked(priv->ui, FALSE);
+        hildon_im_ui_set_shift_sticky(priv->ui, FALSE);
+        priv->field_20 = TRUE;
       }
+
+      goto layout;
+    }
+
+    if(dead_key)
+    {
+      hildon_vkb_renderer_clear_dead_key(renderer);
+      word_completion_update(fkb, dead_key);
+
+      if (hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+        hildon_im_ui_send_utf8(priv->ui, dead_key);
+
+      g_free(dead_key);
+    }
+    else if (pressed_key_mode & KEY_TYPE_WHITESPACE)
+    {
+      word_completion_update(fkb, " ");
+
+      if (hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+      {
+        hildon_im_ui_send_communication_message(
+              priv->ui, HILDON_IM_CONTEXT_HANDLE_SPACE);
+      }
+
+      goto layout;
     }
   }
+  else
+  {
+    if (*input == '\n')
+      fkb_enter(fkb);
+    else if (*input == '\b')
+      goto backspace;
+    else
+    {
+      if (priv->field_34 && (text_buffer_offset == priv->offset))
+        fkb_backspace(fkb, TRUE);
+
+      if (priv->field_34 && unk)
+        update = (text_buffer_offset != priv->offset);
+      else
+        update = FALSE;
+
+      if (unk && b && hildon_im_common_should_be_appended_after_letter(input) &&
+          (text_buffer_offset == priv->offset))
+      {
+        fkb_backspace(fkb, TRUE);
+        word_completion_update(fkb, input);
+        word_completion_update(fkb, " ");
+
+        if(hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+        {
+          hildon_im_ui_send_utf8(priv->ui, input);
+          hildon_im_ui_send_communication_message(
+                priv->ui, HILDON_IM_CONTEXT_HANDLE_SPACE);
+        }
+      }
+      else if (!update)
+      {
+        word_completion_update(fkb, input);
+
+        if (hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+          hildon_im_ui_send_utf8(priv->ui, input);
+      }
+
+      priv->field_34 = (unk == 0);
+
+      if (!unk && b)
+        priv->field_B0 = TRUE;
+
+      priv->offset = get_text_buffer_offset(fkb);
+      goto layout;
+    }
+  }
+
+  return;
+
+backspace:
+  fkb_backspace(fkb, TRUE);
+  return;
+
+layout:
+  set_layout(fkb);
 }
 
-static void fkb_backspace(HildonIMWesternFKB *self, gboolean unk)
+static void
+fkb_backspace(HildonIMWesternFKB *self, gboolean unk)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter iter;
