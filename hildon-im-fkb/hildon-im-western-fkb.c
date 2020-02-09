@@ -78,9 +78,9 @@ typedef struct {
   gboolean field_88;
   guint repeat_start_timer;
   gchar *predicted_suffix;
-  gchar* field_94;
-  gchar* predicted_word;
-  gchar* field_9C;
+  gchar *predicted_candidate;
+  gchar *predicted_word;
+  gchar *prediction_lowercase;
   GtkTextTag *tag_fg;
   GtkTextTag *tag_bg;
   gboolean dual_dictionary;
@@ -331,9 +331,9 @@ static void hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   g_signal_connect_data(priv->vkb, "illegal_input", G_CALLBACK(illegal_input_cb), fkb, 0, 0);
 
   priv->predicted_suffix = 0;
-  priv->field_94 = NULL;
+  priv->predicted_candidate = NULL;
   priv->predicted_word = NULL;
-  priv->field_9C = NULL;
+  priv->prediction_lowercase = NULL;
   priv->field_B0 = FALSE;
 
   priv->hwc = hildon_im_word_completer_new();
@@ -413,8 +413,8 @@ tracef
   g_free(priv->predicted_suffix);
   priv->predicted_suffix = NULL;
 
-  g_free(priv->field_94);
-  priv->field_94 = NULL;
+  g_free(priv->predicted_candidate);
+  priv->predicted_candidate = NULL;
 
   return rv;
 }
@@ -1150,9 +1150,9 @@ tracef
     priv->hwc = NULL;
   }
   g_free((gpointer)priv->predicted_suffix);
-  g_free((gpointer)priv->field_94);
+  g_free((gpointer)priv->predicted_candidate);
   g_free((gpointer)priv->predicted_word);
-  g_free((gpointer)priv->field_9C);
+  g_free((gpointer)priv->prediction_lowercase);
 
   if (G_OBJECT_CLASS(parent_class)->finalize)
     G_OBJECT_CLASS(parent_class)->finalize(object);
@@ -1239,7 +1239,7 @@ tracef
   else
   {
     surrounding = get_input_text(fkb, 0);
-    word_completion_hit_word(fkb, priv->field_9C);
+    word_completion_hit_word(fkb, priv->prediction_lowercase);
     if ( !priv->field_38 )
       goto out;
   }
@@ -2334,7 +2334,7 @@ tracef
       else
       {
         surrounding_content = get_input_text(self, 0);
-        word_completion_hit_word(self, priv->field_9C);
+        word_completion_hit_word(self, priv->prediction_lowercase);
       }
 
       hildon_im_ui_send_surrounding_content(priv->ui, surrounding_content);
@@ -2388,9 +2388,9 @@ tracef
         }
       }
     }
-    hildon_im_word_completer_hit_word(priv->hwc, priv->field_94, 0);
+    hildon_im_word_completer_hit_word(priv->hwc, priv->predicted_candidate, FALSE);
     g_free(priv->predicted_word);
-    priv->predicted_word = g_strdup(priv->field_94);
+    priv->predicted_word = g_strdup(priv->predicted_candidate);
     word_completion_clear(fkb);
   }
 }
@@ -2654,34 +2654,34 @@ static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
   GtkTextIter start;
   GtkTextIter iter;
   HildonIMWesternFKBPrivate *priv;
-  gchar * prev_char;
-  gchar *prediction_lowercase;
-  GList * list;
+  gchar *prev_char;
+  GList *list;
+  gchar *text;
+  gchar *prediction = NULL;
+  gchar *prediction_lowercase = NULL;
+  gchar *previous_word = NULL;
+  gchar *current_word = NULL;
 
-  gchar*text;
-  gchar*prediction;
-  gchar * previous_word;
-  gchar * current_word;
-tracef
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-
-  if ( priv->input_mode_dictionary && priv->word_completion )
+  if (priv->input_mode_dictionary && priv->word_completion)
   {
-    GList * last;
+    GList *last;
     gunichar current_char;
 
     temp_text_clear(fkb);
     word_completion_clear(fkb);
-    gtk_text_buffer_get_iter_at_mark(priv->text_buffer, &iter,
-                                     gtk_text_buffer_get_insert(priv->text_buffer));
+    gtk_text_buffer_get_iter_at_mark(
+          priv->text_buffer, &iter,
+          gtk_text_buffer_get_insert(priv->text_buffer));
     gtk_text_buffer_get_start_iter(priv->text_buffer, &start);
     text = gtk_text_buffer_get_text(priv->text_buffer, &start, &iter, 0);
     list = utf8_split_in_words(text, -1);
 
-    if ( !list )
+    if (!list)
     {
       g_free(text);
       return;
@@ -2689,7 +2689,7 @@ tracef
 
     last = g_list_last(list);
 
-    if ( last && last->data )
+    if (last && last->data)
     {
       current_word = (gchar *)last->data;
 
@@ -2698,66 +2698,53 @@ tracef
 
       prediction_lowercase = g_utf8_strdown(current_word, -1);
 
-      if ( last->prev && last->prev->data)
+      if (last->prev && last->prev->data)
         previous_word = last->prev->data;
-      else
-        previous_word = 0;
     }
-    else
-    {
-      current_word = 0;
-      prediction_lowercase = 0;
-      previous_word = 0;
-    }
-
 
     prev_char = g_utf8_find_prev_char(text, strchr(text, 0));
     current_char = gtk_text_iter_get_char(&iter);
 
-    if ( !char_is_part_of_dictionary_word(prev_char) || (current_char && !g_unichar_isspace(current_char)))
+    if (!char_is_part_of_dictionary_word(prev_char) ||
+        (current_char && !g_unichar_isspace(current_char)))
     {
-      if ( (!priv->predicted_word || g_strcmp0(priv->predicted_word, prediction_lowercase)) && prev_char )
+      if ((!priv->predicted_word ||
+           g_strcmp0(priv->predicted_word, prediction_lowercase)) && prev_char)
       {
         gunichar uc = g_utf8_get_char_validated(prev_char, -1);
-        if ( g_unichar_isspace(uc) || g_unichar_ispunct(uc) )
-        {
+
+        if (g_unichar_isspace(uc) || g_unichar_ispunct(uc))
           word_completion_hit_word(fkb, current_word);
-          prediction = 0;
-        }
         else
         {
-          g_free(priv->field_9C);
-          priv->field_9C = 0;
-          prediction = 0;
+          g_free(priv->prediction_lowercase);
+          priv->prediction_lowercase = NULL;
         }
       }
-      else
-      {
-        prediction = 0;
-      }
-      goto LABEL_37;
     }
-
-    priv->predicted_suffix = hildon_im_word_completer_get_predicted_suffix(
-                              priv->hwc,
-                              previous_word,
-                              current_word,
-                              &priv->field_94);
-
-    if ( hildon_im_ui_get_shift_locked(priv->ui) )
+    else
     {
-      gchar *s = priv->predicted_suffix;
-      priv->predicted_suffix = g_utf8_strup(priv->predicted_suffix, -1);
-      g_free(s);
+      priv->predicted_suffix =
+          hildon_im_word_completer_get_predicted_suffix(
+            priv->hwc,
+            previous_word,
+            current_word,
+            &priv->predicted_candidate);
+
+      if (hildon_im_ui_get_shift_locked(priv->ui))
+      {
+        gchar *s = priv->predicted_suffix;
+        priv->predicted_suffix = g_utf8_strup(priv->predicted_suffix, -1);
+        g_free(s);
+      }
+
+      prediction = g_strdup(priv->predicted_suffix);
+      word_completion_set(fkb,prediction);
+
+      g_free(priv->prediction_lowercase);
+      priv->prediction_lowercase = g_strdup(prediction_lowercase);
     }
 
-    prediction = g_strdup(priv->predicted_suffix);
-    word_completion_set(fkb,prediction);
-
-    g_free(priv->field_9C);
-    priv->field_9C = g_strdup(prediction_lowercase);
-
-LABEL_37:
     g_free(prediction_lowercase);
     g_free(text);
     g_free(prediction);
