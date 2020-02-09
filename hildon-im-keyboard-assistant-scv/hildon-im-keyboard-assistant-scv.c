@@ -57,10 +57,35 @@ typedef struct _HildonIMKeyboardAssistantSCVPrivate HildonIMKeyboardAssistantSCV
 
 static void hildon_im_keyboard_assistant_scv_iface_init(HildonIMPluginIface *iface);
 
-static void close_scv(HildonIMKeyboardAssistantSCV *scv);
+#define HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv) \
+  ((HildonIMKeyboardAssistantSCVPrivate *)hildon_im_keyboard_assistant_scv_get_instance_private(scv))
 
-static GType hildon_im_type_keyboard_assistant_scv;
-static gpointer parent_class;
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(
+  HildonIMKeyboardAssistantSCV, hildon_im_keyboard_assistant_scv, GTK_TYPE_DIALOG, 0,
+  G_ADD_PRIVATE_DYNAMIC(HildonIMKeyboardAssistantSCV);
+  G_IMPLEMENT_INTERFACE_DYNAMIC(HILDON_IM_TYPE_PLUGIN,
+                                hildon_im_keyboard_assistant_scv_iface_init);
+);
+
+void
+module_init(GTypeModule *module)
+{
+  hildon_im_keyboard_assistant_scv_register_type(module);
+}
+
+HildonIMPlugin*
+module_create (HildonIMUI *ui)
+{
+  return HILDON_IM_PLUGIN(hildon_im_keyboard_assistant_scv_new(ui));
+}
+
+void
+module_exit(void)
+{
+  /* empty */
+}
+
+static void close_scv(HildonIMKeyboardAssistantSCV *scv);
 
 static gchar *
 hildon_im_keyboard_assistant_scv_get_layout_value(HildonIMPlugin *plugin)
@@ -591,12 +616,6 @@ hildon_im_keyboard_assistant_scv_iface_init(HildonIMPluginIface *iface)
   iface->settings_changed = hildon_im_keyboard_assistant_scv_settings_changed;
 }
 
-GType
-hildon_im_keyboard_assistant_scv_get_type()
-{
-  return hildon_im_type_keyboard_assistant_scv;
-}
-
 static void
 hildon_im_keyboard_assistant_scv_finalize(GObject *object)
 {
@@ -610,10 +629,8 @@ hildon_im_keyboard_assistant_scv_finalize(GObject *object)
   g_free(priv->combining_input);
   priv->combining_input = NULL;
 
-  if (G_OBJECT_CLASS(parent_class))
-  {
-    G_OBJECT_CLASS(parent_class)->finalize(object);
-  }
+  G_OBJECT_CLASS(hildon_im_keyboard_assistant_scv_parent_class)->
+      finalize(object);
 }
 
 static void
@@ -621,12 +638,16 @@ hildon_im_keyboard_assistant_scv_set_property(GObject *object, guint prop_id,
                                               const GValue *value,
                                               GParamSpec *pspec)
 {
+  HildonIMKeyboardAssistantSCV *scv;
+
   g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(object));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(object);
 
   switch (prop_id)
   {
     case HILDON_IM_KEYBOARD_ASSISTANT_SCV_PROP_UI:
-      HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(object)->ui =
+      HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv)->ui =
           (HildonIMUI *)g_value_get_object(value);
       break;
     default:
@@ -639,13 +660,17 @@ static void
 hildon_im_keyboard_assistant_scv_get_property(GObject *object, guint prop_id,
                                               GValue *value, GParamSpec *pspec)
 {
+  HildonIMKeyboardAssistantSCV *scv;
+
   g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(object));
+
+  scv = HILDON_IM_KEYBOARD_ASSISTANT_SCV(object);
 
   switch (prop_id)
   {
     case HILDON_IM_KEYBOARD_ASSISTANT_SCV_PROP_UI:
       g_value_set_object(
-            value, HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(object)->ui);
+            value, HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(scv)->ui);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -659,10 +684,6 @@ hildon_im_keyboard_assistant_scv_class_init(
 {
   GObjectClass *object_class = G_OBJECT_CLASS(klass);
 
-  parent_class = g_type_class_peek_parent(klass);
-
-  g_type_class_add_private(klass, sizeof(HildonIMKeyboardAssistantSCVPrivate));
-
   object_class->set_property = hildon_im_keyboard_assistant_scv_set_property;
   object_class->get_property = hildon_im_keyboard_assistant_scv_get_property;
   object_class->finalize = hildon_im_keyboard_assistant_scv_finalize;
@@ -675,6 +696,12 @@ hildon_im_keyboard_assistant_scv_class_init(
           "Keyboard that uses plugin",
           HILDON_IM_TYPE_UI,
           G_PARAM_CONSTRUCT_ONLY|G_PARAM_WRITABLE|G_PARAM_READABLE));
+}
+
+static void
+hildon_im_keyboard_assistant_scv_class_finalize(
+    HildonIMKeyboardAssistantSCVClass *klass)
+{
 }
 
 static void
@@ -807,53 +834,6 @@ hildon_im_keyboard_assistant_scv_new(HildonIMUI *ui)
 {
   return g_object_new(HILDON_IM_TYPE_KEYBOARD_ASSISTANT_SCV, "type", 0,
                       "UI", ui, NULL);
-}
-
-void
-module_init(GTypeModule *module)
-{
-  static const GTypeInfo type_info = {
-    sizeof(HildonIMKeyboardAssistantSCVClass),
-    NULL, /* base_init */
-    NULL, /* base_finalize */
-    (GClassInitFunc)hildon_im_keyboard_assistant_scv_class_init,
-    NULL, /* class_finalize */
-    NULL, /* class_data */
-    sizeof(HildonIMKeyboardAssistantSCV),
-    0, /* n_preallocs */
-    (GInstanceInitFunc)hildon_im_keyboard_assistant_scv_init,
-    NULL
-  };
-
-  static const GInterfaceInfo iface_info = {
-    (GInterfaceInitFunc)hildon_im_keyboard_assistant_scv_iface_init,
-    NULL, /* interface_finalize */
-    NULL, /* interface_data */
-  };
-
-  hildon_im_type_keyboard_assistant_scv =
-          g_type_module_register_type(module,
-                                      GTK_TYPE_DIALOG,
-                                      "HildonIMKeyboardAssistantSCV",
-                                      &type_info,
-                                      0);
-
-  g_type_module_add_interface(module,
-                              HILDON_IM_TYPE_KEYBOARD_ASSISTANT_SCV,
-                              HILDON_IM_TYPE_PLUGIN,
-                              &iface_info);
-}
-
-HildonIMPlugin*
-module_create (HildonIMUI *ui)
-{
-  return HILDON_IM_PLUGIN(hildon_im_keyboard_assistant_scv_new(ui));
-}
-
-void
-module_exit(void)
-{
-  /* empty */
 }
 
 gchar **

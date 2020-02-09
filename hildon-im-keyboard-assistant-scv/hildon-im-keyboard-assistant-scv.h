@@ -12,9 +12,6 @@
                              HildonIMKeyboardAssistantSCVClass)
 #define HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_TYPE_KEYBOARD_ASSISTANT_SCV)
-#define HILDON_IM_KEYBOARD_ASSISTANT_SCV_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_TYPE_KEYBOARD_ASSISTANT_SCV,\
-                                      HildonIMKeyboardAssistantSCVPrivate))
 
 typedef struct _HildonIMKeyboardAssistantSCV HildonIMKeyboardAssistantSCV;
 
