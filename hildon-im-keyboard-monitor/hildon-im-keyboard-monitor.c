@@ -86,7 +86,7 @@ static gboolean hildon_im_keyboard_monitor_timeout_cb(gpointer userdata);
   ((HildonIMKeyboardMonitorPrivate *)hildon_im_keyboard_monitor_get_instance_private(monitor))
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(
-  HildonIMKeyboardMonitor, hildon_im_keyboard_monitor, GTK_TYPE_CONTAINER, 0,
+  HildonIMKeyboardMonitor, hildon_im_keyboard_monitor, GTK_TYPE_VBOX, 0,
   G_ADD_PRIVATE_DYNAMIC(HildonIMKeyboardMonitor);
   G_IMPLEMENT_INTERFACE_DYNAMIC(HILDON_IM_TYPE_PLUGIN,
                                 hildon_im_keyboard_monitor_iface_init);
