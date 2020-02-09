@@ -155,7 +155,7 @@ static void repeating_button_process_click(HildonIMWesternFKB *fkb, GtkWidget *w
 
 static gboolean textview_key_press_release_cb(GtkWidget *widget, GdkEventKey *event, gpointer data);
 static gboolean textview_button_release_cb(GtkWidget *widget, GdkEventButton *event, gpointer data);
-gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpointer data);
+static gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpointer data);
 static void textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data);
 static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context, gpointer data);
 
@@ -231,7 +231,8 @@ module_init(GTypeModule *module)
                               &plugin_info);
 }
 
-static void hildon_im_western_fkb_class_init(HildonIMWesternFKBClass *klass)
+static void
+hildon_im_western_fkb_class_init(HildonIMWesternFKBClass *klass)
 {
   GObjectClass *object_class;
   GtkObjectClass *gtk_object_class;
@@ -282,7 +283,8 @@ hildon_im_western_fkb_iface_init(HildonIMPluginIface *iface)
   iface->transition = hildon_im_western_fkb_transition;
 }
 
-static void hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
+static void
+hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkWidget *vkb;
@@ -349,7 +351,8 @@ static void hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   priv->asterisk_fill_timer = 0;
 }
 
-static gint get_text_buffer_offset(HildonIMWesternFKB *fkb)
+static gint
+get_text_buffer_offset(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextMark * text_mark;
@@ -366,7 +369,9 @@ tracef
   return 0;
 }
 
-static gboolean get_text_bounds_from_tag(HildonIMWesternFKB *fkb, GtkTextIter *start, GtkTextIter *end, GtkTextTag *tag)
+static gboolean
+get_text_bounds_from_tag(HildonIMWesternFKB *fkb, GtkTextIter *start,
+                         GtkTextIter *end, GtkTextTag *tag)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -385,15 +390,19 @@ tracef
   return FALSE;
 }
 
-static gboolean word_completion_get_bounds(HildonIMWesternFKB *fkb, GtkTextIter *start, GtkTextIter *end)
+static gboolean
+word_completion_get_bounds(HildonIMWesternFKB *fkb, GtkTextIter *start,
+                           GtkTextIter *end)
 {
   tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb),FALSE);
 
-  return get_text_bounds_from_tag(fkb, end, start, HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb)->tag_fg);
+  return get_text_bounds_from_tag(
+        fkb, end, start, HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb)->tag_fg);
 }
 
-static gboolean word_completion_clear(HildonIMWesternFKB *fkb)
+static
+gboolean word_completion_clear(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter start;
@@ -419,7 +428,8 @@ tracef
   return rv;
 }
 
-static void word_completion_reset(HildonIMWesternFKB *fkb)
+static void
+word_completion_reset(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   gint lang_index;
@@ -482,7 +492,8 @@ tracef
   word_completion_clear(fkb);
 }
 
-static void word_completion_hit_word(HildonIMWesternFKB *fkb, gchar *word)
+static void
+word_completion_hit_word(HildonIMWesternFKB *fkb, gchar *word)
 {
   gchar *word_lc;
   HildonIMWesternFKBPrivate *priv;
@@ -491,13 +502,12 @@ tracef
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  if ( word && *word )
+  if (word && *word)
   {
     word_lc = g_utf8_strdown(word, -1);
-    if ( priv->predicted_word && !g_strcmp0(word_lc, priv->predicted_word) )
-    {
+
+    if (priv->predicted_word && !g_strcmp0(word_lc, priv->predicted_word))
       g_free(word_lc);
-    }
     else
     {
       hildon_im_word_completer_hit_word(priv->hwc, word_lc, 1);
@@ -507,7 +517,8 @@ tracef
   }
 }
 
-static gchar *get_input_text(HildonIMWesternFKB *fkb, gboolean no_autocomplete)
+static gchar *
+get_input_text(HildonIMWesternFKB *fkb, gboolean no_autocomplete)
 {
   HildonIMWesternFKBPrivate *priv;
   gchar *rv;
@@ -532,7 +543,8 @@ tracef
   return rv;
 }
 
-static void show_text_view(HildonIMWesternFKB *fkb)
+static void
+show_text_view(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   gchar *text;
@@ -1136,7 +1148,8 @@ tracef
   }
 }
 
-static void hildon_im_western_fkb_finalize(GObject *object)
+static void
+hildon_im_western_fkb_finalize(GObject *object)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -1158,7 +1171,8 @@ tracef
     G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
-static void hildon_im_western_fkb_destroy(GtkObject *object)
+static void
+hildon_im_western_fkb_destroy(GtkObject *object)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -1194,7 +1208,8 @@ tracef
     GTK_OBJECT_CLASS(parent_class)->destroy(object);
 }
 
-static void hildon_im_western_fkb_hide_fkb_window(HildonIMWesternFKB *fkb)
+static void
+hildon_im_western_fkb_hide_fkb_window(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -1299,12 +1314,14 @@ tracef
   priv->predicted_suffix = NULL;
 
   update_input_mode_and_layout(fkb);
-  hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_REQUEST_SURROUNDING_FULL);
+  hildon_im_ui_send_communication_message(
+        priv->ui, HILDON_IM_CONTEXT_REQUEST_SURROUNDING_FULL);
 }
 
 
-static
-gboolean temp_text_get_bounds(HildonIMWesternFKB *fkb, GtkTextIter *start, GtkTextIter *end)
+static gboolean
+temp_text_get_bounds(HildonIMWesternFKB *fkb, GtkTextIter *start,
+                     GtkTextIter *end)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -1331,8 +1348,8 @@ tracef
     gtk_text_buffer_delete(priv->text_buffer, &start, &end);
 }
 
-static
-gboolean delete_fkb_cb(GtkWidget *widget, GdkEvent *event, gpointer data)
+static gboolean
+delete_fkb_cb(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
   hildon_im_western_fkb_hide_fkb_window(HILDON_IM_WESTERN_FKB(data));
   return TRUE;
@@ -1412,7 +1429,8 @@ tracef
   }
 }
 
-static void hildon_im_western_fkb_language(HildonIMPlugin *plugin)
+static void
+hildon_im_western_fkb_language(HildonIMPlugin *plugin)
 {
   HildonIMWesternFKB *fkb;
   HildonIMWesternFKBPrivate *priv;
@@ -1516,7 +1534,10 @@ tracef
   gtk_text_buffer_select_range(priv->text_buffer, &iter_end, &iter_start);
 }
 
-static void hildon_im_western_fkb_surrounding_received(HildonIMPlugin *plugin, const gchar *surrounding, gint offset)
+static void
+hildon_im_western_fkb_surrounding_received(HildonIMPlugin *plugin,
+                                           const gchar *surrounding,
+                                           gint offset)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -1590,7 +1611,9 @@ hildon_im_western_fkb_transition(HildonIMPlugin *plugin, gboolean from)
   hildon_im_ui_clear_plugin_buffer(HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(plugin))->ui);
 }
 
-static void insert_text_with_tag(HildonIMWesternFKB *fkb, GtkTextIter *iter, const gchar *text, GtkTextTag *tag)
+static void
+insert_text_with_tag(HildonIMWesternFKB *fkb, GtkTextIter *iter,
+                     const gchar *text, GtkTextTag *tag)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter tmp_iter;
@@ -1772,7 +1795,8 @@ tracef
 }
 
 static gboolean
-textview_key_press_release_cb(GtkWidget *widget, GdkEventKey *event, gpointer data)
+textview_key_press_release_cb(GtkWidget *widget, GdkEventKey *event,
+                              gpointer data)
 {
 tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
@@ -1794,7 +1818,8 @@ tracef
 }
 
 static gboolean
-textview_button_release_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+textview_button_release_cb(GtkWidget *widget, GdkEventButton *event,
+                           gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -1812,7 +1837,9 @@ static glong g_utf8_len_from_offset(const gchar *str, glong offset)
   return g_utf8_offset_to_pointer(str, offset) - str;
 }
 
-static void fkb_delete_selection(HildonIMWesternFKB *fkb, gboolean clear_wc, gboolean redirect)
+static void
+fkb_delete_selection(HildonIMWesternFKB *fkb, gboolean clear_wc,
+                     gboolean redirect)
 {
   HildonIMWesternFKBPrivate *priv;
   gint start;
@@ -1856,7 +1883,8 @@ tracef
   }
 }
 
-static void menu_button_cb(GtkWidget *widget, void *data)
+static void
+menu_button_cb(GtkWidget *widget, void *data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -1874,7 +1902,6 @@ tracef
     gtk_widget_set_sensitive(priv->button_common_menu_cut, sel_bounds);
     gtk_widget_set_sensitive(priv->button_common_menu_copy, sel_bounds);
   }
-
 
   gtk_clipboard_request_targets(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
                                 clipboard_targets_received_callback,
@@ -1924,7 +1951,9 @@ tracef
   show_text_view(fkb);
 }
 
-static void clipboard_targets_received_callback(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, gpointer data)
+static void
+clipboard_targets_received_callback(GtkClipboard *clipboard, GdkAtom *atoms,
+                                    gint n_atoms, gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -1951,7 +1980,8 @@ tracef
   gtk_widget_set_sensitive(priv->button_common_menu_paste, sensitive);
 }
 
-static void paste_received(GtkClipboard *clipboard, const gchar *text, gpointer data)
+static void
+paste_received(GtkClipboard *clipboard, const gchar *text, gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -2045,7 +2075,8 @@ LABEL_15:
   }
 }
 
-static void update_input_mode_and_layout(HildonIMWesternFKB *self)
+static void
+update_input_mode_and_layout(HildonIMWesternFKB *self)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonGtkInputMode current_default_input_mode;
@@ -2300,7 +2331,8 @@ tracef
   }
 }
 
-static void fkb_enter(HildonIMWesternFKB *self)
+static void
+fkb_enter(HildonIMWesternFKB *self)
 {
   HildonIMWesternFKBPrivate *priv;
   gchar *surrounding_content;
@@ -2345,7 +2377,8 @@ tracef
     hildon_im_western_fkb_hide_fkb_window(self);
   }
 }
-static void word_completion_complete(HildonIMWesternFKB* fkb)
+static void
+word_completion_complete(HildonIMWesternFKB* fkb)
 {
   HildonIMWesternFKBPrivate *priv;
   GtkTextIter iter;
@@ -2395,7 +2428,9 @@ tracef
   }
 }
 
-gboolean textview_button_press_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+static gboolean
+textview_button_press_cb(GtkWidget *widget, GdkEventButton *event,
+                         gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -2494,7 +2529,10 @@ LABEL_7:
   return TRUE;
 }
 
-static void textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data)
+static void
+textview_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context,
+                            gint x, gint y, GtkSelectionData *data, guint info,
+                            guint time, gpointer user_data)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -2553,7 +2591,9 @@ tracef
   }
 }
 
-static void textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context, gpointer data)
+static void
+textview_drag_end_cb(GtkWidget *widget, GdkDragContext *drag_context,
+                     gpointer data)
 {
   HildonIMWesternFKB *fkb;
 tracef
@@ -2562,7 +2602,9 @@ tracef
   fkb = HILDON_IM_WESTERN_FKB(data);
 }
 
-static void hildon_im_western_fkb_settings_changed(HildonIMPlugin *plugin, const gchar *key, const GConfValue *value)
+static void
+hildon_im_western_fkb_settings_changed(HildonIMPlugin *plugin, const gchar *key,
+                                       const GConfValue *value)
 {
   HildonIMWesternFKB *fkb;
   HildonIMWesternFKBPrivate *priv;
@@ -2623,7 +2665,8 @@ tracef
 
 }
 
-static void word_completion_insert(HildonIMWesternFKB* fkb, GtkTextIter*iter, const gchar* text)
+static void
+word_completion_insert(HildonIMWesternFKB* fkb, GtkTextIter*iter, const gchar* text)
 {
 
   HildonIMWesternFKBPrivate *priv;
@@ -2635,7 +2678,8 @@ tracef
   insert_text_with_tag(fkb, iter, text, priv->tag_fg);
 }
 
-static void word_completion_set(HildonIMWesternFKB* fkb, const gchar* text)
+static void
+word_completion_set(HildonIMWesternFKB* fkb, const gchar* text)
 {
   GtkTextIter iter;
   HildonIMWesternFKBPrivate *priv;
@@ -2649,7 +2693,8 @@ tracef
   word_completion_insert(fkb,&iter,text);
 }
 
-static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
+static void
+word_completion_update_candidate(HildonIMWesternFKB *fkb)
 {
   GtkTextIter start;
   GtkTextIter iter;
@@ -2755,7 +2800,8 @@ static void word_completion_update_candidate(HildonIMWesternFKB *fkb)
 }
 
 
-static void word_completion_update(HildonIMWesternFKB *fkb, const char *val)
+static void
+word_completion_update(HildonIMWesternFKB *fkb, const char *val)
 {
   HildonIMWesternFKBPrivate *priv;
   gint offset;
@@ -2793,7 +2839,8 @@ tracef
   show_text_view(fkb);
 }
 
-static void fkb_space(HildonIMWesternFKB *fkb)
+static void
+fkb_space(HildonIMWesternFKB *fkb)
 {
   HildonIMWesternFKBPrivate *priv;
 tracef
@@ -2814,7 +2861,8 @@ tracef
   set_layout(fkb);
 }
 
-static void repeating_button_process_click(HildonIMWesternFKB *fkb, GtkWidget *widget)
+static void
+repeating_button_process_click(HildonIMWesternFKB *fkb, GtkWidget *widget)
 {
   HildonIMWesternFKBPrivate *priv;
 
@@ -2850,15 +2898,16 @@ const HildonIMPluginInfo *hildon_im_plugin_get_info(void)
   return &info;
 }
 
-gchar **hildon_im_plugin_get_available_languages(gboolean *free)
+gchar **
+hildon_im_plugin_get_available_languages(gboolean *free)
 {
   gchar **rv;
   GSList *list;
 
-  *free = 0;
+  *free = FALSE;
   list = imlayout_vkb_get_layout_list();
 
-  if ( list )
+  if (list)
   {
     int len = g_slist_length(list);
 
@@ -2868,10 +2917,11 @@ gchar **hildon_im_plugin_get_available_languages(gboolean *free)
     rv = (gchar **)g_malloc0(sizeof(gchar*)*(len + 1));
 
 
-    if ( rv )
+    if (rv)
     {
       gchar **s= rv;
       GSList *next = list;
+
       do
       {
         *s = g_strdup((const gchar *)next->data);
@@ -2879,7 +2929,8 @@ gchar **hildon_im_plugin_get_available_languages(gboolean *free)
         next = next->next;
       }
       while ( next );
-      *free = 1;
+
+      *free = TRUE;
     }
 
     imlayout_vkb_free_layout_list(list);
