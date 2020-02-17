@@ -852,25 +852,23 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   GtkWidget *vbox2;
   GtkWidget *hbox1;
   GtkWidget *vbox1;
-
   GtkWidget *button;
-
   GtkWidget *alignment;
   GtkWidget *scrolled_window;
   GtkStyle *textviewstyle;
-
   GtkTextIter iter;
-
   GtkIconTheme *icon_theme;
-tracef
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   icon_theme = gtk_icon_theme_get_default(); /* unused, but still :) */
 
-  priv->fkb_window = (GtkWindow*)gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_type_hint(GTK_WINDOW(priv->fkb_window), GDK_WINDOW_TYPE_HINT_DIALOG);
+  priv->fkb_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_type_hint(GTK_WINDOW(priv->fkb_window),
+                           GDK_WINDOW_TYPE_HINT_DIALOG);
   gtk_window_set_decorated(GTK_WINDOW(priv->fkb_window), FALSE);
   gtk_widget_set_name(GTK_WIDGET(priv->fkb_window), "osso-im-fkb-window");
   gtk_widget_set_size_request(GTK_WIDGET(priv->fkb_window), -1, 500);
@@ -878,26 +876,28 @@ tracef
   g_signal_connect(G_OBJECT(priv->fkb_window), "delete-event",
                    G_CALLBACK(delete_fkb_cb), fkb);
 
-  hbox = gtk_hbox_new(0, 0);
+  hbox = gtk_hbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(priv->fkb_window), hbox);
 
-  vbox1 = gtk_vbox_new(0, 0);
-  gtk_box_pack_start(GTK_BOX(hbox), vbox1, 1, 1, 4u);
+  vbox1 = gtk_vbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox), vbox1, TRUE, TRUE, 4);
 
   vbox = gtk_vbox_new(0, 0);
 
   gtk_container_add(GTK_CONTAINER(vbox1), vbox);
 
   alignment = gtk_alignment_new(0.0, 0.0, 1.0, 1.0);
-  gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 6u, 0, 0, 0);
+  gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 6, 0, 0, 0);
 
-  scrolled_window = gtk_scrolled_window_new(0, 0);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   priv->textview = gtk_text_view_new();
   gtk_widget_set_name(priv->textview, "him-textview");
   gtk_text_view_set_left_margin(GTK_TEXT_VIEW(priv->textview), 10);
-  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(priv->textview), GTK_WRAP_WORD_CHAR);
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(priv->textview),
+                              GTK_WRAP_WORD_CHAR);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(priv->textview), TRUE);
 
   gtk_container_add(GTK_CONTAINER(scrolled_window), priv->textview);
@@ -922,28 +922,27 @@ tracef
   priv->text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(priv->textview));
 
   textviewstyle = gtk_widget_get_style(priv->textview);
-  if ( !textviewstyle )
+
+  if (!textviewstyle )
     textviewstyle = gtk_widget_get_default_style();
 
   gtk_text_buffer_get_end_iter(priv->text_buffer, &iter);
-  gtk_text_buffer_create_mark(priv->text_buffer, "completion", &iter, 0);
+  gtk_text_buffer_create_mark(priv->text_buffer, "completion", &iter, FALSE);
   priv->tag_fg = gtk_text_buffer_create_tag(
-                  priv->text_buffer,
-                  0,
-                  "background-gdk", &textviewstyle->bg[3],
-                  "foreground-gdk", &textviewstyle->fg[3],
-                  "underline", 1,
-                  "editable", 0,
+                  priv->text_buffer, NULL,
+                  "background-gdk", &textviewstyle->bg[GTK_STATE_SELECTED],
+                  "foreground-gdk", &textviewstyle->fg[GTK_STATE_SELECTED],
+                  "underline", TRUE,
+                  "editable", FALSE,
                   NULL);
   priv->tag_bg = gtk_text_buffer_create_tag(
-        priv->text_buffer,
-        0,
-        "foreground-gdk", &textviewstyle->bg[3],
-        "editable", 0,
+        priv->text_buffer, NULL,
+        "foreground-gdk", &textviewstyle->bg[GTK_STATE_SELECTED],
+        "editable", FALSE,
         NULL);
 
-  hbox2 = gtk_hbox_new(0, 2);
-  vbox2 = gtk_vbox_new(0, 0);
+  hbox2 = gtk_hbox_new(FALSE, 2);
+  vbox2 = gtk_vbox_new(FALSE, 0);
   priv->control_menu = fkb_create_control_menu(fkb);
 
   /* repeating */
@@ -952,7 +951,7 @@ tracef
   gtk_widget_set_name(button, "hildon-im-alt-button");
   repeating_button_connect_signals(fkb, button);
   priv->repeating_button = button;
-  gtk_box_pack_start(GTK_BOX(hbox2), button, 0, 0, 0);
+  gtk_box_pack_start(GTK_BOX(hbox2), button, FALSE, FALSE, 0);
 
   /* numbers */
   button = hildon_gtk_toggle_button_new(HILDON_SIZE_FINGER_HEIGHT);
@@ -963,8 +962,8 @@ tracef
   hildon_helper_set_logical_font(button, "X-LargeSystemFont");
   priv->numbers_button = button;
 
-  gtk_box_pack_start(GTK_BOX(vbox2), button, 1, 1, 0);
-  gtk_box_pack_start(GTK_BOX(hbox2), vbox2, 0, 0, 0);
+  gtk_box_pack_start(GTK_BOX(vbox2), button, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox2), vbox2, FALSE, FALSE, 0);
 
   /* menu */
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
@@ -989,16 +988,16 @@ tracef
   gtk_widget_set_size_request(priv->vkb, 800, 210);
   hbox1 = gtk_hbox_new(0, 0);
 
-  gtk_box_pack_start(GTK_BOX(hbox1), priv->menu_button, 0, 0, 0);
-  gtk_box_pack_start(GTK_BOX(hbox1), hbox2, 1, 0, 0);
-  gtk_box_pack_start(GTK_BOX(hbox1), priv->enter_button, 0, 0, 0);
+  gtk_box_pack_start(GTK_BOX(hbox1), priv->menu_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox1), hbox2, TRUE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox1), priv->enter_button, FALSE, FALSE, 0);
 
   gtk_container_set_border_width(GTK_CONTAINER(hbox1), 0);
   gtk_container_set_border_width(GTK_CONTAINER(hbox2), 0);
   gtk_widget_set_size_request(hbox1, -1, 70);
 
-  gtk_box_pack_end(GTK_BOX(vbox1), hbox1, 0, 0, 0);
-  gtk_box_pack_end(GTK_BOX(vbox1), priv->vkb, 0, 0, 0);
+  gtk_box_pack_end(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(vbox1), priv->vkb, FALSE, FALSE, 0);
 
   gtk_widget_realize(GTK_WIDGET(priv->vkb));
 }
