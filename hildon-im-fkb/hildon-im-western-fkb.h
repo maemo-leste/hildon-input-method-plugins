@@ -29,9 +29,6 @@
                              HildonIMWesternFKBClass)
 #define HILDON_IM_IS_WESTERN_FKB(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_WESTERN_FKB_TYPE )
-#define HILDON_IM_WESTERN_FKB_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_WESTERN_FKB_TYPE,\
-                                      HildonIMWesternFKBPrivate))
 
 #define HILDON_IM_WESTERN_FKB_WIDTH 800
 #define HILDON_IM_WESTERN_FKB_HEIGHT 210

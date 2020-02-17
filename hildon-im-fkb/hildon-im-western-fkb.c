@@ -95,9 +95,6 @@ typedef struct {
   guint asterisk_fill_timer;
 } HildonIMWesternFKBPrivate;
 
-static GType hildon_im_western_fkb_type = 0;
-static GtkWidgetClass *parent_class = NULL;
-
 static void hildon_im_western_fkb_class_init(HildonIMWesternFKBClass *klass);
 static void hildon_im_western_fkb_init(HildonIMWesternFKB *fkb);
 static void hildon_im_western_fkb_iface_init(HildonIMPluginIface *iface);
@@ -169,19 +166,22 @@ static void input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer d
 #define tracef
 #endif
 
-/* the rest */
-GType
-hildon_im_western_fkb_get_type (void)
-{
-  return hildon_im_western_fkb_type;
-}
+#define HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb) \
+        ((HildonIMWesternFKBPrivate *)hildon_im_western_fkb_get_instance_private(fkb))
 
-static GObject *hildon_im_western_fkb_new(HildonIMUI *ui)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(
+  HildonIMWesternFKB, hildon_im_western_fkb, GTK_TYPE_CONTAINER, 0,
+  G_ADD_PRIVATE_DYNAMIC(HildonIMWesternFKB);
+  G_IMPLEMENT_INTERFACE_DYNAMIC(HILDON_IM_TYPE_PLUGIN,
+                                hildon_im_western_fkb_iface_init);
+);
+
+static GObject *
+hildon_im_western_fkb_new(HildonIMUI *ui)
 {
   return g_object_new(HILDON_IM_WESTERN_FKB_TYPE,
-                                 HILDON_IM_PROP_UI_DESCRIPTION,
-                                 ui,
-                                 0);
+                      HILDON_IM_PROP_UI_DESCRIPTION, ui,
+                      NULL);
 }
 
 HildonIMPlugin*
@@ -199,36 +199,12 @@ module_exit(void)
 void
 module_init(GTypeModule *module)
 {
-  static const GTypeInfo type_info = {
-    sizeof(HildonIMWesternFKBClass),
-    NULL, /* base_init */
-    NULL, /* base_finalize */
-    (GClassInitFunc) hildon_im_western_fkb_class_init,
-    NULL, /* class_finalize */
-    NULL, /* class_data */
-    sizeof(HildonIMWesternFKB),
-    0, /* n_preallocs */
-    (GInstanceInitFunc) hildon_im_western_fkb_init,
-    NULL
-  };
+  hildon_im_western_fkb_register_type(module);
+}
 
-  static const GInterfaceInfo plugin_info = {
-    (GInterfaceInitFunc) hildon_im_western_fkb_iface_init,
-    NULL, /* interface_finalize */
-    NULL, /* interface_data */
-  };
-
-  hildon_im_western_fkb_type =
-          g_type_module_register_type(module,
-                                      GTK_TYPE_CONTAINER,
-                                      "HildonIMWesternFKB",
-                                      &type_info,
-                                      0);
-
-  g_type_module_add_interface(module,
-                              HILDON_IM_WESTERN_FKB_TYPE,
-                              HILDON_IM_TYPE_PLUGIN,
-                              &plugin_info);
+static void
+hildon_im_western_fkb_class_finalize(HildonIMWesternFKBClass *klass)
+{
 }
 
 static void
@@ -238,9 +214,6 @@ hildon_im_western_fkb_class_init(HildonIMWesternFKBClass *klass)
   GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
   GtkContainerClass *container_class;
-
-  parent_class = g_type_class_peek_parent(klass);
-  g_type_class_add_private(klass, sizeof(HildonIMWesternFKBPrivate));
 
   object_class = G_OBJECT_CLASS(klass);
   gtk_object_class = GTK_OBJECT_CLASS(klass);
@@ -1133,7 +1106,7 @@ hildon_im_western_fkb_get_property (GObject *object,
 tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(object));
 
   switch (prop_id)
   {
@@ -1157,7 +1130,7 @@ hildon_im_western_fkb_set_property(GObject *object,
 tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(object));
 
   switch (prop_id)
   {
@@ -1177,7 +1150,7 @@ hildon_im_western_fkb_finalize(GObject *object)
 tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(object));
 
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(object);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(object));
 
   if ( priv->hwc )
   {
@@ -1189,8 +1162,8 @@ tracef
   g_free((gpointer)priv->predicted_word);
   g_free((gpointer)priv->prediction_lowercase);
 
-  if (G_OBJECT_CLASS(parent_class)->finalize)
-    G_OBJECT_CLASS(parent_class)->finalize(object);
+  if (G_OBJECT_CLASS(hildon_im_western_fkb_parent_class)->finalize)
+    G_OBJECT_CLASS(hildon_im_western_fkb_parent_class)->finalize(object);
 }
 
 static void
@@ -1226,8 +1199,8 @@ tracef
     priv->pango_layout = NULL;
   }
 
-  if (GTK_OBJECT_CLASS(parent_class)->destroy)
-    GTK_OBJECT_CLASS(parent_class)->destroy(object);
+  if (GTK_OBJECT_CLASS(hildon_im_western_fkb_parent_class)->destroy)
+    GTK_OBJECT_CLASS(hildon_im_western_fkb_parent_class)->destroy(object);
 }
 
 static void
@@ -1254,7 +1227,7 @@ tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(plugin);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   if (priv->repeat_start_timer)
   {
@@ -1327,7 +1300,7 @@ tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
 
   fkb = HILDON_IM_WESTERN_FKB(plugin);
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(plugin);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   temp_text_clear(fkb);
   word_completion_clear(fkb);
@@ -1425,7 +1398,7 @@ tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(plugin));
   g_return_if_fail(index >= 0 && index < NUM_LANGUAGES);
 
-  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(plugin);
+  priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(plugin));
 
   language = hildon_im_ui_get_language_setting(priv->ui, index);
   if ( g_ascii_strcasecmp(priv->language[index], language) )
