@@ -310,14 +310,10 @@ hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   priv->surrounding = NULL;
   priv->surrounding_offset = 0;
 
-  vkb = hildon_im_widget_load("vkbrenderer",
-                              "vkb_renderer",
-                              "dimension",
-                              &dimension,
-                              "repeat_interval",
-                              175,
-                              "gesture_range",
-                              40,
+  vkb = hildon_im_widget_load("vkbrenderer", "vkb_renderer",
+                              "dimension", &dimension,
+                              "repeat_interval", 175,
+                              "gesture_range", 40,
                               NULL);
 
   priv->vkb = vkb;
@@ -325,21 +321,28 @@ hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   g_object_set(priv->vkb, "style_normal", "hildon-im-button", NULL);
   g_object_set(priv->vkb, "style_special", "hildon-im-button", NULL);
   g_object_set(priv->vkb, "style_slide", "osso-im-fkb-slide-key", NULL);
-  g_object_set(priv->vkb, "style_backspace", "hildon-im-backspace-button", NULL);
+  g_object_set(priv->vkb, "style_backspace", "hildon-im-backspace-button",
+               NULL);
   g_object_set(priv->vkb, "style_shift", "hildon-im-shift-button", NULL);
 
-  g_signal_connect_data(priv->vkb, "input", G_CALLBACK(input), fkb, 0, 0);
-  g_signal_connect_data(priv->vkb, "temp-input", G_CALLBACK(temp_input_cb), fkb, 0, 0);
-  g_signal_connect_data(priv->vkb, "illegal_input", G_CALLBACK(illegal_input_cb), fkb, 0, 0);
+  g_signal_connect(priv->vkb, "input",
+                   G_CALLBACK(input), fkb);
+  g_signal_connect(priv->vkb, "temp-input",
+                   G_CALLBACK(temp_input_cb), fkb);
+  g_signal_connect(priv->vkb, "illegal_input",
+                   G_CALLBACK(illegal_input_cb), fkb);
 
-  priv->predicted_suffix = 0;
+  priv->predicted_suffix = NULL;
   priv->predicted_candidate = NULL;
   priv->predicted_word = NULL;
   priv->prediction_lowercase = NULL;
   priv->field_B0 = FALSE;
 
   priv->hwc = hildon_im_word_completer_new();
-  g_object_set(priv->hwc, "max_candidates", 1, "min_candidate_suffix_length", 2, NULL);
+  g_object_set(priv->hwc,
+               "max_candidates", 1,
+               "min_candidate_suffix_length", 2,
+               NULL);
 
   priv->pango_layout = pango_layout_new(gdk_pango_context_get());
 
@@ -347,7 +350,7 @@ hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   pango_layout_set_font_description(priv->pango_layout, font);
   pango_font_description_free(font);
 
-  priv->str = 0;
+  priv->str = NULL;
   priv->asterisk_fill_timer = 0;
 }
 
@@ -725,7 +728,7 @@ tracef
 
   g_object_ref(dialog);
   g_object_ref_sink(GTK_OBJECT(dialog));
-  g_signal_connect_data(dialog, "delete-event", G_CALLBACK(dialog_delete_cb), 0, 0, 0);
+  g_signal_connect(dialog, "delete-event", G_CALLBACK(dialog_delete_cb), NULL);
 
   hbox = GTK_BOX(gtk_hbox_new(1, 10));
 
@@ -736,14 +739,16 @@ tracef
   priv->button_common_menu_cut = hildon_button_new_with_text(HILDON_SIZE_FINGER_HEIGHT, 0,
                                     dcgettext(0, "inpu_nc_common_menu_cut", LC_MESSAGES), 0);
 
-  g_signal_connect_data(G_OBJECT(priv->button_common_menu_cut), "clicked", (GCallback)menu_item_selected, fkb, 0, 0);
-  GTK_OBJECT(priv->button_common_menu_cut)->flags &= 0xFFFFF7FFu;
+  g_signal_connect(G_OBJECT(priv->button_common_menu_cut), "clicked",
+                   G_CALLBACK(menu_item_selected), fkb);
+  GTK_OBJECT(priv->button_common_menu_cut)->flags &= 0xFFFFF7FFu; /* FIXME */
   gtk_box_pack_start(common_menu_box, priv->button_common_menu_cut, 1, 1, 0);
 
   /* copy */
   priv->button_common_menu_copy = hildon_button_new_with_text(HILDON_SIZE_FINGER_HEIGHT, 0,
                                     dcgettext(0, "inpu_nc_common_menu_copy", LC_MESSAGES), 0);
-  g_signal_connect_data(G_OBJECT(priv->button_common_menu_copy), "clicked", (GCallback)menu_item_selected, fkb, 0, 0);
+  g_signal_connect(G_OBJECT(priv->button_common_menu_copy), "clicked",
+                   G_CALLBACK(menu_item_selected), fkb);
 
   GTK_OBJECT(priv->button_common_menu_copy)->flags &= 0xFFFFF7FFu;
   gtk_box_pack_start(common_menu_box, priv->button_common_menu_copy, 1, 1, 0);
@@ -752,7 +757,8 @@ tracef
   priv->button_common_menu_paste = hildon_button_new_with_text(HILDON_SIZE_FINGER_HEIGHT, 0,
                                     dcgettext(0, "inpu_nc_common_menu_paste", LC_MESSAGES), 0);
 
-  g_signal_connect_data(G_OBJECT(priv->button_common_menu_paste), "clicked", (GCallback)menu_item_selected, fkb, 0, 0);
+  g_signal_connect(G_OBJECT(priv->button_common_menu_paste), "clicked",
+                   G_CALLBACK(menu_item_selected), fkb);
 
   GTK_OBJECT(priv->button_common_menu_paste)->flags &= 0xFFFFF7FFu;
   gtk_box_pack_start(common_menu_box, priv->button_common_menu_paste, 1, 1, 0);
@@ -779,7 +785,8 @@ tracef
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), (priv->active_language == 0));
 
-    g_signal_connect_data(radio_button, "toggled", (GCallback)language_item_selected_cb, fkb, 0, 0);
+    g_signal_connect(radio_button, "toggled",
+                     G_CALLBACK(language_item_selected_cb), fkb);
     g_free(lang_desc);
 
     lang_desc = hildon_im_get_language_description(second_lang);
@@ -793,8 +800,10 @@ tracef
     GTK_OBJECT(radio_button)->flags &= ~0x80;
 
     gtk_box_pack_start(language_box, radio_button, 1, 1, 0);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), (priv->active_language == 1));
-    g_signal_connect_data(radio_button, "toggled", (GCallback)language_item_selected_cb, fkb, 0, 0);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button),
+                                 (priv->active_language == 1));
+    g_signal_connect(radio_button, "toggled",
+                     G_CALLBACK(language_item_selected_cb), fkb);
     g_free(lang_desc);
 
     gtk_box_pack_start(language_box, gtk_event_box_new(), 1, 1, 0);
@@ -823,10 +832,14 @@ tracef
 static void
 repeating_button_connect_signals(HildonIMWesternFKB *fkb, GtkWidget *obj)
 {
-  g_signal_connect_data(G_OBJECT(obj), "pressed", (GCallback)repeating_button_pressed, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(obj), "released", (GCallback)repeating_button_released, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(obj), "enter", (GCallback)repeating_button_enter, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(obj), "leave", (GCallback)repeating_button_leave, fkb, 0, 0);
+  g_signal_connect(G_OBJECT(obj), "pressed",
+                   G_CALLBACK(repeating_button_pressed), fkb);
+  g_signal_connect(G_OBJECT(obj), "released",
+                   G_CALLBACK(repeating_button_released), fkb);
+  g_signal_connect(G_OBJECT(obj), "enter",
+                   G_CALLBACK(repeating_button_enter), fkb);
+  g_signal_connect(G_OBJECT(obj), "leave",
+                   G_CALLBACK(repeating_button_leave), fkb);
 }
 
 static void
@@ -862,7 +875,8 @@ tracef
   gtk_widget_set_name(GTK_WIDGET(priv->fkb_window), "osso-im-fkb-window");
   gtk_widget_set_size_request(GTK_WIDGET(priv->fkb_window), -1, 500);
 
-  g_signal_connect_data(G_OBJECT(priv->fkb_window), "delete-event", (GCallback)delete_fkb_cb, fkb, 0, 0);
+  g_signal_connect(G_OBJECT(priv->fkb_window), "delete-event",
+                   G_CALLBACK(delete_fkb_cb), fkb);
 
   hbox = gtk_hbox_new(0, 0);
   gtk_container_add(GTK_CONTAINER(priv->fkb_window), hbox);
@@ -890,12 +904,18 @@ tracef
 
   gtk_container_add(GTK_CONTAINER(alignment), scrolled_window);
 
-  g_signal_connect_data(G_OBJECT(priv->textview), "key-press-event", (GCallback)textview_key_press_release_cb, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(priv->textview), "key-release-event", (GCallback)textview_key_press_release_cb, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(priv->textview), "button-press-event", (GCallback)textview_button_press_cb, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(priv->textview), "button-release-event", (GCallback)textview_button_release_cb, fkb, 0, G_CONNECT_AFTER);
-  g_signal_connect_data(G_OBJECT(priv->textview), "drag-data-received", (GCallback)textview_drag_data_received, fkb, 0, 0);
-  g_signal_connect_data(G_OBJECT(priv->textview), "drag-end", (GCallback)textview_drag_end_cb, fkb, 0, 0);
+  g_signal_connect(G_OBJECT(priv->textview), "key-press-event",
+                   G_CALLBACK(textview_key_press_release_cb), fkb);
+  g_signal_connect(G_OBJECT(priv->textview), "key-release-event",
+                   G_CALLBACK(textview_key_press_release_cb), fkb);
+  g_signal_connect(G_OBJECT(priv->textview), "button-press-event",
+                   G_CALLBACK(textview_button_press_cb), fkb);
+  g_signal_connect_after(G_OBJECT(priv->textview), "button-release-event",
+                         G_CALLBACK(textview_button_release_cb), fkb);
+  g_signal_connect(G_OBJECT(priv->textview), "drag-data-received",
+                   G_CALLBACK(textview_drag_data_received), fkb);
+  g_signal_connect(G_OBJECT(priv->textview), "drag-end",
+                   G_CALLBACK(textview_drag_end_cb), fkb);
 
   gtk_container_add(GTK_CONTAINER(vbox), alignment);
 
@@ -938,7 +958,8 @@ tracef
   button = hildon_gtk_toggle_button_new(HILDON_SIZE_FINGER_HEIGHT);
   gtk_widget_set_size_request(button, 108, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
-  g_signal_connect_data(button, "released", (GCallback)numbers_button_release, fkb, 0, 0);
+  g_signal_connect(button, "released",
+                   G_CALLBACK(numbers_button_release), fkb);
   hildon_helper_set_logical_font(button, "X-LargeSystemFont");
   priv->numbers_button = button;
 
@@ -950,8 +971,10 @@ tracef
   gtk_widget_set_size_request(button, 108, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   gtk_container_add(GTK_CONTAINER(button),
-                    gtk_image_new_from_icon_name("keyboard_menu", (GtkIconSize)-1));
-  g_signal_connect_data(button, "clicked", (GCallback)menu_button_cb, fkb, 0, 0);
+                    gtk_image_new_from_icon_name("keyboard_menu",
+                                                 (GtkIconSize)-1));
+  g_signal_connect(button, "clicked",
+                   G_CALLBACK(menu_button_cb), fkb);
   priv->menu_button = button;
 
   /* enter */
@@ -1895,7 +1918,6 @@ tracef
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-
   if (priv->current_input_mode & HILDON_GTK_INPUT_MODE_INVISIBLE)
   {
     gboolean sel_bounds = gtk_text_buffer_get_selection_bounds(priv->text_buffer, NULL, NULL);
@@ -2377,6 +2399,7 @@ tracef
     hildon_im_western_fkb_hide_fkb_window(self);
   }
 }
+
 static void
 word_completion_complete(HildonIMWesternFKB* fkb)
 {
