@@ -2167,9 +2167,7 @@ input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
   HildonIMWesternFKB *fkb;
   HildonIMWesternFKBPrivate *priv;
   gint text_buffer_offset;
-  guint pressed_key_mode;
   gboolean b;
-  gchar *dead_key;
   gboolean update;
 
   tracef
@@ -2207,8 +2205,10 @@ input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
   {
     HildonVKBRenderer *renderer = HILDON_VKB_RENDERER(priv->vkb);
 
-    pressed_key_mode = hildon_vkb_renderer_get_pressed_key_mode(renderer);
-    dead_key = hildon_vkb_renderer_get_dead_key(renderer);
+    guint pressed_key_mode = hildon_vkb_renderer_get_pressed_key_mode(renderer);
+    gchar *dead_key = hildon_vkb_renderer_get_dead_key(renderer);
+
+    pressed_key_mode &= ~KEY_TYPE_EXTRA_BYTE;
 
     if (pressed_key_mode & KEY_TYPE_BACKSPACE)
       goto backspace;
