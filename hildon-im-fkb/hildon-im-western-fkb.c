@@ -2104,7 +2104,12 @@ paste_received(GtkClipboard *clipboard, const gchar *text, gpointer data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
-tracef
+  const gchar *p = text;
+  gchar *word = NULL;
+  glong len;
+  HildonGtkInputMode mode;
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -2112,86 +2117,77 @@ tracef
 
   temp_text_clear(fkb);
 
-  if ( text && g_utf8_validate(text, -1, 0) )
+  if (!text ||! g_utf8_validate(text, -1, NULL))
+    return;
+
+  len = g_utf8_strlen(text, strlen(text));
+  mode = priv->current_input_mode;
+
+  while (len--)
   {
-    glong len = g_utf8_strlen(text, strlen(text));
-    HildonGtkInputMode mode = priv->current_input_mode;
-    const gchar *p = text;
+    gunichar uc = g_utf8_get_char(p);
+    gboolean is_alpha =
+        (uc == ' ' || g_unichar_isalpha(uc)) &&
+        ((mode & HILDON_GTK_INPUT_MODE_ALPHA) ||
+         (mode & HILDON_GTK_INPUT_MODE_HEXA && g_unichar_isxdigit(uc)));
+    gboolean is_digit =
+        g_unichar_isdigit(uc) &&
+        (mode & HILDON_GTK_INPUT_MODE_NUMERIC ||
+         mode & HILDON_GTK_INPUT_MODE_HEXA ||
+         mode & HILDON_GTK_INPUT_MODE_TELE);
+    gboolean is_special =
+        (mode & HILDON_GTK_INPUT_MODE_SPECIAL) ||
+        (uc == '-' && (mode & HILDON_GTK_INPUT_MODE_NUMERIC));
+    GUnicodeBreakType bt;
 
-    if ( !len )
-      goto LABEL_34;
-
-    while ( 1 )
+    if (!is_alpha && !is_digit && !is_special)
     {
-      gunichar uc = g_utf8_get_char(p);
-      if ( g_unichar_isalpha(uc) || uc == ' ' )
-      {
-        if ( mode & HILDON_GTK_INPUT_MODE_ALPHA )
-          goto LABEL_14;
-
-        if ( mode & HILDON_GTK_INPUT_MODE_HEXA && g_unichar_isxdigit(uc))
-        {
-          if ( mode & HILDON_GTK_INPUT_MODE_MULTILINE )
-            goto LABEL_15;
-          goto LABEL_22;
-        }
-      }
-      else
-      {
-        if ( g_unichar_isdigit(uc) )
-        {
-          if (mode & (HILDON_GTK_INPUT_MODE_NUMERIC | HILDON_GTK_INPUT_MODE_HEXA | HILDON_GTK_INPUT_MODE_TELE))
-            goto LABEL_14;
-        }
-        else
-        {
-          if (mode & HILDON_GTK_INPUT_MODE_SPECIAL || (mode & HILDON_GTK_INPUT_MODE_NUMERIC && uc == '-'))
-            goto LABEL_14;
-        }
-      }
-      if ( !(mode & HILDON_GTK_INPUT_MODE_TELE) || !strchr("#*+p0123456789", uc) )
+      if (!(mode & HILDON_GTK_INPUT_MODE_TELE) || !strchr("#*+p0123456789", uc))
         return;
-LABEL_14:
-      if (mode & HILDON_GTK_INPUT_MODE_MULTILINE)
-        goto LABEL_15;
-LABEL_22:
-      if ((g_unichar_break_type(uc) - 1) <= 1 )
-      {
-        gchar * word = g_strndup(text, p - text);
-
-        if (word)
-        {
-          word_completion_update(fkb, word);
-          if ( hildon_im_ui_get_commit_mode(priv->ui) == 1 )
-            hildon_im_ui_send_utf8(priv->ui, word);
-
-          g_free((gpointer)word);
-LABEL_26:
-          word_completion_clear(fkb);
-
-          if ( priv->asterisk_fill_timer )
-          {
-            g_source_remove(priv->asterisk_fill_timer);
-            text_buffer_asterisk_fill(priv);
-          }
-          return;
-        }
-
-LABEL_34:
-        word_completion_update(fkb, text);
-        if ( hildon_im_ui_get_commit_mode(priv->ui) == 1 )
-          hildon_im_ui_send_utf8(priv->ui, text);
-        goto LABEL_26;
-      }
-LABEL_15:
-      len--;
-
-      if ( !len )
-        goto LABEL_34;
-
-      p = g_utf8_next_char(p);
     }
+
+    if (mode & HILDON_GTK_INPUT_MODE_MULTILINE)
+      continue;
+
+    bt = g_unichar_break_type(uc);
+
+    if (bt == G_UNICODE_BREAK_CARRIAGE_RETURN ||
+        bt == G_UNICODE_BREAK_LINE_FEED)
+    {
+      word = g_strndup(text, p - text);
+      break;
+    }
+
+    if (len > 0)
+      p = g_utf8_next_char(p);
   }
+
+  if (word)
+  {
+    word_completion_update(fkb, word);
+
+    if (hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+      hildon_im_ui_send_utf8(priv->ui, word);
+
+    g_free(word);
+  }
+  else
+  {
+    word_completion_update(fkb, text);
+
+    if (hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
+      hildon_im_ui_send_utf8(priv->ui, text);
+  }
+
+  word_completion_clear(fkb);
+
+  if (priv->asterisk_fill_timer)
+  {
+    g_source_remove(priv->asterisk_fill_timer);
+    text_buffer_asterisk_fill(priv);
+  }
+
+  return;
 }
 
 static void
