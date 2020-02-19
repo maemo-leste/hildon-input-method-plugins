@@ -74,7 +74,7 @@ typedef struct {
   GtkWidget *numbers_button;
   GtkWidget *menu_button;
   GtkWidget *enter_button;
-  GtkWidget *repeating_button;
+  GtkWidget *space_button;
 
   gboolean field_80;
   GtkWidget *pressed_repeating_button;
@@ -967,7 +967,7 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   gtk_widget_set_size_request(button, 324, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   repeating_button_connect_signals(fkb, button);
-  priv->repeating_button = button;
+  priv->space_button = button;
   gtk_box_pack_start(GTK_BOX(hbox2), button, FALSE, FALSE, 0);
 
   /* numbers */
@@ -3025,7 +3025,7 @@ repeating_button_process_click(HildonIMWesternFKB *fkb, GtkWidget *widget)
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  if (priv->repeating_button == widget)
+  if (priv->space_button == widget)
     fkb_space(fkb);
 
   else if (priv->enter_button == widget)
