@@ -2194,52 +2194,53 @@ static void
 update_input_mode_and_layout(HildonIMWesternFKB *self)
 {
   HildonIMWesternFKBPrivate *priv;
-  HildonGtkInputMode current_default_input_mode;
-  HildonGtkInputMode current_input_mode;
-  int flags;
-  int mode;
-  unsigned int sub_layout;
-tracef
+  HildonGtkInputMode current_default_im;
+  HildonGtkInputMode current_im;
+  guint mode;
+  gint vkb_mode = 0;
+  guint sub_layout = 0;
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(self));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(self);
 
   priv->current_input_mode = hildon_im_ui_get_current_input_mode(priv->ui);
-  current_default_input_mode = hildon_im_ui_get_current_default_input_mode(priv->ui);
-  priv->current_default_input_mode = current_default_input_mode;
-  current_input_mode = priv->current_input_mode;
-  flags = current_input_mode & current_default_input_mode;
-  if ( !flags )
-    flags = priv->current_input_mode;
-  if ( !(flags & 9) )
-  {
-    if ( flags & 0x12 )
-    {
-      sub_layout = 2;
-      goto LABEL_6;
-    }
-    if ( flags & HILDON_GTK_INPUT_MODE_SPECIAL )
-    {
-      sub_layout = 3;
-      goto LABEL_6;
-    }
-  }
-  sub_layout = 0;
-LABEL_6:
-  mode = -(current_input_mode & 1) & 0x61;
-  if ( current_input_mode & HILDON_GTK_INPUT_MODE_NUMERIC )
-    mode |= 2u;
-  if ( current_input_mode & 4 )
-    mode |= HILDON_GTK_INPUT_MODE_TELE;
-  if ( current_input_mode & 8 )
-    mode |= HILDON_GTK_INPUT_MODE_SPECIAL;
-  if ( current_input_mode & 0x10 )
-    mode |= HILDON_GTK_INPUT_MODE_HEXA;
+  current_default_im =hildon_im_ui_get_current_default_input_mode(priv->ui);
+  priv->current_default_input_mode = current_default_im;
+  current_im = priv->current_input_mode;
+  mode = current_im & current_default_im;
 
-  g_object_set(priv->vkb, "mode", mode, NULL);
+  if (!mode)
+    mode = current_im;
+
+  if (!(mode & (HILDON_GTK_INPUT_MODE_ALPHA | HILDON_GTK_INPUT_MODE_HEXA)))
+  {
+    if (mode & (HILDON_GTK_INPUT_MODE_NUMERIC | HILDON_GTK_INPUT_MODE_TELE))
+      sub_layout = 2;
+    else if (mode & HILDON_GTK_INPUT_MODE_SPECIAL)
+      sub_layout = 3;
+  }
+
+  if (current_im & HILDON_GTK_INPUT_MODE_ALPHA)
+    vkb_mode = KEY_TYPE_ALPHA | KEY_TYPE_DEAD | KEY_TYPE_WHITESPACE;
+
+  if (current_im & HILDON_GTK_INPUT_MODE_NUMERIC)
+    vkb_mode |= KEY_TYPE_NUMERIC;
+
+  if (current_im & HILDON_GTK_INPUT_MODE_SPECIAL)
+    vkb_mode |= KEY_TYPE_SPECIAL;
+
+  if (current_im & HILDON_GTK_INPUT_MODE_HEXA)
+    vkb_mode |= KEY_TYPE_HEXA;
+
+  if (current_im & HILDON_GTK_INPUT_MODE_TELE)
+    vkb_mode |= KEY_TYPE_TELE;
+
+  g_object_set(priv->vkb, "mode", vkb_mode, NULL);
   fkb_set_layout(self, sub_layout);
 
-  if ( priv->layout_info )
+  if (priv->layout_info)
   {
     layout_info_free(priv->layout_info);
     priv->layout_info = NULL;
