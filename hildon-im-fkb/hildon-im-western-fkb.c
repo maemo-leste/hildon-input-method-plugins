@@ -1426,6 +1426,8 @@ temp_text_clear(HildonIMWesternFKB *fkb)
 static gboolean
 delete_fkb_cb(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
+  g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data), FALSE);
+
   hildon_im_western_fkb_hide_fkb_window(HILDON_IM_WESTERN_FKB(data));
   return TRUE;
 }
