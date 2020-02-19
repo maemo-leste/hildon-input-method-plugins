@@ -972,7 +972,6 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   gtk_widget_set_name(button, "hildon-im-alt-button");
   g_signal_connect(button, "released",
                    G_CALLBACK(numbers_button_release), fkb);
-  hildon_helper_set_logical_font(button, "X-LargeSystemFont");
   priv->numbers_button = button;
 
   gtk_box_pack_start(GTK_BOX(vbox2), button, TRUE, TRUE, 0);
@@ -1574,6 +1573,7 @@ hildon_im_western_fkb_language(HildonIMPlugin *plugin)
   {
     gtk_button_set_label(GTK_BUTTON(priv->numbers_button),
                          priv->layout_info->label[2]);
+    hildon_helper_set_logical_font(priv->numbers_button, "X-LargeSystemFont");
   }
 }
 
