@@ -1913,22 +1913,17 @@ static gboolean
 textview_key_press_release_cb(GtkWidget *widget, GdkEventKey *event,
                               gpointer data)
 {
+  guint keyval = event->keyval;
+
   tracef
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data),FALSE);
 
-  if (event->keyval == GDK_KP_Enter)
-    return TRUE;
-
-  if (event->keyval > GDK_KP_Enter)
+  if (keyval != GDK_KEY_BackSpace && keyval != GDK_KEY_Tab &&
+      keyval != GDK_KEY_KP_Enter &&  keyval != GDK_KEY_F7 &&
+      keyval != GDK_KEY_F8)
   {
-    if (event->keyval - GDK_F7 <= 1)
-      return TRUE;
-
     hildon_im_western_fkb_hide_fkb_window(HILDON_IM_WESTERN_FKB(data));
   }
-
-  if (event->keyval - GDK_BackSpace > 1)
-    hildon_im_western_fkb_hide_fkb_window(HILDON_IM_WESTERN_FKB(data));
 
   return TRUE;
 }
@@ -1958,7 +1953,8 @@ fkb_delete_selection(HildonIMWesternFKB *fkb, gboolean clear_wc,
   gint text_buffer_offset;
   GtkTextIter iter_end;
   GtkTextIter iter_start;
-tracef
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(fkb));
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
@@ -1971,20 +1967,24 @@ tracef
 
   temp_text_clear(fkb);
 
-  if ( priv->current_input_mode & HILDON_GTK_INPUT_MODE_INVISIBLE )
+  if (priv->current_input_mode & HILDON_GTK_INPUT_MODE_INVISIBLE)
   {
     gint start_len = g_utf8_len_from_offset(priv->str->str, start);
     gint end_len = g_utf8_len_from_offset(priv->str->str, end);
     priv->str = g_string_erase(priv->str, start_len, end_len - start_len);
   }
 
-  if ( redirect && hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT )
+  if (redirect &&
+      hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
   {
     if ((text_buffer_offset == start) && (end - start))
       hildon_im_ui_send_surrounding_offset(priv->ui, TRUE, end - start);
 
-    for(;start<end;start++)
-      hildon_im_ui_send_communication_message(priv->ui, HILDON_IM_CONTEXT_HANDLE_BACKSPACE);
+    for (; start < end; start++)
+    {
+      hildon_im_ui_send_communication_message(
+            priv->ui, HILDON_IM_CONTEXT_HANDLE_BACKSPACE);
+    }
   }
 
   if (clear_wc)
@@ -2000,7 +2000,8 @@ menu_button_cb(GtkWidget *widget, void *data)
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
   gint selection;
-tracef
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
@@ -2008,7 +2009,9 @@ tracef
 
   if (priv->current_input_mode & HILDON_GTK_INPUT_MODE_INVISIBLE)
   {
-    gboolean sel_bounds = gtk_text_buffer_get_selection_bounds(priv->text_buffer, NULL, NULL);
+    gboolean sel_bounds =
+        gtk_text_buffer_get_selection_bounds(priv->text_buffer, NULL, NULL);
+
     gtk_widget_set_sensitive(priv->button_common_menu_cut, sel_bounds);
     gtk_widget_set_sensitive(priv->button_common_menu_copy, sel_bounds);
   }
@@ -2024,11 +2027,11 @@ tracef
 
   gtk_widget_hide(GTK_WIDGET(priv->control_menu));
 
-  switch ( selection )
+  switch (selection)
   {
     case 0:
       if(hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_REDIRECT)
-        fkb_delete_selection(fkb, 0, 1);
+        fkb_delete_selection(fkb, FALSE, TRUE);
 
       gtk_text_buffer_cut_clipboard(priv->text_buffer,
                                     gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
@@ -2046,13 +2049,17 @@ tracef
       break;
     case 3:
       g_warning("%d %d", 0, priv->active_language);
-      if ( priv->active_language )
+
+      if (priv->active_language)
         hildon_im_ui_set_active_language_index(priv->ui, 0);
+
       break;
     case 4:
       g_warning("%d %d", 1, priv->active_language);
-      if ( priv->active_language != 1 )
+
+      if (priv->active_language != 1)
         hildon_im_ui_set_active_language_index(priv->ui, 1);
+
       break;
     default:
       break;
@@ -2068,23 +2075,25 @@ clipboard_targets_received_callback(GtkClipboard *clipboard, GdkAtom *atoms,
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
   gboolean sensitive = FALSE;
-tracef
+  int i;
+
+  tracef
   g_return_if_fail(HILDON_IM_IS_WESTERN_FKB(data));
 
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  if ( n_atoms > 0 )
+  for (i = 0; i < n_atoms; i++)
   {
-    int i;
-    for(i=0;i<n_atoms;i++)
-      if(atoms[i] == gdk_atom_intern("UTF8_STRING", 0) ||
-         atoms[i] == gdk_atom_intern("COMPOUND_TEXT", 0) ||
-         atoms[i] == GDK_TARGET_STRING )
-      {
-        sensitive = TRUE;
-        break;
-      }
+    GdkAtom atom = atoms[i];
+
+    if (atom == gdk_atom_intern("UTF8_STRING", 0) ||
+        atom == gdk_atom_intern("COMPOUND_TEXT", 0) ||
+        atom == GDK_TARGET_STRING)
+    {
+      sensitive = TRUE;
+      break;
+    }
   }
 
   gtk_widget_set_sensitive(priv->button_common_menu_paste, sensitive);
