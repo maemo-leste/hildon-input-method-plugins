@@ -1594,9 +1594,10 @@ hildon_im_western_fkb_save_data(HildonIMPlugin *plugin)
     hildon_im_word_completer_save_data(priv->hwc);
 }
 
-static void
-text_buffer_asterisk_fill(HildonIMWesternFKBPrivate *priv)
+static gboolean
+text_buffer_asterisk_fill(gpointer user_data)
 {
+  HildonIMWesternFKBPrivate *priv = user_data;
   glong len;
   gchar *str;
 
@@ -1607,6 +1608,8 @@ text_buffer_asterisk_fill(HildonIMWesternFKBPrivate *priv)
   gtk_text_buffer_set_text(priv->text_buffer, str, len);
   g_free(str);
   priv->asterisk_fill_timer = 0;
+
+  return FALSE;
 }
 
 static void
@@ -2978,7 +2981,7 @@ word_completion_update(HildonIMWesternFKB *fkb, const char *val)
                                 val);
     gtk_text_buffer_insert_at_cursor(priv->text_buffer, val, strlen(val));
     priv->asterisk_fill_timer =
-        g_timeout_add(600, (GSourceFunc)text_buffer_asterisk_fill, priv);
+        g_timeout_add(600, text_buffer_asterisk_fill, priv);
   }
   else
     gtk_text_buffer_insert_at_cursor(priv->text_buffer, val, strlen(val));
