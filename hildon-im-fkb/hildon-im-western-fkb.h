@@ -30,9 +30,6 @@
 #define HILDON_IM_IS_WESTERN_FKB(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_WESTERN_FKB_TYPE )
 
-#define HILDON_IM_WESTERN_FKB_WIDTH 800
-#define HILDON_IM_WESTERN_FKB_HEIGHT 210
-
 typedef struct {
   GtkContainer parent;
 } HildonIMWesternFKB;
@@ -40,7 +37,5 @@ typedef struct {
 typedef struct {
   GtkContainerClass parent;
 } HildonIMWesternFKBClass;
-
-#define NUM_LANGUAGES 2
 
 #endif /* __HILDON_IM_WESTERN_FKB_H__ */

@@ -40,6 +40,9 @@
 #include "hildon-im-western-plugin-common.h"
 #include "hildon-im-word-completer.h"
 
+#define HILDON_IM_WESTERN_FKB_HEIGHT 210
+#define NUM_LANGUAGES 2
+
 typedef struct {
   HildonIMUI *ui;
   GtkWidget *fkb_window;
@@ -262,7 +265,8 @@ hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   PangoFontDescription *font;
   GtkRequisition dimension;
 
-  dimension.width = HILDON_IM_WESTERN_FKB_WIDTH;
+  dimension.width =
+      gdk_screen_get_width(gtk_widget_get_screen(GTK_WIDGET(fkb)));
   dimension.height = HILDON_IM_WESTERN_FKB_HEIGHT;
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE (HILDON_IM_WESTERN_FKB(fkb));
@@ -998,7 +1002,7 @@ fkb_window_create(HildonIMWesternFKB *fkb)
         gtk_image_new_from_icon_name("keyboard_enter", (GtkIconSize)-1));
   priv->enter_button = button;
 
-  gtk_widget_set_size_request(priv->vkb, 800, 210);
+  gtk_widget_set_size_request(priv->vkb, -1, 210);
   hbox1 = gtk_hbox_new(FALSE, 0);
 
   gtk_box_pack_start(GTK_BOX(hbox1), priv->menu_button, FALSE, FALSE, 0);
