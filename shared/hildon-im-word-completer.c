@@ -691,13 +691,14 @@ gboolean hildon_im_word_completer_is_interesting_key(HildonIMWordCompleter *wc, 
   return result;
 }
 
-void hildon_im_word_completer_remove_word(HildonIMWordCompleter *wc, const gchar *word)
+void
+hildon_im_word_completer_remove_word(HildonIMWordCompleter *wc,
+                                     const gchar *word)
 {
-  guint index;
+  gboolean exists = FALSE;
 
-  index = 0;
-  if ( imengines_wp_word_exists(word, 1, &index) )
-    imengines_wp_delete_word(word, 1, index);
+  if (imengines_wp_word_exists(word, 1, &exists))
+    imengines_wp_delete_word(word, 1, exists);
 }
 
 gboolean hildon_im_word_completer_add_to_dictionary(HildonIMWordCompleter *wc, const gchar *word)

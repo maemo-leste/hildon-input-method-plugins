@@ -472,6 +472,7 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
       {
         const gchar *layout;
         gchar *message;
+        const char *msgid = "inpu_ib_quick_layout_switch";
 
         priv->int_kb_level_shifted = !priv->int_kb_level_shifted;
 
@@ -480,8 +481,7 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
         else
           layout = "Latin";
 
-        message = g_strdup_printf(
-              dgettext(NULL, "inpu_ib_quick_layout_switch"), layout);
+        message = g_strdup_printf(dgettext(NULL, msgid), layout);
 
         gconf_client_set_bool(
               priv->ui->client, HILDON_IM_GCONF_INT_KB_LEVEL_SHIFTED,
@@ -499,9 +499,10 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
 
         if (language && *language)
         {
+          const char *msgid = "inpu_ib_quick_layout_language";
           gchar *language_desc = hildon_im_get_language_description(language);
-          gchar *message = g_strdup_printf(
-                dgettext(NULL, "inpu_ib_quick_layout_language"), language_desc);
+          gchar *message =
+              g_strdup_printf(dgettext(NULL, msgid), language_desc);
 
           g_free(language_desc);
           priv->language_switched = TRUE;
