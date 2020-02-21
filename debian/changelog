@@ -1,3 +1,16 @@
+hildon-input-method-plugins (3.9.81) unstable; urgency=low
+
+  * hildon-im-keyboard-assistant-scv: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
+  * keyboard-monitor: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
+  * keyboard-monitor: Do not try to gtk_widget_destroy() of an invalid pointer
+  * hildon-im-fkb: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
+  * hildon-im-fkb: Make sure 'numbers button' label does not reset font size
+  * hildon-im-fkb: use the whole display width to draw button backgrounds
+  * hildon-im-fkb: Do not hide fkb_window prematurely
+  * port to debhelper 10
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Fri, 21 Feb 2020 18:55:33 +0200
+
 hildon-input-method-plugins (3.9.80) unstable; urgency=low
 
   * cvim-settings: always append "use fkb", no matter is there internal kbd
