@@ -1333,7 +1333,7 @@ hildon_im_western_fkb_disable(HildonIMPlugin *plugin)
   if (!hildon_im_ui_get_input_window(priv->ui))
     hildon_im_western_fkb_hide_fkb_window(fkb);
 
-  g_free((gpointer)priv->surrounding);
+  g_free(priv->surrounding);
   priv->surrounding = NULL;
   priv->surrounding_offset = 0;
 
@@ -1426,6 +1426,8 @@ temp_text_clear(HildonIMWesternFKB *fkb)
 static gboolean
 delete_fkb_cb(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
+  tracef
+
   g_return_val_if_fail(HILDON_IM_IS_WESTERN_FKB(data), FALSE);
 
   hildon_im_western_fkb_hide_fkb_window(HILDON_IM_WESTERN_FKB(data));
@@ -1968,7 +1970,8 @@ fkb_delete_selection(HildonIMWesternFKB *fkb, gboolean clear_wc,
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  gtk_text_buffer_get_selection_bounds(priv->text_buffer, &iter_start, &iter_end);
+  gtk_text_buffer_get_selection_bounds(
+        priv->text_buffer, &iter_start, &iter_end);
   text_buffer_offset = get_text_buffer_offset(fkb);
 
   start = gtk_text_iter_get_offset(&iter_start);
