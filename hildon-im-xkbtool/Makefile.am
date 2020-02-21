@@ -1,5 +1,4 @@
-INCLUDES = \
-       $(DEPS_CFLAGS)
+AM_CPPFLAGS = $(DEPS_CFLAGS)
 
 bin_PROGRAMS = hildon-im-xkbtool
 

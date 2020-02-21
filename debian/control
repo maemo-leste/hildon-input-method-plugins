@@ -2,10 +2,10 @@ Source: hildon-input-method-plugins
 Section: x11
 Priority: optional
 Maintainer: Ivaylo Dimitrov <freemangordon@abv.bg>
-Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake,
+Build-Depends: debhelper (>= 10), autotools-dev, autoconf, automake,
   libgtk2.0-dev, libglib2.0-dev, libx11-dev, hildon-input-method-framework-dev (>= 2.1.61),
-  libimlayouts0-dev (>= 1.6.0), libimengines4-dev, hildon-im-vkbrenderer3-dev, libhildon-im-ui-dev,
-  libxkbfile-dev, cdbs, libgconf2-dev, libhildon1-dev, libimengines-wp4-dev, libosso-dev
+  libimlayouts0-dev (>= 1.6.0), libimengines4-dev, hildon-im-vkbrenderer3-dev, libhildon-im-ui-dev (>= 1:2.1.54),
+  libxkbfile-dev, libgconf2-dev, libhildon1-dev, libimengines-wp4-dev, libosso-dev, dh-exec (>=0.3)
 Standards-Version: 3.7.2
 
 Package: hildon-im-fkb
@@ -14,23 +14,11 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Western Finger Keyboard plugin
  This packages provides the Finger keyboard (FKB).
 
-Package: hildon-im-fkb-dbg
-Section: devel
-Architecture: any
-Depends: hildon-im-fkb (= ${binary:Version})
-Description: Debugging symbols for Western Finger Keyboard plugin
-
 Package: hildon-im-keyboard-assistant
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Inline word completion plugin for the slide keyboard
  This packages provides the word completion for the slide keyboard.
-
-Package: hildon-im-keyboard-assistant-dbg
-Section: devel
-Architecture: any
-Depends: hildon-im-keyboard-assistant (= ${binary:Version})
-Description: Debugging symbols for Inline word completion plugin for the slide keyboard
 
 Package: hildon-im-keyboard-assistant-scv
 Architecture: any
@@ -38,23 +26,11 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Special character view for the slide keyboard
  This packages provides the special character view for the slide keyboard
 
-Package: hildon-im-keyboard-assistant-scv-dbg
-Section: devel
-Architecture: any
-Depends: hildon-im-keyboard-assistant-scv (= ${binary:Version})
-Description: Debugging symbols for Special character view for the slide keyboard
-
 Package: libhildon-im-western-plugin-common3
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Common functionality in western Hildon IM plugins
  This packages provides the common functionality in western Hildon IM plugins.
-
-Package: libhildon-im-western-plugin-common3-dbg
-Section: devel
-Architecture: any
-Depends: libhildon-im-western-plugin-common3 (= ${binary:Version})
-Description: Debugging symbols for Common functionality in western Hildon IM plugins
 
 Package: hildon-im-plugin-base-settings
 Architecture: all
@@ -66,12 +42,6 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Western word completion Text Input Settings plugin
  This packages provides the word completion Text Input Settings plugin.
-
-Package: hildon-im-common-virtual-settings-dbg
-Section: devel
-Architecture: any
-Depends: hildon-im-common-virtual-settings (= ${binary:Version})
-Description: Debugging symbols for Western word completion Text Input Settings plugin
 
 Package: hildon-im-virtual-keyboard-layouts
 Architecture: any

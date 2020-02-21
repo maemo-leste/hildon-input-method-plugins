@@ -4,51 +4,13 @@
 
 # export DH_VERBOSE=1
 
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -Werror
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+export himplugindir ?= $(shell pkg-config --variable=himplugindir hildon-input-method-ui-3.0)
 
-DEB_INSTALL_DOCS_hildon-im-fkb = --no-act
-DEB_INSTALL_CHANGELOGS_hildon-im-fkb = --no-act
-DEB_INSTALL_MANPAGES_hildon-im-fkb = --no-act
-DEB_INSTALL_DOCS_hildon-im-keyboard-monitor = --no-act
-DEB_INSTALL_CHANGELOGS_hildon-im-keyboard-monitor = --no-act
-DEB_INSTALL_MANPAGES_hildon-im-keyboard-monitor = --no-act
-DEB_INSTALL_DOCS_libhildon-im-western-plugin-common3 = --no-act
-DEB_INSTALL_CHANGELOGS_libhildon-im-western-plugin-common3 = --no-act
-DEB_INSTALL_MANPAGES_libhildon-im-western-plugin-common3 = --no-act
-DEB_DH_SHLIBDEPS_ARGS_ALL = -- --ignore-missing-info
+%:
+	dh $@ --with autoreconf
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/class/gnome.mk
-
-CFLAGS = -Wall -ggdb -Wno-format-extra-args
-
-# Use thumb mode if it enabled.
-ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -mthumb
-endif
-
-# ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-# 	CFLAGS += -DG_DISABLE_CAST_CHECKS
-# endif
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-
-update-config:: configure-stamp
-configure-stamp:
-	./autogen.sh
-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-static CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
-	touch $@
-
-clean::
-	rm -f configure-stamp
-
-	-./antigen.sh
-
-	dh_clean -k
+override_dh_autoreconf:
+	dh_autoreconf --as-needed

@@ -1,1 +1,3 @@
-debian/tmp/usr/lib/hildon-input-method/hildon_western_fkb.so
+#!/usr/bin/dh-exec
+
+${himplugindir}/hildon_western_fkb.so

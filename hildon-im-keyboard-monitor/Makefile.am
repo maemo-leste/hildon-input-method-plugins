@@ -1,5 +1,4 @@
-INCLUDES = \
-       $(DEPS_CFLAGS)
+AM_CPPFLAGS = $(DEPS_CFLAGS)
 
 himplugin_LTLIBRARIES = hildon_im_keyboard_monitor.la
 

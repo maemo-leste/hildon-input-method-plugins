@@ -1,3 +1,5 @@
-debian/tmp/usr/lib/hildon-input-method/hildon_im_keyboard_monitor.so
-debian/tmp/usr/lib/hildon-input-method/hildon_keyboard_assistant.so
-debian/tmp/usr/bin/*
+#!/usr/bin/dh-exec
+
+${himplugindir}/hildon_im_keyboard_monitor.so
+${himplugindir}/hildon_keyboard_assistant.so
+usr/bin/*

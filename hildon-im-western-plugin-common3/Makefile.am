@@ -1,5 +1,4 @@
-INCLUDES = \
-       $(DEPS_CFLAGS)
+AM_CPPFLAGS = $(DEPS_CFLAGS)
 
 lib_LTLIBRARIES = libhildon-im-western-plugin-common.la
 
