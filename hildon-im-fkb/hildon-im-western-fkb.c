@@ -1279,7 +1279,6 @@ hildon_im_western_fkb_hide_fkb_window(HildonIMWesternFKB *fkb)
   tracef
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  gtk_widget_hide(GTK_WIDGET(priv->fkb_window));
   hildon_im_ui_restore_previous_mode(priv->ui);
 }
 
