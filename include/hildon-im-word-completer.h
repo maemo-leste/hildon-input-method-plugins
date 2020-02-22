@@ -29,15 +29,9 @@
                              HildonIMWordCompleterClass)
 #define HILDON_IM_IS_WORD_COMPLETER(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_WORD_COMPLETER_TYPE )
-#define HILDON_IM_WORD_COMPLETER_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_WORD_COMPLETER_TYPE,\
-                                      HildonIMWordCompleterPrivate))
-
-typedef struct _HildonIMWordCompleterPrivate HildonIMWordCompleterPrivate;
 
 typedef struct {
   GObject parent;
-  HildonIMWordCompleterPrivate * priv;
 } HildonIMWordCompleter;
 
 typedef struct {

@@ -20,9 +20,7 @@
 
 #include "hildon-im-word-completer.h"
 
-static GType hildon_im_word_completer_type = 0;
 static HildonIMWordCompleter *hildon_im_word_completer = NULL;
-static GObjectClass *parent_class = NULL;
 
 enum{
   HILDON_IM_WORD_COMPLETER_PROP_LANGUAGE = 1,
@@ -41,8 +39,10 @@ struct _HildonIMWordCompleterPrivate{
   gchar *base_dir;
 };
 
-static void hildon_im_word_completer_class_init(HildonIMWordCompleterClass *klass);
-static void hildon_im_word_completer_init(HildonIMWordCompleter *wc);
+#define HILDON_IM_WORD_COMPLETER_GET_PRIVATE(completer) \
+  ((HildonIMWordCompleterPrivate *)hildon_im_word_completer_get_instance_private(completer))
+
+typedef struct _HildonIMWordCompleterPrivate HildonIMWordCompleterPrivate;
 
 static GObject* hildon_im_word_completer_constructor(GType gtype, guint n_properties, GObjectConstructParam *properties);
 static void hildon_im_word_completer_finalize(GObject *object);
@@ -50,30 +50,9 @@ static void hildon_im_word_completer_finalize(GObject *object);
 static void hildon_im_word_completer_set_property(GObject *object,guint prop_id,const GValue *value,GParamSpec *pspec);
 static void hildon_im_word_completer_get_property(GObject *object,guint prop_id,GValue *value,GParamSpec *pspec);
 
-GType hildon_im_word_completer_get_type()
-{
-  static const GTypeInfo type_info = {
-    sizeof(HildonIMWordCompleterClass),
-    NULL, /* base_init */
-    NULL, /* base_finalize */
-    (GClassInitFunc) hildon_im_word_completer_class_init,
-    NULL, /* class_finalize */
-    NULL, /* class_data */
-    sizeof(HildonIMWordCompleter),
-    0, /* n_preallocs */
-    (GInstanceInitFunc) hildon_im_word_completer_init,
-    NULL
-  };
-
-  if(!hildon_im_word_completer_type)
-    hildon_im_word_completer_type = g_type_register_static(
-          G_TYPE_OBJECT,
-          "HildonIMWordCompleter",
-          &type_info,
-          0);
-
-  return hildon_im_word_completer_type;
-}
+G_DEFINE_TYPE_WITH_PRIVATE(
+    HildonIMWordCompleter, hildon_im_word_completer, G_TYPE_OBJECT
+);
 
 gpointer hildon_im_word_completer_new()
 {
@@ -85,8 +64,6 @@ static void hildon_im_word_completer_class_init(HildonIMWordCompleterClass *klas
   GObjectClass *object_class;
 
   object_class = G_OBJECT_CLASS(klass);
-  g_type_class_add_private(klass, sizeof(HildonIMWordCompleterPrivate));
-  parent_class = g_type_class_peek_parent(klass);
 
   object_class->constructor = hildon_im_word_completer_constructor;
   object_class->set_property = hildon_im_word_completer_set_property;
@@ -140,11 +117,8 @@ static void hildon_im_word_completer_class_init(HildonIMWordCompleterClass *klas
 
 static void hildon_im_word_completer_init(HildonIMWordCompleter *wc)
 {
-  HildonIMWordCompleterPrivate *priv;
+  HildonIMWordCompleterPrivate *priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE(wc);
 
-  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (HILDON_IM_WORD_COMPLETER(wc));
-
-  wc->priv = priv;
   priv->lang[0] = g_strdup("en_GB");
   priv->lang[1] = g_strdup("en_GB");
   priv->dual_dictionary = FALSE;
@@ -176,7 +150,7 @@ static GObject* hildon_im_word_completer_constructor(GType gtype, guint n_proper
     obj = g_object_ref(G_OBJECT(hildon_im_word_completer));
   else
   {
-    obj = G_OBJECT_CLASS(parent_class)->constructor(gtype, n_properties, properties);
+    obj = G_OBJECT_CLASS(hildon_im_word_completer_parent_class)->constructor(gtype, n_properties, properties);
     hildon_im_word_completer = HILDON_IM_WORD_COMPLETER(obj);
   }
 
@@ -200,8 +174,8 @@ static void hildon_im_word_completer_finalize(GObject *object)
 
   g_free(priv->base_dir);
 
-  if (G_OBJECT_CLASS(parent_class)->finalize)
-    G_OBJECT_CLASS(parent_class)->finalize(object);
+  if (G_OBJECT_CLASS(hildon_im_word_completer_parent_class)->finalize)
+    G_OBJECT_CLASS(hildon_im_word_completer_parent_class)->finalize(object);
 
   hildon_im_word_completer = 0;
 }
@@ -215,7 +189,7 @@ static void hildon_im_word_completer_set_property(GObject *object,
 
   g_return_if_fail(HILDON_IM_IS_WORD_COMPLETER(object));
 
-  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE(object);
+  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE(HILDON_IM_WORD_COMPLETER(object));
 
   switch (prop_id)
   {
@@ -317,7 +291,7 @@ hildon_im_word_completer_get_property(GObject *object,
 
   g_return_if_fail(HILDON_IM_IS_WORD_COMPLETER(object));
 
-  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE(object);
+  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE(HILDON_IM_WORD_COMPLETER(object));
 
   switch (prop_id)
   {
