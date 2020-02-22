@@ -418,8 +418,7 @@ gboolean
 hildon_im_word_completer_hit_word(HildonIMWordCompleter *wc, const gchar *text,
                                   gboolean b)
 {
-  gboolean has_lang;
-  gboolean ret;
+  gboolean ret = FALSE;
   gchar *word;
   HildonIMWordCompleterPrivate *priv;
   gchar *p;
@@ -466,97 +465,64 @@ go_on:
   p = g_utf8_offset_to_pointer(word, g_utf8_strlen(word, -1) - 1);
   last_char = g_utf8_get_char(p);
 
-  i = 0;
-
-  while (1)
+  for (i = 0; i < G_N_ELEMENTS(special_chars); i++)
   {
     gchar *s = g_utf8_normalize(special_chars[i], -1, G_NORMALIZE_DEFAULT);
     gunichar uc = g_utf8_get_char_validated(s, -1);
     g_free(s);
 
-    if (last_char == uc)
+    if (uc == last_char)
     {
       *p = 0;
       break;
     }
-
-    i++;
-
-    if (i == (sizeof(special_chars) / sizeof(special_chars[0])))
-      break;
   }
 
-
-  i = 0;
-
-  while (1)
+  for (i = 0; (i < priv->dual_dictionary ? 1 : 2) && !ret; i++)
   {
-    if (*priv->lang[0])
-    {
-      has_lang = TRUE;
+    gboolean has_lang = *priv->lang[0] || *priv->lang[1];
+    gboolean move_word = FALSE;
 
-      if (b)
-        goto LABEL_31;
+    if (b)
+    {
+      if (hildon_im_word_completer_word_at_index(1, word, i))
+        ret = hildon_im_word_completer_move_word(1, word, i);
+      else
+      {
+        if (hildon_im_word_completer_word_at_index(2, word, i))
+          move_word = TRUE;
+        else if (has_lang && hildon_im_word_completer_word_at_index(0, word, i))
+          ret = TRUE;
+      }
     }
     else
     {
-      has_lang = (*priv->lang[1] != 0);
-
-      if (b)
+      if (has_lang && hildon_im_word_completer_word_at_index(0, word, i))
+        move_word = TRUE;
+      else
       {
-LABEL_31:
-        if (b != 1)
-          goto LABEL_32;
-
-        if (hildon_im_word_completer_word_at_index(1u, word, i))
-          ret = hildon_im_word_completer_move_word(1, word, i);
+        if (!hildon_im_word_completer_word_at_index(1, word, i))
+        {
+          if (hildon_im_word_completer_word_at_index(2, word, i))
+            move_word = TRUE;
+        }
         else
         {
           if (hildon_im_word_completer_word_at_index(2, word, i))
-            goto LABEL_39;
+            ret = hildon_im_word_completer_move_word(2, word, i);
 
-          if (!has_lang || !hildon_im_word_completer_word_at_index(0, word, i))
-          {
-LABEL_32:
-            ret = FALSE;
-            goto LABEL_27;
-          }
-
-          ret = TRUE;
+          imengines_wp_delete_word(word, 1, i);
         }
-
-        goto LABEL_27;
       }
     }
 
-    if (has_lang && hildon_im_word_completer_word_at_index(0, word, i))
-      goto LABEL_39;
-
-    if (!hildon_im_word_completer_word_at_index(1u, word, i))
-    {
-      if ( !hildon_im_word_completer_word_at_index(2u, word, i) )
-        goto LABEL_32;
-LABEL_39:
-      ret = hildon_im_word_completer_move_word(2, (gchar *)word, i);
-      goto LABEL_27;
-    }
-    ret = hildon_im_word_completer_word_at_index(2u, word, i) ?
-          0 : hildon_im_word_completer_move_word(2, word, i);
-    imengines_wp_delete_word(word, 1, i);
-LABEL_27:
-    ++i;
-
-    if ( (priv->dual_dictionary != 0) < i )
-      break;
-
-    if (ret)
-      goto LABEL_42;
+    if (move_word)
+      ret = hildon_im_word_completer_move_word(2, word, i);
   }
 
   if (!ret)
     ret = hildon_im_word_completer_move_word(1, word, 0);
 
-LABEL_42:
   g_free(word);
 
   return ret;
