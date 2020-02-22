@@ -630,62 +630,50 @@ str_contains_uppercase(const gchar *s)
 }
 
 gchar *
-ildon_im_word_completer_get_one_candidate(HildonIMWordCompleter *wc,
+hildon_im_word_completer_get_one_candidate(HildonIMWordCompleter *wc,
                                           const gchar *previous_word,
                                           const gchar *current_word)
 {
-  gchar *rv;
-  HildonIMWordCompleterPrivate *priv;
-  gchar *prevtext = NULL;
-  gchar *curtext = NULL;
-  glong len;
-  int i;
+  HildonIMWordCompleterPrivate *priv =
+      HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
+  glong len = g_utf8_strlen(current_word, -1);
   imengines_wp_candidates candidates={0,};
-
-  priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE (wc);
-
-  len = g_utf8_strlen(current_word, -1);
+  gchar *prev = NULL;
+  gchar *curr = NULL;
+  gchar *rv = NULL;
 
   if (previous_word)
-    prevtext = g_utf8_strdown(previous_word, -1);
+    prev = g_utf8_strdown(previous_word, -1);
 
   if (current_word)
-    curtext = g_utf8_strdown(current_word, -1);
+    curr = g_utf8_strdown(current_word, -1);
 
-  if (!imengines_wp_get_candidates(prevtext, curtext, &candidates) &&
-      candidates.number_of_candidates > 0)
+  if (!imengines_wp_get_candidates(prev, curr, &candidates))
   {
-    i = 0;
+    int i;
 
-    while ( 1 )
+    for (i = 0; i < candidates.number_of_candidates; i++)
     {
-      if (g_utf8_strlen(candidates.candidate[i], -1) - len < priv->max_suffix)
-        rv = 0;
-      else
+      const gchar *c = candidates.candidate[i];
+
+      if (priv->max_suffix < g_utf8_strlen(c, -1) - len)
       {
         if (str_contains_uppercase(current_word) &&
             g_utf8_strlen(current_word, -1) > 1)
         {
-          rv = g_utf8_strup(candidates.candidate[i], -1);
+          rv = g_utf8_strup(c, -1);
         }
         else
-          rv = g_strdup(candidates.candidate[i]);
+          rv = g_strdup(c);
 
         if (rv)
-          goto LABEL_7;
+          break;
       }
-
-      ++i;
-
-      if (candidates.number_of_candidates <= i)
-        goto LABEL_7;
     }
   }
 
-  rv = 0;
-LABEL_7:
-  g_free(prevtext);
-  g_free(curtext);
+  g_free(prev);
+  g_free(curr);
 
   return rv;
 }
@@ -694,20 +682,14 @@ gboolean
 hildon_im_word_completer_is_interesting_key(HildonIMWordCompleter *wc,
                                             const gchar *key)
 {
-  gboolean result;
-
-  if (g_strcmp0(key, HILDON_IM_GCONF_DIR "/dual-dictionary") &&
-      g_strcmp0(key, HILDON_IM_GCONF_LANG_DIR "/current"))
+  if (!g_strcmp0(key, HILDON_IM_GCONF_DIR "/dual-dictionary") ||
+      !g_strcmp0(key, HILDON_IM_GCONF_LANG_DIR "/current"))
   {
-    result = g_str_has_prefix(key, HILDON_IM_GCONF_LANG_DIR "");
-
-    if (result)
-      result = g_str_has_suffix(key, "dictionary") != 0;
+    return TRUE;
   }
-  else
-    result = TRUE;
 
-  return result;
+  return g_str_has_prefix(key, HILDON_IM_GCONF_LANG_DIR) &&
+      g_str_has_suffix(key, "dictionary");
 }
 
 void
