@@ -48,12 +48,14 @@ G_DEFINE_TYPE_WITH_PRIVATE(
     HildonIMWordCompleter, hildon_im_word_completer, G_TYPE_OBJECT
 );
 
-gpointer hildon_im_word_completer_new()
+gpointer
+hildon_im_word_completer_new()
 {
   return g_object_new(HILDON_IM_WORD_COMPLETER_TYPE, NULL);
 }
 
-static void hildon_im_word_completer_init(HildonIMWordCompleter *wc)
+static void
+hildon_im_word_completer_init(HildonIMWordCompleter *wc)
 {
   HildonIMWordCompleterPrivate *priv = HILDON_IM_WORD_COMPLETER_GET_PRIVATE(wc);
 
@@ -64,10 +66,14 @@ static void hildon_im_word_completer_init(HildonIMWordCompleter *wc)
 
   imengines_wp_init("ezitext");
 
-  priv->base_dir = g_build_filename(g_get_home_dir(), ".osso/dictionaries", NULL);;
+  priv->base_dir =
+      g_build_filename(g_get_home_dir(), ".osso/dictionaries", NULL);
 
-  if ( g_mkdir_with_parents(priv->base_dir, 0755) )
-    g_warning("Couldn't create directory %s: %s", priv->base_dir, strerror(errno));
+  if (g_mkdir_with_parents(priv->base_dir, 0755))
+  {
+    g_warning("Couldn't create directory %s: %s", priv->base_dir,
+              strerror(errno));
+  }
   else
     imengines_wp_set_data("base-dir", priv->base_dir);
 
@@ -80,15 +86,18 @@ static void hildon_im_word_completer_init(HildonIMWordCompleter *wc)
   imengines_wp_attach_dictionary(0, 1);
 }
 
-static GObject* hildon_im_word_completer_constructor(GType gtype, guint n_properties, GObjectConstructParam *properties)
+static GObject *
+hildon_im_word_completer_constructor(GType gtype, guint n_properties,
+                                     GObjectConstructParam *properties)
 {
   GObject *obj;
 
-  if ( hildon_im_word_completer )
+  if (hildon_im_word_completer)
     obj = g_object_ref(G_OBJECT(hildon_im_word_completer));
   else
   {
-    obj = G_OBJECT_CLASS(hildon_im_word_completer_parent_class)->constructor(gtype, n_properties, properties);
+    obj = G_OBJECT_CLASS(hildon_im_word_completer_parent_class)->
+        constructor(gtype, n_properties, properties);
     hildon_im_word_completer = HILDON_IM_WORD_COMPLETER(obj);
   }
 
@@ -139,6 +148,7 @@ static void hildon_im_word_completer_set_property(GObject *object,
       {
         imengines_wp_attach_dictionary(0,1);
         imengines_wp_set_prediction_language(priv->lang[0], 0);
+
         if(priv->dual_dictionary)
           imengines_wp_set_prediction_language(priv->lang[0], 1);
         else
@@ -147,7 +157,6 @@ static void hildon_im_word_completer_set_property(GObject *object,
           priv->lang[1] = g_strdup(priv->lang[0]);
           imengines_wp_set_prediction_language(priv->lang[1], 1);
         }
-
       }
       else
         imengines_wp_detach_dictionary(0);
@@ -257,9 +266,7 @@ hildon_im_word_completer_get_property(GObject *object,
 static void
 hildon_im_word_completer_class_init(HildonIMWordCompleterClass *klass)
 {
-  GObjectClass *object_class;
-
-  object_class = G_OBJECT_CLASS(klass);
+  GObjectClass *object_class = G_OBJECT_CLASS(klass);
 
   object_class->constructor = hildon_im_word_completer_constructor;
   object_class->set_property = hildon_im_word_completer_set_property;
@@ -548,11 +555,8 @@ hildon_im_word_completer_get_predicted_suffix(HildonIMWordCompleter *wc,
     else
       rv = g_strdup("");
 
-    if (out)
-    {
-      if (len < clen)
-        *out = g_strdup(candidate);
-    }
+    if (out && len < clen)
+      *out = g_strdup(candidate);
 
     g_free(candidate);
     return rv;
@@ -562,37 +566,24 @@ hildon_im_word_completer_get_predicted_suffix(HildonIMWordCompleter *wc,
 }
 
 static gboolean
-str_contains_uppercase(const gchar *s)
+is_uppercase(const gchar *s)
 {
-  const gchar *v1;
-  gunichar v2;
-  gboolean v3;
-  gboolean result;
+  const gchar *s;
+  gboolean rv = FALSE;
 
-  if (s && *s)
+  if (!s)
+    return FALSE;
+
+  while(s)
   {
-    v1 = s;
-    do
-    {
-      v2 = g_utf8_get_char(v1);
-      v3 = g_unichar_isupper(v2);
+    rv = g_unichar_isupper(g_utf8_get_char(s));
+    s = g_utf8_next_char(s);
 
-      if ( !v3 )
-        break;
-
-      v1 = g_utf8_next_char(v1);
-
-      if ( !v1 )
-        break;
-    }
-    while (*v1);
-
-    result = v3;
+    if (!rv || !s)
+      break;
   }
-  else
-    result = 0;
 
-  return result;
+  return rv;
 }
 
 gchar *
@@ -624,11 +615,8 @@ hildon_im_word_completer_get_one_candidate(HildonIMWordCompleter *wc,
 
       if (priv->max_suffix < g_utf8_strlen(c, -1) - len)
       {
-        if (str_contains_uppercase(current_word) &&
-            g_utf8_strlen(current_word, -1) > 1)
-        {
+        if (is_uppercase(current_word) && g_utf8_strlen(current_word, -1) > 1)
           rv = g_utf8_strup(c, -1);
-        }
         else
           rv = g_strdup(c);
 
@@ -690,48 +678,37 @@ hildon_im_word_completer_get_candidates(HildonIMWordCompleter *wc,
                                         const gchar *current_word)
 {
   gchar **rv;
-  int i;
-  int j;
-  gchar *curtext = NULL;
-  gchar *prevtext = NULL;
+  gchar *curr = NULL;
+  gchar *prev = NULL;
   imengines_wp_candidates candidates={};
 
   if (previous_word)
-    prevtext = g_utf8_strdown(previous_word, -1);
+    prev = g_utf8_strdown(previous_word, -1);
 
   if (current_word)
-    curtext = g_utf8_strdown(current_word, -1);
+    curr = g_utf8_strdown(current_word, -1);
 
-  if (imengines_wp_get_candidates(prevtext, curtext, &candidates) &&
-      candidates.number_of_candidates > 0)
+  if (!imengines_wp_get_candidates(prev, curr, &candidates) ||
+      !candidates.number_of_candidates)
   {
-    rv = 0;
-  }
-  else
-  {
-    rv = g_new(gchar *, candidates.number_of_candidates + 1);
+    int i;
 
-    if (candidates.number_of_candidates > 0)
+    rv = g_new0(gchar *, candidates.number_of_candidates + 1);
+
+    for (i = 0; i < candidates.number_of_candidates; i++)
     {
-      i = 1;
-
-      do
+      if (is_uppercase(current_word) &&
+          g_utf8_strlen(current_word, -1) > 1)
       {
-        if (str_contains_uppercase(current_word) &&
-            g_utf8_strlen(current_word, -1) > 1)
-        {
-          rv[i - 1] = g_strdup(candidates.candidate[i - 1]);
-        }
-        else
-          rv[i - 1] = g_utf8_strup(candidates.candidate[i - 1], -1);
-        j = i++;
+        rv[i] = g_strdup(candidates.candidate[i - 1]);
       }
-      while (candidates.number_of_candidates > j);
+      else
+        rv[i] = g_utf8_strup(candidates.candidate[i], -1);
     }
   }
 
-  g_free(prevtext);
-  g_free(curtext);
+  g_free(prev);
+  g_free(curr);
 
   return rv;
 }
