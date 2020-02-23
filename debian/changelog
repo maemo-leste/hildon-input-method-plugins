@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.82) unstable; urgency=low
+
+  * hildon-im-word-completer: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Sun, 23 Feb 2020 07:37:55 +0200
+
 hildon-input-method-plugins (3.9.81) unstable; urgency=low
 
   * hildon-im-keyboard-assistant-scv: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
