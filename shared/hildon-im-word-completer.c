@@ -403,12 +403,12 @@ static gboolean
 hildon_im_word_completer_word_at_index(guint dict, gchar *word, guint index)
 {
   gboolean result;
-  gboolean exists;
+  guint idx;
 
-  result = imengines_wp_word_exists(word, dict, &exists);
+  result = imengines_wp_word_exists(word, dict, &idx);
 
   if (result)
-    result = (exists == index);
+    result = (idx == index);
 
   return result;
 }
@@ -649,24 +649,24 @@ void
 hildon_im_word_completer_remove_word(HildonIMWordCompleter *wc,
                                      const gchar *word)
 {
-  gboolean exists = FALSE;
+  guint idx = 0;
 
-  if (imengines_wp_word_exists(word, 1, &exists))
-    imengines_wp_delete_word(word, 1, exists);
+  if (imengines_wp_word_exists(word, 1, &idx))
+    imengines_wp_delete_word(word, 1, idx);
 }
 
 gboolean
 hildon_im_word_completer_add_to_dictionary(HildonIMWordCompleter *wc,
                                            const gchar *word)
 {
-  gboolean exists;
+  guint idx;
 
-  if (imengines_wp_word_exists(word, 1, &exists))
-    imengines_wp_delete_word(word, 1, exists);
-  else if (!imengines_wp_word_exists(word, 0, &exists))
+  if (imengines_wp_word_exists(word, 1, &idx))
+    imengines_wp_delete_word(word, 1, idx);
+  else if (!imengines_wp_word_exists(word, 0, &idx))
     return TRUE;
 
-  imengines_wp_add_word(word, 2, exists);
+  imengines_wp_add_word(word, 2, idx);
 
   return TRUE;
 }
