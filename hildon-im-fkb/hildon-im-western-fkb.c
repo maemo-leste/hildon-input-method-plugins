@@ -84,7 +84,7 @@ typedef struct {
 
   gboolean repeating_button_entered;
   GtkWidget *repeating_button;
-  gboolean field_88;
+  gboolean repeating;
   guint repeat_start_timer;
   gchar *predicted_suffix;
   gchar *predicted_candidate;
@@ -282,7 +282,7 @@ hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
   priv->language[0] = NULL;
   priv->language[1] = NULL;
   priv->textview_font = TEXTVIEW_FONT_UNDEFIND;
-  priv->field_88 = FALSE;
+  priv->repeating = FALSE;
   priv->repeat_start_timer = 0;
   priv->repeating_button = NULL;
   priv->layout_info = NULL;
@@ -1814,7 +1814,7 @@ repeating_button_entered(GtkWidget *widget, void *data)
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  priv->field_88 = FALSE;
+  priv->repeating = FALSE;
   priv->repeating_button = widget;
   priv->repeating_button_entered = TRUE;
   priv->repeat_start_timer =
@@ -1835,7 +1835,7 @@ repeating_button_repeat_start(void *data)
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   repeating_button_process_click(fkb, priv->repeating_button);
-  priv->field_88 = TRUE;
+  priv->repeating = TRUE;
   priv->repeat_start_timer = g_timeout_add(167, repeating_button_repeat, fkb);
 
   return FALSE;
@@ -1877,12 +1877,12 @@ repeating_button_released(GtkWidget *widget, void *data)
 
   if ((priv->repeating_button == widget) && priv->repeating_button_entered)
   {
-    priv->repeating_button = 0;
+    priv->repeating_button = NULL;
 
-    if (!priv->field_88)
+    if (!priv->repeating)
       repeating_button_process_click(fkb, widget);
 
-    priv->field_88 = FALSE;
+    priv->repeating = FALSE;
   }
 }
 
@@ -1915,7 +1915,7 @@ repeating_button_leave(GtkWidget *widget, void *data)
   if (priv->repeating_button == widget)
   {
     priv->repeating_button_entered = FALSE;
-    priv->field_88 = TRUE;
+    priv->repeating = TRUE;
 
     if (priv->repeat_start_timer)
     {
