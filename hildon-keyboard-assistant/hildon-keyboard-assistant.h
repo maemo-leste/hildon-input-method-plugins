@@ -28,15 +28,11 @@
                              HildonIMKeyboardAssistantClass)
 #define HILDON_IM_IS_KEYBOARD_ASSISTANT(obj) \
         GTK_CHECK_TYPE(obj, HILDON_IM_TYPE_KEYBOARD_ASSISTANT )
-#define HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HILDON_IM_TYPE_KEYBOARD_ASSISTANT,\
-                                      HildonIMKeyboardAssistantPrivate))
 
 typedef struct _HildonIMKeyboardAssistantPrivate HildonIMKeyboardAssistantPrivate;
 
 typedef struct {
   GtkVBox parent;
-  HildonIMKeyboardAssistantPrivate *priv;
 } HildonIMKeyboardAssistant;
 
 typedef struct {

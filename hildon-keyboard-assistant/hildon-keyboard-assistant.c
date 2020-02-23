@@ -48,9 +48,6 @@ struct _HildonIMKeyboardAssistantPrivate
   gchar *str2;
 };
 
-GType hildon_im_type_keyboard_assistant = 0;
-GtkWidgetClass *hildon_im_keyboard_assistant_parent_class = NULL;
-
 static void 
 hildon_im_keyboard_assistant_class_init(HildonIMKeyboardAssistantClass *klass);
 static void hildon_im_keyboard_assistant_init(HildonIMKeyboardAssistant *assistant);
@@ -79,11 +76,15 @@ static void hildon_im_keyboard_assistant_preedit_committed(HildonIMPlugin *plugi
 static void hildon_im_keyboard_assistant_keyboard_state_changed(HildonIMPlugin *plugin);
 static void hildon_im_keyboard_assistant_language_settings_changed(HildonIMPlugin *plugin, gint index);
 
-GType
-hildon_im_keyboard_assistant_get_type (void)
-{
-  return hildon_im_type_keyboard_assistant;
-}
+#define HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant) \
+  ((HildonIMKeyboardAssistantPrivate *)hildon_im_keyboard_assistant_get_instance_private(assistant))
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(
+  HildonIMKeyboardAssistant, hildon_im_keyboard_assistant, GTK_TYPE_VBOX, 0,
+  G_ADD_PRIVATE_DYNAMIC(HildonIMKeyboardAssistant);
+  G_IMPLEMENT_INTERFACE_DYNAMIC(HILDON_IM_TYPE_PLUGIN,
+                                hildon_im_keyboard_assistant_iface_init);
+);
 
 GObject *hildon_im_keyboard_assistant_new(HildonIMUI *ui)
 {
@@ -106,45 +107,19 @@ module_exit(void)
 void
 module_init(GTypeModule *module)
 {
-  static const GTypeInfo type_info = {
-    sizeof(HildonIMKeyboardAssistantClass),
-    NULL, /* base_init */
-    NULL, /* base_finalize */
-    (GClassInitFunc) hildon_im_keyboard_assistant_class_init,
-    NULL, /* class_finalize */
-    NULL, /* class_data */
-    sizeof(HildonIMKeyboardAssistant),
-    0, /* n_preallocs */
-    (GInstanceInitFunc) hildon_im_keyboard_assistant_init,
-    NULL
-  };
-
-  static const GInterfaceInfo plugin_info = {
-    (GInterfaceInitFunc) hildon_im_keyboard_assistant_iface_init,
-    NULL, /* interface_finalize */
-    NULL, /* interface_data */
-  };
-
-  hildon_im_type_keyboard_assistant =
-          g_type_module_register_type(module,
-                                      GTK_TYPE_CONTAINER,
-                                      "HildonIMKeyboardAssistant",
-                                      &type_info,
-                                      0);
-
-  g_type_module_add_interface(module,
-                              HILDON_IM_TYPE_KEYBOARD_ASSISTANT,
-                              HILDON_IM_TYPE_PLUGIN,
-                              &plugin_info);
+  hildon_im_keyboard_assistant_register_type(module);
 }
 
-static void 
+static void
+hildon_im_keyboard_assistant_class_finalize(
+    HildonIMKeyboardAssistantClass *klass)
+{
+}
+
+static void
 hildon_im_keyboard_assistant_class_init(HildonIMKeyboardAssistantClass *klass)
 {
   GObjectClass *object_class;
-
-  hildon_im_keyboard_assistant_parent_class = g_type_class_peek_parent(klass);
-  g_type_class_add_private(klass, sizeof(HildonIMKeyboardAssistantPrivate));
 
   object_class = G_OBJECT_CLASS(klass);
 
@@ -194,17 +169,19 @@ hildon_im_keyboard_assistant_iface_init(HildonIMPluginIface *iface)
 static void
 hildon_im_keyboard_assistant_init(HildonIMKeyboardAssistant *assistant)
 {
-  assistant->priv = HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(
-        HILDON_IM_KEYBOARD_ASSISTANT(assistant));
-  assistant->priv->hwc = NULL;
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
+
+  priv->hwc = NULL;
 }
 
 static void
 hildon_im_keyboard_assistant_enable(HildonIMPlugin *plugin, gboolean init)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
   gconf_client_notify_add(
         priv->ui->client,"/system/osso/af/slide-open",
         (GConfClientNotifyFunc)hildon_im_keyboard_assistant_notify_cb,
@@ -227,13 +204,13 @@ hildon_im_keyboard_assistant_enable(HildonIMPlugin *plugin, gboolean init)
 
 static void
 hildon_im_keyboard_assistant_get_property (GObject *object,
-                                    guint prop_id,
-                                    GValue *value,
-                                    GParamSpec *pspec)
+                                           guint prop_id,
+                                           GValue *value,
+                                           GParamSpec *pspec)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
-
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(object)->priv;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(object);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   switch (prop_id)
   {
@@ -249,13 +226,13 @@ hildon_im_keyboard_assistant_get_property (GObject *object,
 
 static void
 hildon_im_keyboard_assistant_set_property(GObject *object,
-                                   guint prop_id,
-                                   const GValue *value,
-                                   GParamSpec *pspec)
+                                          guint prop_id,
+                                          const GValue *value,
+                                          GParamSpec *pspec)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
-
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(object)->priv;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(object);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   switch (prop_id)
   {
@@ -271,8 +248,9 @@ hildon_im_keyboard_assistant_set_property(GObject *object,
 static void
 hildon_im_keyboard_assistant_finalize(GObject *object)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(object)->priv;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(object);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if (G_OBJECT_CLASS(hildon_im_keyboard_assistant_parent_class)->finalize)
     G_OBJECT_CLASS(hildon_im_keyboard_assistant_parent_class)->finalize(object);
@@ -290,9 +268,10 @@ hildon_im_keyboard_assistant_finalize(GObject *object)
 static void
 hildon_im_keyboard_assistant_disable(HildonIMPlugin *plugin)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
   hildon_im_ui_send_communication_message(priv->ui,
                                           HILDON_IM_CONTEXT_CANCEL_PREEDIT);
   hildon_im_keyboard_assistant_save_data(plugin);
@@ -302,8 +281,9 @@ hildon_im_keyboard_assistant_disable(HildonIMPlugin *plugin)
 static void
 hildon_im_keyboard_assistant_client_widget_changed(HildonIMPlugin *plugin)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   hildon_im_ui_send_communication_message(
         priv->ui, HILDON_IM_CONTEXT_CONFIRM_SENTENCE_START);
@@ -332,8 +312,9 @@ hildon_im_keyboard_assistant_client_widget_changed(HildonIMPlugin *plugin)
 static void
 hildon_im_keyboard_assistant_language(HildonIMPlugin *plugin)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   hildon_im_keyboard_assistant_language_settings_changed(plugin,
                                                          priv->language_index);
@@ -342,8 +323,10 @@ hildon_im_keyboard_assistant_language(HildonIMPlugin *plugin)
 static void
 hildon_im_keyboard_assistant_save_data(HildonIMPlugin *plugin)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
+
   hildon_im_word_completer_save_data(priv->hwc);
 }
 
@@ -375,6 +358,7 @@ gchar **
 hildon_im_plugin_get_available_languages(gboolean *free)
 {
   *free = FALSE;
+
   return NULL;
 }
 
@@ -383,6 +367,9 @@ hildon_im_keyboard_assistant_constructor(GType type,
                                          guint n_construct_properties,
                                          GObjectConstructParam *construct_properties)
 {
+  HildonIMKeyboardAssistant *assistant;
+  HildonIMKeyboardAssistantPrivate *priv;
+
   GObjectClass *object_class;
   GObject *object;
 
@@ -390,8 +377,8 @@ hildon_im_keyboard_assistant_constructor(GType type,
   object = object_class->constructor(type, n_construct_properties,
                                      construct_properties);
 
-  HildonIMKeyboardAssistantPrivate *priv;
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(object)->priv;
+  assistant = HILDON_IM_KEYBOARD_ASSISTANT(object);
+  priv = HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
   priv->hwc = hildon_im_word_completer_new();
   g_object_set(priv->hwc, "max_candidates", 1,
                "min_candidate_suffix_length", 2,
@@ -415,7 +402,7 @@ static gboolean
 entry_allowed(HildonIMKeyboardAssistant *assistant)
 {
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(assistant)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if (priv->insert_space_after_word &&
       (priv->input_mode & HILDON_GTK_INPUT_MODE_DICTIONARY))
@@ -431,8 +418,9 @@ hildon_im_keyboard_assistant_key_event(HildonIMPlugin *plugin,
                                        GdkEventType type, guint state,
                                        guint val, guint hardware_keycode)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if (entry_allowed(HILDON_IM_KEYBOARD_ASSISTANT(plugin)) &&
       type == GDK_KEY_PRESS && !(state & GDK_CONTROL_MASK))
@@ -455,7 +443,8 @@ hildon_im_keyboard_assistant_notify_cb(GConfClient *client, guint cnxn_id,
 {
   HildonIMKeyboardAssistant *assistant =
       HILDON_IM_KEYBOARD_ASSISTANT(user_data);
-  HildonIMKeyboardAssistantPrivate *priv = assistant->priv;
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
   GConfValue *value = gconf_entry_get_value(entry);
 
   if (value)
@@ -477,7 +466,7 @@ static void
 hildon_im_keyboard_assistant_read_settings(HildonIMKeyboardAssistant *assistant)
 {
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(assistant)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
   guint lang_index;
   gchar *s;
   GConfValue *v;
@@ -573,7 +562,8 @@ hildon_im_keyboard_assistant_surrounding_received(HildonIMPlugin *plugin,
                                                   gint offset)
 {
   HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
-  HildonIMKeyboardAssistantPrivate *priv = assistant->priv;
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if (entry_allowed(assistant))
   {
@@ -676,16 +666,19 @@ hildon_im_keyboard_assistant_surrounding_received(HildonIMPlugin *plugin,
 static void
 hildon_im_keyboard_assistant_input_mode_changed(HildonIMPlugin *plugin)
 {
-  HildonIMKeyboardAssistantPrivate *priv;
-  priv = HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
+  HildonIMKeyboardAssistantPrivate *priv =
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
+
   priv->input_mode = hildon_im_ui_get_current_input_mode(priv->ui);
 }
 
 static void
 hildon_im_keyboard_assistant_character_autocase(HildonIMPlugin *plugin)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
   gchar *s = g_strdup_printf(
         "/apps/osso/inputmethod/hildon-im-languages/%s/auto-capitalisation",
         priv->lang[priv->language_index]);
@@ -704,8 +697,9 @@ hildon_im_keyboard_assistant_character_autocase(HildonIMPlugin *plugin)
 static void
 hildon_im_keyboard_assistant_reset(HildonIMPlugin *plugin)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if (priv->word)
   {
@@ -721,8 +715,9 @@ hildon_im_keyboard_assistant_reset(HildonIMPlugin *plugin)
 static void
 hildon_im_keyboard_assistant_transition(HildonIMPlugin *plugin, gboolean from)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   hildon_im_ui_send_communication_message(priv->ui,
                                           HILDON_IM_CONTEXT_CANCEL_PREEDIT);
@@ -730,10 +725,13 @@ hildon_im_keyboard_assistant_transition(HildonIMPlugin *plugin, gboolean from)
         priv->ui, HILDON_IM_CONTEXT_CONFIRM_SENTENCE_START);
 }
 
-static void hildon_im_keyboard_assistant_input_mode_clear(HildonIMPlugin *plugin)
+static void
+hildon_im_keyboard_assistant_input_mode_clear(HildonIMPlugin *plugin)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
+
   hildon_im_ui_send_communication_message(priv->ui,
                                           HILDON_IM_CONTEXT_CANCEL_PREEDIT);
 }
@@ -753,8 +751,9 @@ static void
 hildon_im_keyboard_assistant_preedit_committed(HildonIMPlugin *plugin,
                                                const gchar *committed_preedit)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if ((priv->predicted_suffix && committed_preedit) &&
       !g_ascii_strcasecmp(priv->predicted_suffix, committed_preedit))
@@ -773,8 +772,9 @@ static void
 hildon_im_keyboard_assistant_language_settings_changed(HildonIMPlugin *plugin,
                                                        gint index)
 {
+  HildonIMKeyboardAssistant *assistant = HILDON_IM_KEYBOARD_ASSISTANT(plugin);
   HildonIMKeyboardAssistantPrivate *priv =
-      HILDON_IM_KEYBOARD_ASSISTANT(plugin)->priv;
+      HILDON_IM_KEYBOARD_ASSISTANT_GET_PRIVATE(assistant);
 
   if (g_strcmp0(hildon_im_ui_get_active_language(priv->ui),
                 priv->lang[priv->language_index]))
@@ -784,4 +784,3 @@ hildon_im_keyboard_assistant_language_settings_changed(HildonIMPlugin *plugin,
     hildon_im_keyboard_assistant_reset(plugin);
   }
 }
-
