@@ -568,13 +568,12 @@ hildon_im_word_completer_get_predicted_suffix(HildonIMWordCompleter *wc,
 static gboolean
 is_uppercase(const gchar *s)
 {
-  const gchar *s;
   gboolean rv = FALSE;
 
   if (!s)
     return FALSE;
 
-  while(s)
+  while (s)
   {
     rv = g_unichar_isupper(g_utf8_get_char(s));
     s = g_utf8_next_char(s);
@@ -677,7 +676,7 @@ hildon_im_word_completer_get_candidates(HildonIMWordCompleter *wc,
                                         const gchar *previous_word,
                                         const gchar *current_word)
 {
-  gchar **rv;
+  gchar **rv = NULL;
   gchar *curr = NULL;
   gchar *prev = NULL;
   imengines_wp_candidates candidates={};
