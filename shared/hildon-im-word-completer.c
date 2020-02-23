@@ -485,7 +485,7 @@ go_on:
     }
   }
 
-  for (i = 0; (i < priv->dual_dictionary ? 1 : 2) && !ret; i++)
+  for (i = 0; (i < (priv->dual_dictionary ? 2 : 1)) && !ret; i++)
   {
     gboolean has_lang = *priv->lang[0] || *priv->lang[1];
     gboolean move_word = FALSE;
