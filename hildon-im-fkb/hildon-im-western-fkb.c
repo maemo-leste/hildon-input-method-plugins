@@ -43,6 +43,12 @@
 #define HILDON_IM_WESTERN_FKB_HEIGHT 210
 #define NUM_LANGUAGES 2
 
+typedef enum {
+  TEXTVIEW_FONT_UNDEFIND,
+  TEXTVIEW_FONT_BIG,
+  TEXTVIEW_FONT_SMALL
+} TextviewFont;
+
 typedef struct {
   HildonIMUI *ui;
   GtkWidget *fkb_window;
@@ -50,15 +56,15 @@ typedef struct {
   GtkWidget *textview;
   PangoLayout *pango_layout;
   GtkTextBuffer *text_buffer;
-  int field_18;
+  TextviewFont textview_font;
   unsigned int active_sub_layout;
-  gboolean field_20;
+  gboolean shift_pressed;
   gboolean shift_locked;
   HildonGtkInputMode current_input_mode;
   HildonGtkInputMode current_default_input_mode;
   gboolean input_mode_dictionary;
   gboolean field_34;
-  gboolean field_38;
+  gboolean surrounding_valid;
   gint offset;
   gchar *surrounding;
   gint surrounding_offset;
@@ -76,8 +82,8 @@ typedef struct {
   GtkWidget *enter_button;
   GtkWidget *space_button;
 
-  gboolean field_80;
-  GtkWidget *pressed_repeating_button;
+  gboolean repeating_button_entered;
+  GtkWidget *repeating_button;
   gboolean field_88;
   guint repeat_start_timer;
   gchar *predicted_suffix;
@@ -147,7 +153,7 @@ static void hildon_im_western_fkb_save_data(HildonIMPlugin *plugin);
 
 static gboolean repeating_button_repeat_start(void *data);
 static gboolean repeating_button_repeat(void *data);
-static void repeating_button_pressed(GtkWidget *widget, void *data);
+static void repeating_button_entered(GtkWidget *widget, void *data);
 static void repeating_button_released(GtkWidget *widget, void *data);
 static void repeating_button_enter(GtkWidget *widget, void *data);
 static void repeating_button_leave(GtkWidget *widget, void *data);
@@ -275,10 +281,10 @@ hildon_im_western_fkb_init(HildonIMWesternFKB *fkb)
 
   priv->language[0] = NULL;
   priv->language[1] = NULL;
-  priv->field_18 = 0;
+  priv->textview_font = TEXTVIEW_FONT_UNDEFIND;
   priv->field_88 = FALSE;
   priv->repeat_start_timer = 0;
-  priv->pressed_repeating_button = NULL;
+  priv->repeating_button = NULL;
   priv->layout_info = NULL;
   priv->active_sub_layout = 0;
   priv->surrounding = NULL;
@@ -557,11 +563,11 @@ show_text_view(HildonIMWesternFKB *fkb)
           GTK_TEXT_VIEW(priv->textview),
           gtk_text_buffer_get_selection_bound(priv->text_buffer));
 
-    if (priv->field_18 == 2)
+    if (priv->textview_font == TEXTVIEW_FONT_SMALL)
       return;
 
     font = pango_font_description_from_string("Nokia Sans 18");
-    priv->field_18 = 2;
+    priv->textview_font = TEXTVIEW_FONT_SMALL;
     pixels_above_lines = 0;
   }
   else
@@ -570,11 +576,11 @@ show_text_view(HildonIMWesternFKB *fkb)
           GTK_TEXT_VIEW(priv->textview),
           gtk_text_buffer_get_selection_bound(priv->text_buffer));
 
-    if (priv->field_18 == 1)
+    if (priv->textview_font == TEXTVIEW_FONT_BIG)
       return;
 
     font = pango_font_description_from_string("Nokia Sans 28.5");
-    priv->field_18 = 1;
+    priv->textview_font = TEXTVIEW_FONT_BIG;
     pixels_above_lines = 10;
   }
 
@@ -633,7 +639,7 @@ hildon_im_western_fkb_enable(HildonIMPlugin *plugin, gboolean init)
   g_free((gpointer)priv->predicted_suffix);
   priv->predicted_suffix = NULL;
   priv->str = g_string_new("");
-  priv->field_38 = TRUE;
+  priv->surrounding_valid = TRUE;
 
   hildon_im_ui_parse_rc_file(priv->ui, "/usr/share/hildon-input-method/himrc");
 
@@ -847,10 +853,10 @@ fkb_create_control_menu(HildonIMWesternFKB *fkb)
 }
 
 static void
-repeating_button_connect_signals(HildonIMWesternFKB *fkb, GtkWidget *obj)
+connect_signals(HildonIMWesternFKB *fkb, GtkWidget *obj)
 {
   g_signal_connect(G_OBJECT(obj), "pressed",
-                   G_CALLBACK(repeating_button_pressed), fkb);
+                   G_CALLBACK(repeating_button_entered), fkb);
   g_signal_connect(G_OBJECT(obj), "released",
                    G_CALLBACK(repeating_button_released), fkb);
   g_signal_connect(G_OBJECT(obj), "enter",
@@ -966,7 +972,7 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
   gtk_widget_set_size_request(button, 324, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
-  repeating_button_connect_signals(fkb, button);
+  connect_signals(fkb, button);
   priv->space_button = button;
   gtk_box_pack_start(GTK_BOX(hbox2), button, FALSE, FALSE, 0);
 
@@ -995,7 +1001,7 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   /* enter */
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
   gtk_widget_set_size_request(button, 108, -1);
-  repeating_button_connect_signals(fkb, button);
+  connect_signals(fkb, button);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   gtk_container_add(
         GTK_CONTAINER(button),
@@ -1127,11 +1133,11 @@ set_layout(HildonIMWesternFKB *fkb)
     if (!(mask & HILDON_IM_SHIFT_STICKY_MASK) &&
         !(mask & HILDON_IM_SHIFT_LOCK_MASK))
     {
-      if (!priv->auto_capitalisation || priv->field_20 ||
+      if (!priv->auto_capitalisation || priv->shift_pressed ||
           !(priv->current_input_mode & HILDON_GTK_INPUT_MODE_AUTOCAP))
       {
         fkb_set_layout(fkb, 0);
-        priv->field_20 = FALSE;
+        priv->shift_pressed = FALSE;
         return;
       }
 
@@ -1318,7 +1324,7 @@ hildon_im_western_fkb_disable(HildonIMPlugin *plugin)
     word_completion_hit_word(fkb, priv->prediction_lowercase);
   }
 
-  if (priv->field_38 &&
+  if (priv->surrounding_valid &&
       hildon_im_ui_get_commit_mode(priv->ui) == HILDON_IM_COMMIT_SURROUNDING)
   {
     hildon_im_ui_send_surrounding_content(priv->ui, surrounding);
@@ -1684,7 +1690,7 @@ hildon_im_western_fkb_surrounding_received(HildonIMPlugin *plugin,
     priv->auto_capitalisation = FALSE;
   }
 
-  priv->field_20 = FALSE;
+  priv->shift_pressed = FALSE;
   priv->shift_locked = hildon_im_ui_get_shift_locked(priv->ui);
 
   if (priv->active_sub_layout == 2)
@@ -1797,7 +1803,7 @@ illegal_input_cb(HildonVKBRenderer *vkb, gchar *input, gpointer data)
 }
 
 static void
-repeating_button_pressed(GtkWidget *widget, void *data)
+repeating_button_entered(GtkWidget *widget, void *data)
 {
   HildonIMWesternFKBPrivate *priv;
   HildonIMWesternFKB *fkb;
@@ -1809,8 +1815,8 @@ repeating_button_pressed(GtkWidget *widget, void *data)
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
   priv->field_88 = FALSE;
-  priv->pressed_repeating_button = widget;
-  priv->field_80 = TRUE;
+  priv->repeating_button = widget;
+  priv->repeating_button_entered = TRUE;
   priv->repeat_start_timer =
       g_timeout_add(800, repeating_button_repeat_start, fkb);
 }
@@ -1828,7 +1834,7 @@ repeating_button_repeat_start(void *data)
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  repeating_button_process_click(fkb, priv->pressed_repeating_button);
+  repeating_button_process_click(fkb, priv->repeating_button);
   priv->field_88 = TRUE;
   priv->repeat_start_timer = g_timeout_add(167, repeating_button_repeat, fkb);
 
@@ -1847,7 +1853,7 @@ repeating_button_repeat(void *data)
   fkb = HILDON_IM_WESTERN_FKB(data);
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(fkb);
 
-  repeating_button_process_click(fkb, priv->pressed_repeating_button);
+  repeating_button_process_click(fkb, priv->repeating_button);
   return TRUE;
 }
 
@@ -1869,9 +1875,9 @@ repeating_button_released(GtkWidget *widget, void *data)
     priv->repeat_start_timer = 0;
   }
 
-  if ((priv->pressed_repeating_button == widget) && priv->field_80)
+  if ((priv->repeating_button == widget) && priv->repeating_button_entered)
   {
-    priv->pressed_repeating_button = 0;
+    priv->repeating_button = 0;
 
     if (!priv->field_88)
       repeating_button_process_click(fkb, widget);
@@ -1890,8 +1896,8 @@ repeating_button_enter(GtkWidget *widget, void *data)
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(data));
 
-  if (priv->pressed_repeating_button == widget)
-    priv->field_80 = TRUE;
+  if (priv->repeating_button == widget)
+    priv->repeating_button_entered = TRUE;
 
   priv->field_B0 = FALSE;
 }
@@ -1906,9 +1912,9 @@ repeating_button_leave(GtkWidget *widget, void *data)
 
   priv = HILDON_IM_WESTERN_FKB_GET_PRIVATE(HILDON_IM_WESTERN_FKB(data));
 
-  if (priv->pressed_repeating_button == widget)
+  if (priv->repeating_button == widget)
   {
-    priv->field_80 = FALSE;
+    priv->repeating_button_entered = FALSE;
     priv->field_88 = TRUE;
 
     if (priv->repeat_start_timer)
@@ -2320,7 +2326,7 @@ input(HildonVKBRenderer *vkb, gchar *input, gboolean unk, gpointer data)
       {
         hildon_im_ui_set_shift_locked(priv->ui, FALSE);
         hildon_im_ui_set_shift_sticky(priv->ui, FALSE);
-        priv->field_20 = TRUE;
+        priv->shift_pressed = TRUE;
       }
 
       goto layout;
@@ -2503,7 +2509,7 @@ fkb_enter(HildonIMWesternFKB *self)
 
       hildon_im_ui_send_surrounding_content(priv->ui, surrounding_content);
       hildon_im_western_fkb_set_surrounding_offset(self);
-      priv->field_38 = FALSE;
+      priv->surrounding_valid = FALSE;
     }
 
     hildon_im_ui_send_communication_message(priv->ui,
