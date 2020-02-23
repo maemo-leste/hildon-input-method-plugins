@@ -95,7 +95,7 @@ typedef struct {
   gboolean dual_dictionary;
   gboolean field_AC;
   gboolean field_B0;
-  HildonIMWordCompleter* hwc;
+  HildonIMWordCompleter *hwc;
   gboolean auto_capitalisation;
   gboolean word_completion;
   gboolean insert_space_after_word;
