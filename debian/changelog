@@ -1,3 +1,15 @@
+hildon-input-method-plugins (3.9.83) unstable; urgency=low
+
+  [ Ivaylo Dimitrov ]
+  * rename some variables
+  * get a name to one more var
+  * hildon-im-fkb: coding style fix
+  * hildon-im-word-completer: fix compiler warning
+  * hildon-keyboard-assistant: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
+  * port to libimengines-wp4 (>= 4.2.5)
+
+ -- Ivan J. <parazyd@dyne.org>  Mon, 24 Feb 2020 17:39:36 +0100
+
 hildon-input-method-plugins (3.9.82) unstable; urgency=low
 
   * hildon-im-word-completer: use G_DEFINE_DYNAMIC_TYPE_EXTENDED
