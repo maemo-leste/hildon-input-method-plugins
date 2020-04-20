@@ -1,4 +1,4 @@
-<keyboards file="km_KH" version="1" lang="km_KH" name="Khmer (Cambodia)" wc="km_KH">
+<keyboards file="km_KH" version="1" lang="km_KH" name="ភាសាខ្មែរ (កម្ពុជា)" wc="km_KH">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

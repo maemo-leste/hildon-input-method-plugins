@@ -1,4 +1,4 @@
-<keyboards file="ka_GE" version="1" lang="ka_GE" name="Georgian (Georgia)" wc="ka_GE">
+<keyboards file="ka_GE" version="1" lang="ka_GE" name="ქართული (საქართველო)" wc="ka_GE">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>
