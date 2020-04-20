@@ -10,7 +10,7 @@ Standards-Version: 3.7.2
 
 Package: hildon-im-fkb
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, fonts-ddc-uchen, fonts-khmeros, fonts-dejavu, fonts-lohit-deva-nepali, fonts-thai-tlwg, fonts-indic
+Depends: ${shlibs:Depends}, ${misc:Depends}, fonts-ddc-uchen, fonts-khmeros, fonts-dejavu, fonts-lohit-deva-nepali, fonts-indic, fonts-thai-tlwg
 Description: Western Finger Keyboard plugin
  This packages provides the Finger keyboard (FKB).
 
