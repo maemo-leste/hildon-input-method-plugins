@@ -1,0 +1,334 @@
+<keyboards file="fa_IR" version="1" lang="fa_IR" name="Persian" wc="fa_IR">
+	<screen>
+		<mode name="NORMAL"/>
+		<mode name="FULL"/>
+	</screen>
+	<keysizes>
+		<size height="35" baseline="26" width="35" margin_top="0" margin_left="0" />
+		<size height="35" baseline="26" width="35" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="66" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="131" margin_top="0" margin_left="0" />
+	</keysizes>
+	<keyboard layout="NORMAL" default_key_size="1">
+		<sublayout type="LOWERCASE" variance_index="1" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA">ض</key>
+					<key size="1" alpha="ALPHA">ص</key>
+					<key size="1" alpha="ALPHA">ث</key>
+					<key size="1" alpha="ALPHA">ق</key>
+					<key size="1" alpha="ALPHA">ف</key>
+					<key size="1" alpha="ALPHA">غ</key>
+					<key size="1" alpha="ALPHA">ع</key>
+					<key size="1" alpha="ALPHA">ه</key>
+					<key size="1" alpha="ALPHA">خ</key>
+					<key size="1" alpha="ALPHA">ح</key>
+					<key size="1" alpha="ALPHA">ج</key>
+					<key size="1" alpha="ALPHA">چ</key>
+				</row>
+				<row>
+					<key size="1" alpha="ALPHA">ش</key>
+					<key size="1" alpha="ALPHA">س</key>
+					<key size="1" alpha="ALPHA">ی</key>
+					<key size="1" alpha="ALPHA">ب</key>
+					<key size="1" alpha="ALPHA">ل</key>
+					<key size="1" alpha="ALPHA">ا</key>
+					<key size="1" alpha="ALPHA">ت</key>
+					<key size="1" alpha="ALPHA">ن</key>
+					<key size="1" alpha="ALPHA">م</key>
+					<key size="1" alpha="ALPHA">ک</key>
+					<key size="1" alpha="ALPHA">گ</key>
+					<key size="1" special="SPECIAL">\</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">ظ</key>
+					<key size="1" alpha="ALPHA">ط</key>
+					<key size="1" alpha="ALPHA">ز</key>
+					<key size="1" alpha="ALPHA">ر</key>
+					<key size="1" alpha="ALPHA">ذ</key>
+					<key size="1" alpha="ALPHA">د</key>
+					<key size="1" alpha="ALPHA">پ</key>
+					<key size="1" alpha="ALPHA">و</key>
+					<key size="1" alpha="ALPHA">.</key>
+					<key size="1" special="SPECIAL">/</key>
+					<key size="1" special="SPECIAL">،</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۱</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۲</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۳</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۴</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۵</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۶</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۷</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۸</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۹</key>
+				</row>
+				<row>
+					<key size="0" tele="TELE" special="SPECIAL">+</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">۰</key>
+					<key size="0" special="SPECIAL">=</key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" special="SPECIAL" dead="DEAD">ْ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ٌ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ٍ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ً</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ُ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ِ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">َ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ّ</key>
+					<key size="1" special="SPECIAL">]</key>
+					<key size="1" special="SPECIAL">[</key>
+					<key size="1" special="SPECIAL">}</key>
+					<key size="1" special="SPECIAL">{</key>
+				</row>
+				<row>
+					<key size="1" alpha="ALPHA">ؤ</key>
+					<key size="1" alpha="ALPHA">ئ</key>
+					<key size="1" alpha="ALPHA">ي</key>
+					<key size="1" alpha="ALPHA">إ</key>
+					<key size="1" alpha="ALPHA">أ</key>
+					<key size="1" alpha="ALPHA">آ</key>
+					<key size="1" alpha="ALPHA">ة</key>
+					<key size="1" special="SPECIAL">»</key>
+					<key size="1" special="SPECIAL">«</key>
+					<key size="1" special="SPECIAL">:</key>
+					<key size="1" special="SPECIAL">؛</key>
+					<key size="1" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">ك</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ٓ</key>
+					<key size="1" alpha="ALPHA">ژ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ٰ</key>
+					<key size="1" alpha="ALPHA">‌ذ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ٔ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">ء</key>
+					<key size="1" special="SPECIAL">&gt;</key>
+					<key size="1" special="SPECIAL">&lt;</key>
+					<key size="1" special="SPECIAL">؟</key>
+					<key size="1" special="SPECIAL">!</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">!</key>
+					<key size="0" special="SPECIAL" dead="DEAD">٬</key>
+					<key size="0" special="SPECIAL" dead="DEAD">٫</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL" dead="DEAD">﷼</key>
+					<key size="0" special="SPECIAL">٪</key>
+					<key size="0" special="SPECIAL">×</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL" dead="DEAD">،</key>
+					<key size="0" special="SPECIAL">*</key>
+					<key size="0" special="SPECIAL">)</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">(</key>
+					<key size="0" special="SPECIAL">-</key>
+					<key size="0" special="SPECIAL">ـ</key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+	<keyboard layout="THUMB" default_key_size="2">
+		<sublayout type="LOWERCASE" variance_index="1" label="ا ب">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA">ض</key>
+					<key size="2" alpha="ALPHA">ص</key>
+					<key size="2" alpha="ALPHA">ث</key>
+					<key size="2" alpha="ALPHA">ق</key>
+					<key size="2" alpha="ALPHA">ف</key>
+					<key size="2" alpha="ALPHA">غ</key>
+					<key size="2" alpha="ALPHA">ع</key>
+					<key size="2" alpha="ALPHA">ه</key>
+					<key size="2" alpha="ALPHA">خ</key>
+					<key size="2" alpha="ALPHA">ح</key>
+					<key size="2" alpha="ALPHA">ج</key>
+					<key size="2" alpha="ALPHA">چ</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">ش</key>
+					<key size="2" alpha="ALPHA">س</key>
+					<key size="2" alpha="ALPHA">ی</key>
+					<key size="2" alpha="ALPHA">ب</key>
+					<key size="2" alpha="ALPHA">ل</key>
+					<key size="2" alpha="ALPHA">ا</key>
+					<key size="2" alpha="ALPHA">ت</key>
+					<key size="2" alpha="ALPHA">ن</key>
+					<key size="2" alpha="ALPHA">م</key>
+					<key size="2" alpha="ALPHA">ک</key>
+					<key size="2" alpha="ALPHA">گ</key>
+					<key size="2" special="SPECIAL">\</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" alpha="ALPHA">ظ</key>
+					<key size="2" alpha="ALPHA">ط</key>
+					<key size="2" alpha="ALPHA">ز</key>
+					<key size="2" alpha="ALPHA">ر</key>
+					<key size="2" alpha="ALPHA">ذ</key>
+					<key size="2" alpha="ALPHA">د</key>
+					<key size="2" alpha="ALPHA">پ</key>
+					<key size="2" alpha="ALPHA">و</key>
+					<key size="2" alpha="ALPHA">.</key>
+					<key size="2" special="SPECIAL">/</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="ي ژ آ">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" special="SPECIAL" dead="DEAD">ْ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ٌ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ٍ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ً</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ُ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ِ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">َ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ّ</key>
+					<key size="2" special="SPECIAL">]</key>
+					<key size="2" special="SPECIAL">[</key>
+					<key size="2" special="SPECIAL">}</key>
+					<key size="2" special="SPECIAL">{</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">ؤ</key>
+					<key size="2" alpha="ALPHA">ئ</key>
+					<key size="2" alpha="ALPHA">ي</key>
+					<key size="2" alpha="ALPHA">إ</key>
+					<key size="2" alpha="ALPHA">أ</key>
+					<key size="2" alpha="ALPHA">آ</key>
+					<key size="2" alpha="ALPHA">ة</key>
+					<key size="2" special="SPECIAL">»</key>
+					<key size="2" special="SPECIAL">«</key>
+					<key size="2" special="SPECIAL">:</key>
+					<key size="2" special="SPECIAL">؛</key>
+					<key size="2" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" alpha="ALPHA">ك</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ٓ</key>
+					<key size="2" alpha="ALPHA">ژ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ٰ</key>
+					<key size="2" alpha="ALPHA">‌</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ٔ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">ء</key>
+					<key size="2" special="SPECIAL">&gt;</key>
+					<key size="2" special="SPECIAL">&lt;</key>
+					<key size="2" special="SPECIAL">؟</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="۱#+">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" numeric="NUMERIC" tele="TELE">۱</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۲</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۳</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۴</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۵</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۶</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۷</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۸</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۹</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">۰</key>
+					<key size="2" special="SPECIAL">=</key>
+					<key size="2" special="SPECIAL">؟</key>
+				</row>
+				<row>
+					<key size="2" tele="TELE" special="SPECIAL">+</key>
+					<key size="2" numeric="NUMERIC" special="SPECIAL">-</key>
+					<key size="2" special="SPECIAL">_</key>
+					<key size="2" tele="TELE" special="SPECIAL">#</key>
+					<key size="2" tele="TELE" special="SPECIAL">*</key>
+					<key size="2" special="SPECIAL">%</key>
+					<key size="2" special="SPECIAL">€</key>
+					<key size="2" special="SPECIAL">£</key>
+					<key size="2" special="SPECIAL">$</key>
+					<key size="2" special="SPECIAL">¥</key>
+					<key size="2" special="SPECIAL">¢</key>
+					<key size="2" special="SPECIAL">¤</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" special="SPECIAL">,</key>
+					<key size="2" special="SPECIAL">،</key>
+					<key size="2" special="SPECIAL">@</key>
+					<key size="2" special="SPECIAL">/</key>
+					<key size="2" special="SPECIAL">\</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="2" special="SPECIAL">)</key>
+					<key size="2" special="SPECIAL">(</key>
+					<key size="2" special="SPECIAL">!</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="*§¿">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">`</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">¨</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="2" special="SPECIAL">'</key>
+					<key size="2" special="SPECIAL">"</key>
+					<key size="2" special="SPECIAL">„</key>
+					<key size="2" special="SPECIAL">“</key>
+					<key size="2" special="SPECIAL">”</key>
+					<key size="2" special="SPECIAL">°</key>
+					<key size="2" special="SPECIAL">&amp;</key>
+				</row>
+				<row>
+					<key size="2" special="SPECIAL">±</key>
+					<key size="2" special="SPECIAL">§</key>
+					<key size="2" special="SPECIAL">½</key>
+					<key size="2" special="SPECIAL">¹</key>
+					<key size="2" special="SPECIAL">²</key>
+					<key size="2" special="SPECIAL">³</key>
+					<key size="2" special="SPECIAL">&gt;</key>
+					<key size="2" special="SPECIAL">&lt;</key>
+					<key size="2" special="SPECIAL">»</key>
+					<key size="2" special="SPECIAL">«</key>
+					<key size="2" special="SPECIAL">|</key>
+					<key size="2" special="SPECIAL">?</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" special="SPECIAL">;</key>
+					<key size="2" special="SPECIAL">:</key>
+					<key size="2" special="SPECIAL">.</key>
+					<key size="2" special="SPECIAL">]</key>
+					<key size="2" special="SPECIAL">[</key>
+					<key size="2" special="SPECIAL">}</key>
+					<key size="2" special="SPECIAL">{</key>
+					<key size="2" alpha="ALPHA">ç</key>
+					<key size="2" special="SPECIAL">¡</key>
+					<key size="2" special="SPECIAL">¿</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+</keyboards>

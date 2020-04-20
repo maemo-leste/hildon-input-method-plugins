@@ -1,0 +1,326 @@
+<keyboards file="ka_GE" version="1" lang="ka_GE" name="Georgian (Georgia)" wc="ka_GE">
+	<screen>
+		<mode name="NORMAL"/>
+		<mode name="FULL"/>
+	</screen>
+	<keysizes>
+		<size height="35" baseline="26" width="35" margin_top="0" margin_left="0" />
+		<size height="35" baseline="26" width="35" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="66" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="131" margin_top="0" margin_left="0" />
+	</keysizes>
+	<keyboard layout="NORMAL" default_key_size="0">
+		<sublayout type="LOWERCASE" variance_index="1" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA">ა</key>
+					<key size="0" alpha="ALPHA">ბ</key>
+					<key size="0" alpha="ALPHA">გ</key>
+					<key size="0" alpha="ALPHA">დ</key>
+					<key size="0" alpha="ALPHA">ე</key>
+					<key size="0" alpha="ALPHA">ვ</key>
+					<key size="0" alpha="ALPHA">ზ</key>
+					<key size="0" alpha="ALPHA">თ</key>
+					<key size="0" alpha="ALPHA">ი</key>
+					<key size="0" alpha="ALPHA">კ</key>
+					<key size="0" alpha="ALPHA">ლ</key>
+					<key size="1" alpha="ALPHA">მ</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ნ</key>
+					<key size="0" alpha="ALPHA">ო</key>
+					<key size="0" alpha="ALPHA">პ</key>
+					<key size="0" alpha="ALPHA">ჟ</key>
+					<key size="0" alpha="ALPHA">რ</key>
+					<key size="0" alpha="ALPHA">ს</key>
+					<key size="0" alpha="ALPHA">ტ</key>
+					<key size="0" alpha="ALPHA">უ</key>
+					<key size="0" alpha="ALPHA">ფ</key>
+					<key size="0" alpha="ALPHA">ქ</key>
+					<key size="0" alpha="ALPHA">ღ</key>
+					<key size="0" alpha="ALPHA">ყ</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">შ</key>
+					<key size="0" alpha="ALPHA">ჩ</key>
+					<key size="0" alpha="ALPHA">ც</key>
+					<key size="0" alpha="ALPHA">ძ</key>
+					<key size="0" alpha="ALPHA">წ</key>
+					<key size="0" alpha="ALPHA">ჭ</key>
+					<key size="0" alpha="ALPHA">ხ</key>
+					<key size="0" alpha="ALPHA">ჯ</key>
+					<key size="1" alpha="ALPHA">ჰ</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">1</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">2</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">3</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">4</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">5</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">6</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">7</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">8</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">9</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" tele="TELE" special="SPECIAL">?</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">0</key>
+					<key size="0" tele="TELE" special="SPECIAL">.</key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" special="SPECIAL">.</key>
+					<key size="0" special="SPECIAL">,</key>
+					<key size="0" special="SPECIAL">?</key>
+					<key size="0" special="SPECIAL">!</key>
+					<key size="0" special="SPECIAL">@</key>
+					<key size="0" special="SPECIAL">(</key>
+					<key size="0" special="SPECIAL">)</key>
+					<key size="0" special="SPECIAL">:</key>
+					<key size="0" special="SPECIAL">;</key>
+					<key size="0" special="SPECIAL">-</key>
+					<key size="1" special="SPECIAL">_</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">/</key>
+					<key size="0" special="SPECIAL">\</key>
+					<key size="0" special="SPECIAL">{</key>
+					<key size="0" special="SPECIAL">}</key>
+					<key size="0" special="SPECIAL">[</key>
+					<key size="0" special="SPECIAL">]</key>
+					<key size="0" special="SPECIAL">&lt;</key>
+					<key size="0" special="SPECIAL">&gt;</key>
+					<key size="0" special="SPECIAL">"</key>
+					<key size="0" special="SPECIAL">'</key>
+					<key size="0" special="SPECIAL">|</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჱ</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ჲ</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ჳ</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ჴ</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ჵ</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ჶ</key>
+					<key size="1" special="SPECIAL" dead="DEAD">჻</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">!</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">`</key>
+					<key size="0" tele="TELE" special="SPECIAL">#</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">$</key>
+					<key size="0" special="SPECIAL">%</key>
+					<key size="0" special="SPECIAL">&amp;</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">^</key>
+					<key size="0" special="SPECIAL">(</key>
+					<key size="0" special="SPECIAL">)</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">+</key>
+					<key size="0" special="SPECIAL">=</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">´</key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+	<keyboard layout="THUMB" default_key_size="2">
+		<sublayout type="LOWERCASE" variance_index="1" label="ალფა">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA">ა</key>
+					<key size="2" alpha="ALPHA">ბ</key>
+					<key size="2" alpha="ALPHA">გ</key>
+					<key size="2" alpha="ALPHA">დ</key>
+					<key size="2" alpha="ALPHA">ე</key>
+					<key size="2" alpha="ALPHA">ვ</key>
+					<key size="2" alpha="ALPHA">ზ</key>
+					<key size="2" alpha="ALPHA">თ</key>
+					<key size="2" alpha="ALPHA">ი</key>
+					<key size="2" alpha="ALPHA">კ</key>
+					<key size="2" alpha="ALPHA">ლ</key>
+					<key size="2" alpha="ALPHA">მ</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">ნ</key>
+					<key size="2" alpha="ALPHA">ო</key>
+					<key size="2" alpha="ALPHA">პ</key>
+					<key size="2" alpha="ALPHA">ჟ</key>
+					<key size="2" alpha="ALPHA">რ</key>
+					<key size="2" alpha="ALPHA">ს</key>
+					<key size="2" alpha="ALPHA">ტ</key>
+					<key size="2" alpha="ALPHA">უ</key>
+					<key size="2" alpha="ALPHA">ფ</key>
+					<key size="2" alpha="ALPHA">ქ</key>
+					<key size="2" alpha="ALPHA">ღ</key>
+					<key size="2" alpha="ALPHA">ყ</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" alpha="ALPHA">შ</key>
+					<key size="2" alpha="ALPHA">ჩ</key>
+					<key size="2" alpha="ALPHA">ც</key>
+					<key size="2" alpha="ALPHA">ძ</key>
+					<key size="2" alpha="ALPHA">წ</key>
+					<key size="2" alpha="ALPHA">ჭ</key>
+					<key size="2" alpha="ALPHA">ხ</key>
+					<key size="2" alpha="ALPHA">ჯ</key>
+					<key size="2" alpha="ALPHA">ჰ</key>
+					<key size="2" special="SPECIAL">.</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="სიმბ">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" special="SPECIAL">.</key>
+					<key size="2" special="SPECIAL">,</key>
+					<key size="2" special="SPECIAL">?</key>
+					<key size="2" special="SPECIAL">!</key>
+					<key size="2" special="SPECIAL">@</key>
+					<key size="2" special="SPECIAL">(</key>
+					<key size="2" special="SPECIAL">)</key>
+					<key size="2" special="SPECIAL">:</key>
+					<key size="2" special="SPECIAL">;</key>
+					<key size="2" special="SPECIAL">-</key>
+					<key size="2" special="SPECIAL">_</key>
+					<key size="2" alpha="ALPHA">№</key>
+				</row>
+				<row>
+					<key size="2" special="SPECIAL">/</key>
+					<key size="2" special="SPECIAL">\</key>
+					<key size="2" special="SPECIAL">{</key>
+					<key size="2" special="SPECIAL">}</key>
+					<key size="2" special="SPECIAL">[</key>
+					<key size="2" special="SPECIAL">]</key>
+					<key size="2" special="SPECIAL">&lt;</key>
+					<key size="2" special="SPECIAL">&gt;</key>
+					<key size="2" special="SPECIAL">"</key>
+					<key size="2" special="SPECIAL">'</key>
+					<key size="2" special="SPECIAL">|</key>
+					<key size="2" special="SPECIAL">®</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჱ</key>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჲ</key>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჳ</key>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჴ</key>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჵ</key>
+					<key size="2" alpha="ALPHA" dead="DEAD">ჶ</key>
+					<key size="2" special="SPECIAL" dead="DEAD">჻</key>
+					<key size="2" special="SPECIAL">«</key>
+					<key size="2" special="SPECIAL">»</key>
+					<key size="2" special="SPECIAL">©</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="1#+">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" numeric="NUMERIC" tele="TELE">1</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">2</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">3</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">4</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">5</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">6</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">7</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">8</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">9</key>
+					<key size="2" numeric="NUMERIC" tele="TELE">0</key>
+					<key size="2" special="SPECIAL">=</key>
+					<key size="2" special="SPECIAL">?</key>
+				</row>
+				<row>
+					<key size="2" tele="TELE" special="SPECIAL">+</key>
+					<key size="2" numeric="NUMERIC" special="SPECIAL">-</key>
+					<key size="2" special="SPECIAL">_</key>
+					<key size="2" tele="TELE" special="SPECIAL">#</key>
+					<key size="2" tele="TELE" special="SPECIAL">*</key>
+					<key size="2" special="SPECIAL">%</key>
+					<key size="2" special="SPECIAL">€</key>
+					<key size="2" special="SPECIAL">£</key>
+					<key size="2" special="SPECIAL">$</key>
+					<key size="2" special="SPECIAL">¥</key>
+					<key size="2" special="SPECIAL">¢</key>
+					<key size="2" special="SPECIAL">¤</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" special="SPECIAL">,</key>
+					<key size="2" special="SPECIAL">.</key>
+					<key size="2" special="SPECIAL">@</key>
+					<key size="2" special="SPECIAL">/</key>
+					<key size="2" special="SPECIAL">\</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="2" special="SPECIAL">(</key>
+					<key size="2" special="SPECIAL">)</key>
+					<key size="2" special="SPECIAL">!</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="*§¿">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">`</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">¨</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="2" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="2" special="SPECIAL">'</key>
+					<key size="2" special="SPECIAL">"</key>
+					<key size="2" special="SPECIAL">„</key>
+					<key size="2" special="SPECIAL">“</key>
+					<key size="2" special="SPECIAL">”</key>
+					<key size="2" special="SPECIAL">°</key>
+					<key size="2" special="SPECIAL">&amp;</key>
+				</row>
+				<row>
+					<key size="2" special="SPECIAL">±</key>
+					<key size="2" special="SPECIAL">§</key>
+					<key size="2" special="SPECIAL">½</key>
+					<key size="2" special="SPECIAL">¹</key>
+					<key size="2" special="SPECIAL">²</key>
+					<key size="2" special="SPECIAL">³</key>
+					<key size="2" special="SPECIAL">&lt;</key>
+					<key size="2" special="SPECIAL">&gt;</key>
+					<key size="2" special="SPECIAL">«</key>
+					<key size="2" special="SPECIAL">»</key>
+					<key size="2" special="SPECIAL">|</key>
+					<key size="2" special="SPECIAL">©</key>
+				</row>
+				<row>
+					<key size="2" shift="SHIFT"></key>
+					<key size="2" special="SPECIAL">;</key>
+					<key size="2" special="SPECIAL">:</key>
+					<key size="2" special="SPECIAL">•</key>
+					<key size="2" special="SPECIAL">[</key>
+					<key size="2" special="SPECIAL">]</key>
+					<key size="2" special="SPECIAL">{</key>
+					<key size="2" special="SPECIAL">}</key>
+					<key size="2" alpha="ALPHA">ç</key>
+					<key size="2" special="SPECIAL">¡</key>
+					<key size="2" special="SPECIAL">¿</key>
+					<key size="2" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+</keyboards>

@@ -1,4 +1,4 @@
-<keyboards file="cs_CZ" version="1" lang="cs_CZ" name="Čeština (Česká republika) - QWERTY" wc="cs_CZ">
+<keyboards file="sk_SK" version="1" lang="sk_SK" name="Slovenčina (Slovensko) - QWERTY" wc="sk_SK">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>
@@ -24,7 +24,7 @@
 					<key size="0" alpha="ALPHA">i</key>
 					<key size="0" alpha="ALPHA">o</key>
 					<key size="0" alpha="ALPHA" tele="TELE">p</key>
-					<key size="1" alpha="ALPHA">ú</key>
+					<key size="1" special="SPECIAL">@</key>
 				</row>
 				<row>
 					<key size="0" alpha="ALPHA" hexa="HEXA">a</key>
@@ -36,9 +36,9 @@
 					<key size="0" alpha="ALPHA">j</key>
 					<key size="0" alpha="ALPHA">k</key>
 					<key size="0" alpha="ALPHA">l</key>
-					<key size="0" alpha="ALPHA">ů</key>
-					<key size="0" alpha="ALPHA">§</key>
-					<key size="0" alpha="ALPHA" dead="DEAD">¨</key>
+					<key size="0" alpha="ALPHA">ô</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">´</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ˇ</key>
 				</row>
 				<row>
 					<key size="2" alpha="ALPHA">z</key>
@@ -90,7 +90,7 @@
 					<key size="0" alpha="ALPHA">I</key>
 					<key size="0" alpha="ALPHA">O</key>
 					<key size="0" alpha="ALPHA" tele="TELE">P</key>
-					<key size="1" alpha="ALPHA" dead="DEAD">´</key>
+					<key size="1" special="SPECIAL">|</key>
 				</row>
 				<row>
 					<key size="0" alpha="ALPHA" hexa="HEXA">A</key>
@@ -102,9 +102,9 @@
 					<key size="0" alpha="ALPHA">J</key>
 					<key size="0" alpha="ALPHA">K</key>
 					<key size="0" alpha="ALPHA">L</key>
-					<key size="0" alpha="ALPHA">;</key>
-					<key size="0" alpha="ALPHA" tele="TELE">#</key>
-					<key size="0" alpha="ALPHA">|</key>
+					<key size="0" alpha="ALPHA">Ô</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">´</key>
+					<key size="0" alpha="ALPHA" dead="DEAD">ˇ</key>
 				</row>
 				<row>
 					<key size="2" alpha="ALPHA">Z</key>
@@ -114,10 +114,10 @@
 					<key size="0" alpha="ALPHA" hexa="HEXA">B</key>
 					<key size="0" alpha="ALPHA">N</key>
 					<key size="0" alpha="ALPHA">M</key>
-					<key size="0" special="SPECIAL">&lt;</key>
-					<key size="0" special="SPECIAL">&gt;</key>
-					<key size="0" special="SPECIAL">\</key>
-					<key size="1" alpha="ALPHA" dead="DEAD">ˇ</key>
+					<key size="0" special="SPECIAL">;</key>
+					<key size="0" special="SPECIAL">:</key>
+					<key size="0" special="SPECIAL">"</key>
+					<key size="1" special="SPECIAL">!</key>
 				</row>
 			</keysection>
 			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
@@ -158,7 +158,7 @@
 					<key size="3" alpha="ALPHA">i</key>
 					<key size="3" alpha="ALPHA">o</key>
 					<key size="3" alpha="ALPHA" tele="TELE">p</key>
-					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="3" alpha="ALPHA">ä</key>
 				</row>
 				<row>
 					<key size="3" alpha="ALPHA" hexa="HEXA">a</key>
@@ -170,8 +170,8 @@
 					<key size="3" alpha="ALPHA">j</key>
 					<key size="3" alpha="ALPHA">k</key>
 					<key size="3" alpha="ALPHA">l</key>
-					<key size="3" alpha="ALPHA">ů</key>
-					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">ˇ</key>
+					<key size="3" alpha="ALPHA">ô</key>
+					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
 				</row>
 				<row>
 					<key size="3" shift="SHIFT"></key>
@@ -182,8 +182,8 @@
 					<key size="3" alpha="ALPHA" hexa="HEXA">b</key>
 					<key size="3" alpha="ALPHA">n</key>
 					<key size="3" alpha="ALPHA">m</key>
-					<key size="3" special="SPECIAL">?</key>
 					<key size="3" special="SPECIAL">.</key>
+					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">ˇ</key>
 					<key size="3" backspace="BACKSPACE"></key>
 				</row>
 			</keysection>
@@ -201,7 +201,7 @@
 					<key size="3" alpha="ALPHA">I</key>
 					<key size="3" alpha="ALPHA">O</key>
 					<key size="3" alpha="ALPHA" tele="TELE">P</key>
-					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
+					<key size="3" alpha="ALPHA">Ä</key>
 				</row>
 				<row>
 					<key size="3" alpha="ALPHA" hexa="HEXA">A</key>
@@ -213,8 +213,8 @@
 					<key size="3" alpha="ALPHA">J</key>
 					<key size="3" alpha="ALPHA">K</key>
 					<key size="3" alpha="ALPHA">L</key>
-					<key size="3" alpha="ALPHA">Ů</key>
-					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">ˇ</key>
+					<key size="3" alpha="ALPHA">Ô</key>
+					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">´</key>
 				</row>
 				<row>
 					<key size="3" shift="SHIFT"></key>
@@ -225,8 +225,8 @@
 					<key size="3" alpha="ALPHA" hexa="HEXA">B</key>
 					<key size="3" alpha="ALPHA">N</key>
 					<key size="3" alpha="ALPHA">M</key>
-					<key size="3" special="SPECIAL">!</key>
 					<key size="3" special="SPECIAL">,</key>
+					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">ˇ</key>
 					<key size="3" backspace="BACKSPACE"></key>
 				</row>
 			</keysection>
@@ -266,8 +266,8 @@
 					<key size="3" special="SPECIAL">@</key>
 					<key size="3" special="SPECIAL">/</key>
 					<key size="3" special="SPECIAL">\</key>
-					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
-					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">^</key>
+					<key size="3" special="SPECIAL">?</key>
+					<key size="3" special="SPECIAL">!</key>
 					<key size="3" special="SPECIAL">(</key>
 					<key size="3" special="SPECIAL">)</key>
 					<key size="3" backspace="BACKSPACE"></key>
