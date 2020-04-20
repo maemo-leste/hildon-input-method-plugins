@@ -1,4 +1,4 @@
-<keyboards file="no_NO" version="1" lang="no_NO" name="Norsk (Norge)" wc="no_NO">
+<keyboards file="no_NO" version="1" lang="no_NO" name="norsk (Norge)" wc="no_NO">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

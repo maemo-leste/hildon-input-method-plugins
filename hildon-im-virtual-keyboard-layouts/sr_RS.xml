@@ -1,4 +1,4 @@
-<keyboards file="sr_RS" version="1" lang="sr_RS" name="Srpski (Serbia) - Latin" wc="sr_RS">
+<keyboards file="sr_RS" version="1" lang="sr_RS" name="srpski (Serbia) - Latin" wc="sr_RS">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

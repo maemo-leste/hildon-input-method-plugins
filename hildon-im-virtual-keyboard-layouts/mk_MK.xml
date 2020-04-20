@@ -1,4 +1,4 @@
-<keyboards file="mk_MK" version="1" lang="mk_MK" name="Македонски (Македонија)" wc="mk_MK">
+<keyboards file="mk_MK" version="1" lang="mk_MK" name="македонски (Македонија)" wc="mk_MK">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="dz_BT" version="1" lang="dz_BT" name="Dzongkha (Bhutan)" wc="dz_BT">
+<keyboards file="dz_BT" version="1" lang="dz_BT" name="རྫོང་ཁ་ ( འབྲུག་ཡུལ་)" wc="dz_BT">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="ro_RO" version="1" lang="ro_RO" name="Română (Romania)" wc="ro_RO">
+<keyboards file="ro_RO" version="1" lang="ro_RO" name="română (Romania)" wc="ro_RO">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

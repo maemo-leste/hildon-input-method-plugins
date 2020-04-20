@@ -1,4 +1,4 @@
-<keyboards file="fr_FR" version="1" lang="fr_FR" name="Français (France)" wc="fr_FR">
+<keyboards file="fr_FR" version="1" lang="fr_FR" name="français (France)" wc="fr_FR">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

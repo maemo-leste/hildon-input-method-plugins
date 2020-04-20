@@ -1,4 +1,4 @@
-<keyboards file="da_DK" version="1" lang="da_DK" name="Dansk (Danmark)" wc="da_DK">
+<keyboards file="da_DK" version="1" lang="da_DK" name="dansk (Danmark)" wc="da_DK">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="el_GR" version="1" lang="el_GR" name="Ελληνικά (Ελληνικά)" wc="el_GR">
+<keyboards file="el_GR" version="1" lang="el_GR" name="ελληνικά (Ελληνικά)" wc="el_GR">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

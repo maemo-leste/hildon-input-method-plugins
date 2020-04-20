@@ -1,4 +1,4 @@
-<keyboards file="fa_IR" version="1" lang="fa_IR" name="Persian" wc="fa_IR">
+<keyboards file="fa_IR" version="1" lang="fa_IR" name="فارسی (ایران)" wc="fa_IR">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

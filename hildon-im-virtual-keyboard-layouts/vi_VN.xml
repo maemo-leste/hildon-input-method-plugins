@@ -1,4 +1,4 @@
-<keyboards file="vi_VN" version="1" lang="vi_VN" name="Vietnamese (Vietnam)" wc="vi_VN">
+<keyboards file="vi_VN" version="1" lang="vi_VN" name="việt (Vietnam)" wc="vi_VN">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

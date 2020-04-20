@@ -1,4 +1,4 @@
-<keyboards file="bg_BG" version="1" lang="bg_BG" name="Български (България) - Phonetic" wc="bg_BG">
+<keyboards file="bg_BG" version="1" lang="bg_BG" name="български (България) - Phonetic" wc="bg_BG">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

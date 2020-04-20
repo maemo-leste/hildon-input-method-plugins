@@ -1,4 +1,4 @@
-<keyboards file="sl_SI" version="1" lang="sl_SI" name="Slovenščina (Slovenija) - QWERTY" wc="sl_SI">
+<keyboards file="sl_SI" version="1" lang="sl_SI" name="slovenščina (Slovenija) - QWERTY" wc="sl_SI">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="is_IS" version="1" lang="is_IS" name="Íslenska (Iceland)" wc="is_IS">
+<keyboards file="is_IS" version="1" lang="is_IS" name="íslenska (Ísland)" wc="is_IS">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

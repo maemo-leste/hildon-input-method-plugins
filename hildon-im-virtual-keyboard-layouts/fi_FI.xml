@@ -1,4 +1,4 @@
-<keyboards file="fi_FI" version="1" lang="fi_FI" name="Suomi (Suomi)" wc="fi_FI">
+<keyboards file="fi_FI" version="1" lang="fi_FI" name="suomi (Suomi)" wc="fi_FI">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

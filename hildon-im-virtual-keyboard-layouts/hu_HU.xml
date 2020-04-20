@@ -1,4 +1,4 @@
-<keyboards file="hu_HU" version="1" lang="hu_HU" name="Magyar (Magyarország) - QWERTY" wc="hu_HU">
+<keyboards file="hu_HU" version="1" lang="hu_HU" name="magyar (Magyarország) - QWERTY" wc="hu_HU">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

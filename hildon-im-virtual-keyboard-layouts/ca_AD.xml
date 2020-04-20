@@ -1,4 +1,4 @@
-<keyboards file="ca_AD" version="1" lang="ca_AD" name="Català" wc="ca_AD">
+<keyboards file="ca_AD" version="1" lang="ca_AD" name="català" wc="ca_AD">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

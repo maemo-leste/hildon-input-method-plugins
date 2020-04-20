@@ -1,4 +1,4 @@
-<keyboards file="hr_HR" version="1" lang="hr_HR" name="Hrvatski (Hrvatska) - QWERTY" wc="hr_HR">
+<keyboards file="hr_HR" version="1" lang="hr_HR" name="hrvatski (Hrvatska) - QWERTY" wc="hr_HR">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

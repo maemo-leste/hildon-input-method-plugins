@@ -1,4 +1,4 @@
-<keyboards file="ug_CN" version="1" lang="ug_CN" name="Uyghur (China)" wc="ug_CN">
+<keyboards file="ug_CN" version="1" lang="ug_CN" name="ئۇيغۇر (China)" wc="ug_CN">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

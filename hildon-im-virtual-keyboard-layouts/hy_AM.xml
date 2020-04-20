@@ -1,4 +1,4 @@
-<keyboards file="hy_AM" version="1" lang="hy_AM" name="Հայերէն (Հայաստան)" wc="hy_AM">
+<keyboards file="hy_AM" version="1" lang="hy_AM" name="հայերէն (Հայաստան)" wc="hy_AM">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

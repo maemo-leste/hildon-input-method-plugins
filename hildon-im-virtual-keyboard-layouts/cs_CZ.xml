@@ -1,4 +1,4 @@
-<keyboards file="cs_CZ" version="1" lang="cs_CZ" name="Čeština (Česká republika) - QWERTY" wc="cs_CZ">
+<keyboards file="cs_CZ" version="1" lang="cs_CZ" name="čeština (Česká republika) - QWERTY" wc="cs_CZ">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

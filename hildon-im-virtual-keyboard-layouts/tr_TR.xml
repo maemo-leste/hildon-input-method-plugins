@@ -1,4 +1,4 @@
-<keyboards file="tr_TR" version="1" lang="tr_TR" name="Türkçe (Türkiye)" wc="tr_TR">
+<keyboards file="tr_TR" version="1" lang="tr_TR" name="türkçe (Türkiye)" wc="tr_TR">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="ne_NP" version="1" lang="ne_NP" name="Nepali (Nepal)" wc="ne_NP">
+<keyboards file="ne_NP" version="1" lang="ne_NP" name="नेपाली ( नेपाल)" wc="ne_NP">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="be_BY" version="1" lang="be_BY" name="Беларуская (Беларусь)" wc="be_BY">
+<keyboards file="be_BY" version="1" lang="be_BY" name="беларуская (Беларусь)" wc="be_BY">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="ru_RU" version="1" lang="ru_RU" name="Русский (Россия)" wc="ru_RU">
+<keyboards file="ru_RU" version="1" lang="ru_RU" name="русский (Россия)" wc="ru_RU">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>

@@ -1,4 +1,4 @@
-<keyboards file="pt_PT" version="1" lang="pt_PT" name="Português (Portugal)" wc="pt_PT">
+<keyboards file="pt_PT" version="1" lang="pt_PT" name="português (Portugal)" wc="pt_PT">
 	<screen>
 		<mode name="NORMAL"/>
 		<mode name="FULL"/>
