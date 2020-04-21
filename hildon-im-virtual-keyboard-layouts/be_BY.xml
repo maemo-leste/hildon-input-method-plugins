@@ -1,0 +1,321 @@
+<keyboards file="be_BY" version="1" lang="be_BY" name="Беларуская (Беларусь)" wc="be_BY">
+	<screen>
+		<mode name="NORMAL"/>
+		<mode name="FULL"/>
+	</screen>
+	<keysizes>
+		<size height="35" baseline="26" width="35" margin_top="0" margin_left="0" />
+		<size height="35" baseline="26" width="50" margin_top="0" margin_left="0" />
+		<size height="35" baseline="26" width="55" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="72" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="143" margin_top="0" margin_left="0" />
+	</keysizes>
+	<keyboard layout="NORMAL" default_key_size="0">
+		<sublayout type="LOWERCASE" variance_index="1" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA">й</key>
+					<key size="0" alpha="ALPHA">ц</key>
+					<key size="0" alpha="ALPHA">у</key>
+					<key size="0" alpha="ALPHA">к</key>
+					<key size="0" alpha="ALPHA">е</key>
+					<key size="0" alpha="ALPHA">н</key>
+					<key size="0" alpha="ALPHA">г</key>
+					<key size="0" alpha="ALPHA">ш</key>
+					<key size="0" alpha="ALPHA">ў</key>
+					<key size="0" alpha="ALPHA">з</key>
+					<key size="1" alpha="ALPHA">х</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ф</key>
+					<key size="0" alpha="ALPHA">ы</key>
+					<key size="0" alpha="ALPHA">в</key>
+					<key size="0" alpha="ALPHA">а</key>
+					<key size="0" alpha="ALPHA">п</key>
+					<key size="0" alpha="ALPHA">р</key>
+					<key size="0" alpha="ALPHA">о</key>
+					<key size="0" alpha="ALPHA">л</key>
+					<key size="0" alpha="ALPHA">д</key>
+					<key size="0" alpha="ALPHA">ж</key>
+					<key size="0" alpha="ALPHA">э</key>
+					<key size="0" alpha="ALPHA">ъ</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">я</key>
+					<key size="0" alpha="ALPHA">ч</key>
+					<key size="0" alpha="ALPHA">с</key>
+					<key size="0" alpha="ALPHA">м</key>
+					<key size="0" alpha="ALPHA">і</key>
+					<key size="0" alpha="ALPHA">т</key>
+					<key size="0" alpha="ALPHA">ь</key>
+					<key size="0" alpha="ALPHA">б</key>
+					<key size="0" alpha="ALPHA">ю</key>
+					<key size="0" special="SPECIAL">,</key>
+					<key size="1" special="SPECIAL">.</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">1</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">2</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">3</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">4</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">5</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">6</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">7</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">8</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">9</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ё</key>
+					<key size="0" numeric="NUMERIC" hexa="HEXA" tele="TELE">0</key>
+					<key size="0" numeric="NUMERIC" special="SPECIAL">-</key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" alpha="ALPHA">Й</key>
+					<key size="0" alpha="ALPHA">Ц</key>
+					<key size="0" alpha="ALPHA">У</key>
+					<key size="0" alpha="ALPHA">К</key>
+					<key size="0" alpha="ALPHA">Е</key>
+					<key size="0" alpha="ALPHA">Н</key>
+					<key size="0" alpha="ALPHA">Г</key>
+					<key size="0" alpha="ALPHA">Ш</key>
+					<key size="0" alpha="ALPHA">Ў</key>
+					<key size="0" alpha="ALPHA">З</key>
+					<key size="1" alpha="ALPHA">Х</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">Ф</key>
+					<key size="0" alpha="ALPHA">Ы</key>
+					<key size="0" alpha="ALPHA">В</key>
+					<key size="0" alpha="ALPHA">А</key>
+					<key size="0" alpha="ALPHA">П</key>
+					<key size="0" alpha="ALPHA">Р</key>
+					<key size="0" alpha="ALPHA">О</key>
+					<key size="0" alpha="ALPHA">Л</key>
+					<key size="0" alpha="ALPHA">Д</key>
+					<key size="0" alpha="ALPHA">Ж</key>
+					<key size="0" alpha="ALPHA">Э</key>
+					<key size="0" alpha="ALPHA">Ъ</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">Я</key>
+					<key size="0" alpha="ALPHA">Ч</key>
+					<key size="0" alpha="ALPHA">С</key>
+					<key size="0" alpha="ALPHA">М</key>
+					<key size="0" alpha="ALPHA">І</key>
+					<key size="0" alpha="ALPHA">Т</key>
+					<key size="0" alpha="ALPHA">Ь</key>
+					<key size="0" alpha="ALPHA">Б</key>
+					<key size="0" alpha="ALPHA">Ю</key>
+					<key size="0" special="SPECIAL">;</key>
+					<key size="1" special="SPECIAL">:</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">!</key>
+					<key size="0" special="SPECIAL">"</key>
+					<key size="0" special="SPECIAL">?</key>
+				</row>
+				<row>
+					<key size="0" tele="TELE" special="SPECIAL">*</key>
+					<key size="0" special="SPECIAL">%</key>
+					<key size="0" special="SPECIAL">&amp;</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">\</key>
+					<key size="0" special="SPECIAL">(</key>
+					<key size="0" special="SPECIAL">)</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">Ё</key>
+					<key size="0" special="SPECIAL">=</key>
+					<key size="0" tele="TELE" special="SPECIAL">+</key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+	<keyboard layout="THUMB" default_key_size="3">
+		<sublayout type="LOWERCASE" variance_index="1" label="абв">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" alpha="ALPHA">й</key>
+					<key size="3" alpha="ALPHA">ц</key>
+					<key size="3" alpha="ALPHA">у</key>
+					<key size="3" alpha="ALPHA">к</key>
+					<key size="3" alpha="ALPHA">е</key>
+					<key size="3" alpha="ALPHA">н</key>
+					<key size="3" alpha="ALPHA">г</key>
+					<key size="3" alpha="ALPHA">ш</key>
+					<key size="3" alpha="ALPHA">ў</key>
+					<key size="3" alpha="ALPHA">з</key>
+					<key size="3" alpha="ALPHA">х</key>
+				</row>
+				<row>
+					<key size="3" alpha="ALPHA">ф</key>
+					<key size="3" alpha="ALPHA">ы</key>
+					<key size="3" alpha="ALPHA">в</key>
+					<key size="3" alpha="ALPHA">а</key>
+					<key size="3" alpha="ALPHA">п</key>
+					<key size="3" alpha="ALPHA">р</key>
+					<key size="3" alpha="ALPHA">о</key>
+					<key size="3" alpha="ALPHA">л</key>
+					<key size="3" alpha="ALPHA">д</key>
+					<key size="3" alpha="ALPHA">ж</key>
+					<key size="3" alpha="ALPHA">э</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" alpha="ALPHA">я</key>
+					<key size="3" alpha="ALPHA">ч</key>
+					<key size="3" alpha="ALPHA">с</key>
+					<key size="3" alpha="ALPHA">м</key>
+					<key size="3" alpha="ALPHA">і</key>
+					<key size="3" alpha="ALPHA">т</key>
+					<key size="3" alpha="ALPHA">ь</key>
+					<key size="3" alpha="ALPHA">б</key>
+					<key size="3" alpha="ALPHA">ю</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="АБВ">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" alpha="ALPHA">Й</key>
+					<key size="3" alpha="ALPHA">Ц</key>
+					<key size="3" alpha="ALPHA">У</key>
+					<key size="3" alpha="ALPHA">К</key>
+					<key size="3" alpha="ALPHA">Е</key>
+					<key size="3" alpha="ALPHA">Н</key>
+					<key size="3" alpha="ALPHA">Г</key>
+					<key size="3" alpha="ALPHA">Ш</key>
+					<key size="3" alpha="ALPHA">Ў</key>
+					<key size="3" alpha="ALPHA">З</key>
+					<key size="3" alpha="ALPHA">Х</key>
+				</row>
+				<row>
+					<key size="3" alpha="ALPHA">Ф</key>
+					<key size="3" alpha="ALPHA">Ы</key>
+					<key size="3" alpha="ALPHA">В</key>
+					<key size="3" alpha="ALPHA">А</key>
+					<key size="3" alpha="ALPHA">П</key>
+					<key size="3" alpha="ALPHA">Р</key>
+					<key size="3" alpha="ALPHA">О</key>
+					<key size="3" alpha="ALPHA">Л</key>
+					<key size="3" alpha="ALPHA">Д</key>
+					<key size="3" alpha="ALPHA">Ж</key>
+					<key size="3" alpha="ALPHA">Э</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" alpha="ALPHA">Я</key>
+					<key size="3" alpha="ALPHA">Ч</key>
+					<key size="3" alpha="ALPHA">С</key>
+					<key size="3" alpha="ALPHA">М</key>
+					<key size="3" alpha="ALPHA">І</key>
+					<key size="3" alpha="ALPHA">Т</key>
+					<key size="3" alpha="ALPHA">Ь</key>
+					<key size="3" alpha="ALPHA">Б</key>
+					<key size="3" alpha="ALPHA">Ю</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="1#+">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">1</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">2</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">3</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">4</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">5</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">6</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">7</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">8</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">9</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">0</key>
+					<key size="3" special="SPECIAL">=</key>
+				</row>
+				<row>
+					<key size="3" tele="TELE" special="SPECIAL">+</key>
+					<key size="3" numeric="NUMERIC" special="SPECIAL">-</key>
+					<key size="3" tele="TELE" special="SPECIAL">*</key>
+					<key size="3" special="SPECIAL">/</key>
+					<key size="3" special="SPECIAL">%</key>
+					<key size="3" special="SPECIAL">(</key>
+					<key size="3" special="SPECIAL">)</key>
+					<key size="3" special="SPECIAL">?</key>
+					<key size="3" special="SPECIAL">;</key>
+					<key size="3" special="SPECIAL">:</key>
+					<key size="3" special="SPECIAL">"</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" alpha="ALPHA">ё</key>
+					<key size="3" alpha="ALPHA">ґ</key>
+					<key size="3" alpha="ALPHA">і</key>
+					<key size="3" alpha="ALPHA">ї</key>
+					<key size="3" alpha="ALPHA">є</key>
+					<key size="3" alpha="ALPHA">ъ</key>
+					<key size="3" special="SPECIAL">!</key>
+					<key size="3" special="SPECIAL">,</key>
+					<key size="3" special="SPECIAL">.</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="1+ё">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" special="SPECIAL">$</key>
+					<key size="3" special="SPECIAL">€</key>
+					<key size="3" special="SPECIAL">£</key>
+					<key size="3" special="SPECIAL">¥</key>
+					<key size="3" alpha="ALPHA">№</key>
+					<key size="3" special="SPECIAL">§</key>
+					<key size="3" tele="TELE" special="SPECIAL">#</key>
+					<key size="3" special="SPECIAL">&amp;</key>
+					<key size="3" special="SPECIAL">©</key>
+					<key size="3" special="SPECIAL">ў</key>
+					<key size="3" special="SPECIAL">\</key>
+				</row>
+				<row>
+					<key size="3" special="SPECIAL">^</key>
+					<key size="3" special="SPECIAL">_</key>
+					<key size="3" special="SPECIAL">|</key>
+					<key size="3" special="SPECIAL">&lt;</key>
+					<key size="3" special="SPECIAL">&gt;</key>
+					<key size="3" special="SPECIAL">{</key>
+					<key size="3" special="SPECIAL">}</key>
+					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="3" special="SPECIAL">«</key>
+					<key size="3" special="SPECIAL">»</key>
+					<key size="3" special="SPECIAL">'</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" alpha="ALPHA">Ё</key>
+					<key size="3" alpha="ALPHA">Ґ</key>
+					<key size="3" alpha="ALPHA">І</key>
+					<key size="3" alpha="ALPHA">Ї</key>
+					<key size="3" alpha="ALPHA">Є</key>
+					<key size="3" alpha="ALPHA">Ъ</key>
+					<key size="3" special="SPECIAL">@</key>
+					<key size="3" special="SPECIAL">[</key>
+					<key size="3" special="SPECIAL">]</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+</keyboards>
