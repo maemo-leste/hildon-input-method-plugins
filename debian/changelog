@@ -1,3 +1,12 @@
+hildon-input-method-plugins (3.9.84) unstable; urgency=low
+
+  * Add various virtual keyboard layouts for the following locales:
+    be_BY, bg_BG, ca_AD, dz_BT, fa_IR, he_IL, hr_HR, hu_HU, hy_AM, is_IS,
+    ka_GE, km_KH, mk_MK, ne_NP, pa_IN, ro_RO, sk_SK, sl_SI, sr_RS, th_TH,
+    tr_TR, ug_CN, vi_VN
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Thu, 30 Apr 2020 11:02:26 +0200
+
 hildon-input-method-plugins (3.9.83) unstable; urgency=low
 
   [ Ivaylo Dimitrov ]
