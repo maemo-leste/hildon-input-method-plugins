@@ -1,0 +1,347 @@
+<keyboards file="th_TH" version="1" lang="th_TH" name="ภาษาไทย (ราชอาณาจักรไทย) - Kedmanee" wc="th_TH">
+	<screen>
+		<mode name="NORMAL"/>
+		<mode name="FULL"/>
+	</screen>
+	<keysizes>
+		<size height="35" baseline="26" width="35" margin_top="0" margin_left="0" />
+		<size height="35" baseline="26" width="50" margin_top="0" margin_left="0" />
+		<size height="35" baseline="26" width="55" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="72" margin_top="0" margin_left="0" />
+		<size height="55" baseline="41" width="143" margin_top="0" margin_left="0" />
+	</keysizes>
+	<keyboard layout="NORMAL" default_key_size="0">
+		<sublayout type="LOWERCASE" variance_index="1" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" special="SPECIAL">ๆ</key>
+					<key size="0" special="SPECIAL">ไ</key>
+					<key size="0" special="SPECIAL">ำ</key>
+					<key size="0" alpha="ALPHA">พ</key>
+					<key size="0" special="SPECIAL">ะ</key>
+					<key size="0" special="SPECIAL">ั</key>
+					<key size="0" special="SPECIAL">ี</key>
+					<key size="0" alpha="ALPHA">ร</key>
+					<key size="0" alpha="ALPHA">น</key>
+					<key size="0" alpha="ALPHA">ย</key>
+					<key size="1" alpha="ALPHA">บ</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ฟ</key>
+					<key size="0" alpha="ALPHA">ห</key>
+					<key size="0" alpha="ALPHA">ก</key>
+					<key size="0" alpha="ALPHA">ด</key>
+					<key size="0" special="SPECIAL">เ</key>
+					<key size="0" special="SPECIAL">้</key>
+					<key size="0" special="SPECIAL">่</key>
+					<key size="0" special="SPECIAL">า</key>
+					<key size="0" alpha="ALPHA">ส</key>
+					<key size="0" alpha="ALPHA">ว</key>
+					<key size="0" alpha="ALPHA">ง</key>
+					<key size="0" alpha="ALPHA">ล</key>
+				</row>
+				<row>
+					<key size="2" alpha="ALPHA">ผ</key>
+					<key size="0" alpha="ALPHA">ป</key>
+					<key size="0" special="SPECIAL">แ</key>
+					<key size="0" alpha="ALPHA">อ</key>
+					<key size="0" special="SPECIAL">ิ</key>
+					<key size="0" special="SPECIAL">ื</key>
+					<key size="0" alpha="ALPHA">ท</key>
+					<key size="0" alpha="ALPHA">ม</key>
+					<key size="0" special="SPECIAL">ใ</key>
+					<key size="0" alpha="ALPHA">ฝ</key>
+					<key size="1" special="SPECIAL">@</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" special="SPECIAL">ๅ</key>
+					<key size="0" special="SPECIAL">/</key>
+					<key size="0" special="SPECIAL">-</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ภ</key>
+					<key size="0" alpha="ALPHA">ถ</key>
+					<key size="0" special="SPECIAL">ุ</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">ึ</key>
+					<key size="0" alpha="ALPHA">ค</key>
+					<key size="0" alpha="ALPHA">ต</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">จ</key>
+					<key size="0" alpha="ALPHA">ข</key>
+					<key size="0" alpha="ALPHA">ช</key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="2" special="SPECIAL">+</key>
+					<key size="0" special="SPECIAL">"</key>
+					<key size="0" alpha="ALPHA">ฎ</key>
+					<key size="0" alpha="ALPHA">ฑ</key>
+					<key size="0" alpha="ALPHA">ธ</key>
+					<key size="0" special="SPECIAL">ํ</key>
+					<key size="0" special="SPECIAL">๊</key>
+					<key size="0" alpha="ALPHA">ณ</key>
+					<key size="0" special="SPECIAL">ฯ</key>
+					<key size="0" alpha="ALPHA">ญ</key>
+					<key size="1" alpha="ALPHA">ฐ</key>
+				</row>
+				<row>
+					<key size="0" alpha="ALPHA">ฤ</key>
+					<key size="0" alpha="ALPHA">ฆ</key>
+					<key size="0" alpha="ALPHA">ฏ</key>
+					<key size="0" special="SPECIAL">โ</key>
+					<key size="0" alpha="ALPHA">ฌ</key>
+					<key size="0" special="SPECIAL">็</key>
+					<key size="0" special="SPECIAL">๋</key>
+					<key size="0" alpha="ALPHA">ษ</key>
+					<key size="0" alpha="ALPHA">ศ</key>
+					<key size="0" alpha="ALPHA">ซ</key>
+					<key size="0" special="SPECIAL">.</key>
+					<key size="0" special="SPECIAL">,</key>
+				</row>
+				<row>
+					<key size="2" special="SPECIAL">(</key>
+					<key size="0" special="SPECIAL">)</key>
+					<key size="0" alpha="ALPHA">ฉ</key>
+					<key size="0" alpha="ALPHA">ฮ</key>
+					<key size="0" special="SPECIAL">ฺ</key>
+					<key size="0" special="SPECIAL">์</key>
+					<key size="0" special="SPECIAL">?</key>
+					<key size="0" alpha="ALPHA">ฒ</key>
+					<key size="0" alpha="ALPHA">ฬ</key>
+					<key size="0" alpha="ALPHA">ฦ</key>
+					<key size="1" special="SPECIAL">*</key>
+				</row>
+			</keysection>
+			<keysection margin_top="0" margin_left="9" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="0" numeric="NUMERIC">๑</key>
+					<key size="0" numeric="NUMERIC">๒</key>
+					<key size="0" numeric="NUMERIC">๓</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC">๔</key>
+					<key size="0" numeric="NUMERIC">๕</key>
+					<key size="0" numeric="NUMERIC">๖</key>
+				</row>
+				<row>
+					<key size="0" numeric="NUMERIC">๗</key>
+					<key size="0" numeric="NUMERIC">๘</key>
+					<key size="0" numeric="NUMERIC">๙</key>
+				</row>
+				<row>
+					<key size="0" special="SPECIAL">ู</key>
+					<key size="0" numeric="NUMERIC">๐</key>
+					<key size="0" special="SPECIAL">฿</key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+	<keyboard layout="THUMB" default_key_size="3">
+		<sublayout type="LOWERCASE" variance_index="1" label="กขค">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" alpha="ALPHA">ๆ</key>
+					<key size="3" alpha="ALPHA">ๅ</key>
+					<key size="3" alpha="ALPHA">ภ</key>
+					<key size="3" alpha="ALPHA">ถ</key>
+					<key size="3" special="SPECIAL">ุ</key>
+					<key size="3" special="SPECIAL">ึ</key>
+					<key size="3" alpha="ALPHA">ค</key>
+					<key size="3" alpha="ALPHA">ต</key>
+					<key size="3" alpha="ALPHA">จ</key>
+					<key size="3" alpha="ALPHA">ข</key>
+					<key size="3" alpha="ALPHA">ช</key>
+				</row>
+				<row>
+					<key size="3" alpha="ALPHA">ไ</key>
+					<key size="3" special="SPECIAL">ำ</key>
+					<key size="3" alpha="ALPHA">พ</key>
+					<key size="3" alpha="ALPHA">ะ</key>
+					<key size="3" special="SPECIAL">ั</key>
+					<key size="3" special="SPECIAL">ี</key>
+					<key size="3" alpha="ALPHA">ร</key>
+					<key size="3" alpha="ALPHA">น</key>
+					<key size="3" alpha="ALPHA">ย</key>
+					<key size="3" alpha="ALPHA">บ</key>
+					<key size="3" alpha="ALPHA">ล</key>
+				</row>
+				<row>
+					<key size="3" alpha="ALPHA">ฟ</key>
+					<key size="3" alpha="ALPHA">ห</key>
+					<key size="3" alpha="ALPHA">ก</key>
+					<key size="3" alpha="ALPHA">ด</key>
+					<key size="3" alpha="ALPHA">เ</key>
+					<key size="3" special="SPECIAL">้</key>
+					<key size="3" special="SPECIAL">่</key>
+					<key size="3" alpha="ALPHA">า</key>
+					<key size="3" alpha="ALPHA">ส</key>
+					<key size="3" alpha="ALPHA">ว</key>
+					<key size="3" alpha="ALPHA">ง</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" alpha="ALPHA">ผ</key>
+					<key size="3" alpha="ALPHA">ป</key>
+					<key size="3" alpha="ALPHA">แ</key>
+					<key size="3" alpha="ALPHA">อ</key>
+					<key size="3" special="SPECIAL">ิ</key>
+					<key size="3" special="SPECIAL">ื</key>
+					<key size="3" alpha="ALPHA">ท</key>
+					<key size="3" alpha="ALPHA">ม</key>
+					<key size="3" alpha="ALPHA">ใ</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="UPPERCASE" variance_index="0" label="ฏฑธ">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" numeric="NUMERIC" tele="TELE">๑</key>
+					<key size="3" numeric="NUMERIC" tele="TELE">๒</key>
+					<key size="3" numeric="NUMERIC" tele="TELE">๓</key>
+					<key size="3" numeric="NUMERIC" tele="TELE">๔</key>
+					<key size="3" special="SPECIAL">ู</key>
+					<key size="3" numeric="NUMERIC">๕</key>
+					<key size="3" numeric="NUMERIC">๖</key>
+					<key size="3" numeric="NUMERIC">๗</key>
+					<key size="3" numeric="NUMERIC">๘</key>
+					<key size="3" numeric="NUMERIC">๙</key>
+					<key size="3" numeric="NUMERIC">๐</key>
+				</row>
+				<row>
+					<key size="3" special="SPECIAL">"</key>
+					<key size="3" alpha="ALPHA">ฎ</key>
+					<key size="3" alpha="ALPHA">ฑ</key>
+					<key size="3" alpha="ALPHA">ธ</key>
+					<key size="3" special="SPECIAL">ํ</key>
+					<key size="3" special="SPECIAL">๊</key>
+					<key size="3" alpha="ALPHA">ณ</key>
+					<key size="3" alpha="ALPHA">ฯ</key>
+					<key size="3" alpha="ALPHA">ญ</key>
+					<key size="3" alpha="ALPHA">ฐ</key>
+					<key size="3" special="SPECIAL">,</key>
+				</row>
+				<row>
+					<key size="3" alpha="ALPHA">ฤ</key>
+					<key size="3" alpha="ALPHA">ฆ</key>
+					<key size="3" alpha="ALPHA">ฏ</key>
+					<key size="3" alpha="ALPHA">โ</key>
+					<key size="3" alpha="ALPHA">ฌ</key>
+					<key size="3" special="SPECIAL">็</key>
+					<key size="3" special="SPECIAL">๋</key>
+					<key size="3" alpha="ALPHA">ษ</key>
+					<key size="3" alpha="ALPHA">ศ</key>
+					<key size="3" alpha="ALPHA">ซ</key>
+					<key size="3" special="SPECIAL">.</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" special="SPECIAL">?</key>
+					<key size="3" alpha="ALPHA">ฉ</key>
+					<key size="3" alpha="ALPHA">ฮ</key>
+					<key size="3" special="SPECIAL">ฺ</key>
+					<key size="3" special="SPECIAL">์</key>
+					<key size="3" alpha="ALPHA">ฒ</key>
+					<key size="3" alpha="ALPHA">ฬ</key>
+					<key size="3" alpha="ALPHA">ฦ</key>
+					<key size="3" alpha="ALPHA">ฝ</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="1#+">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">1</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">2</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">3</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">4</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">5</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">6</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">7</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">8</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">9</key>
+					<key size="3" numeric="NUMERIC" hexa="HEXA" tele="TELE">0</key>
+					<key size="3" special="SPECIAL">=</key>
+				</row>
+				<row>
+					<key size="3" tele="TELE" special="SPECIAL">+</key>
+					<key size="3" numeric="NUMERIC" special="SPECIAL">-</key>
+					<key size="3" tele="TELE" special="SPECIAL">*</key>
+					<key size="3" special="SPECIAL">/</key>
+					<key size="3" special="SPECIAL">%</key>
+					<key size="3" special="SPECIAL">(</key>
+					<key size="3" special="SPECIAL">)</key>
+					<key size="3" special="SPECIAL">?</key>
+					<key size="3" special="SPECIAL">;</key>
+					<key size="3" special="SPECIAL">:</key>
+					<key size="3" special="SPECIAL">"</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" alpha="ALPHA">ฃ</key>
+					<key size="3" alpha="ALPHA">ฅ</key>
+					<key size="3" special="SPECIAL">“</key>
+					<key size="3" special="SPECIAL">”</key>
+					<key size="3" special="SPECIAL">‘</key>
+					<key size="3" special="SPECIAL">’</key>
+					<key size="3" special="SPECIAL">!</key>
+					<key size="3" special="SPECIAL">,</key>
+					<key size="3" special="SPECIAL">.</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+		<sublayout type="SINGLE" variance_index="255" label="*§¿">
+			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
+				<row>
+					<key size="3" special="SPECIAL">$</key>
+					<key size="3" special="SPECIAL">€</key>
+					<key size="3" special="SPECIAL">£</key>
+					<key size="3" special="SPECIAL">¥</key>
+					<key size="3" special="SPECIAL">฿</key>
+					<key size="3" special="SPECIAL">§</key>
+					<key size="3" tele="TELE" special="SPECIAL">#</key>
+					<key size="3" special="SPECIAL">&amp;</key>
+					<key size="3" special="SPECIAL">©</key>
+					<key size="3" special="SPECIAL">™</key>
+					<key size="3" special="SPECIAL">\</key>
+				</row>
+				<row>
+					<key size="3" special="SPECIAL">^</key>
+					<key size="3" special="SPECIAL">_</key>
+					<key size="3" special="SPECIAL">|</key>
+					<key size="3" special="SPECIAL">&lt;</key>
+					<key size="3" special="SPECIAL">&gt;</key>
+					<key size="3" special="SPECIAL">{</key>
+					<key size="3" special="SPECIAL">}</key>
+					<key size="3" alpha="ALPHA" special="SPECIAL" dead="DEAD">~</key>
+					<key size="3" special="SPECIAL">«</key>
+					<key size="3" special="SPECIAL">»</key>
+					<key size="3" special="SPECIAL">'</key>
+				</row>
+				<row>
+					<key size="3" shift="SHIFT"></key>
+					<key size="3" special="SPECIAL">½</key>
+					<key size="3" special="SPECIAL">¹</key>
+					<key size="3" special="SPECIAL">²</key>
+					<key size="3" special="SPECIAL">³</key>
+					<key size="3" special="SPECIAL">·</key>
+					<key size="3" special="SPECIAL">°</key>
+					<key size="3" special="SPECIAL">@</key>
+					<key size="3" special="SPECIAL">[</key>
+					<key size="3" special="SPECIAL">]</key>
+					<key size="3" backspace="BACKSPACE"></key>
+				</row>
+			</keysection>
+		</sublayout>
+	</keyboard>
+</keyboards>
