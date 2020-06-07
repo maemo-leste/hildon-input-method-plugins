@@ -15,7 +15,6 @@
 #define HILDON_IM_GCONF_INT_KB_MODEL  HILDON_IM_GCONF_DIR "/int_kb_model"
 #define HILDON_IM_GCONF_INT_KB_LAYOUT HILDON_IM_GCONF_DIR "/int_kb_layout"
 
-#define VKB_WIDTH 800
 #define VKB_HEIGHT 288
 
 enum
@@ -438,7 +437,7 @@ hildon_im_keyboard_assistant_scv_enable(HildonIMPlugin *plugin, gboolean init)
       height = 72 * layout_info->num_rows;
 
     gtk_widget_set_size_request(
-          GTK_WIDGET(priv->vkb_renderer), VKB_WIDTH, height);
+          GTK_WIDGET(priv->vkb_renderer), -1, height);
 
     layout_info_free(layout_info);
   }
@@ -775,9 +774,12 @@ static void
 hildon_im_keyboard_assistant_scv_init(HildonIMKeyboardAssistantSCV *scv)
 {
   HildonIMKeyboardAssistantSCVPrivate *priv;
-  GtkRequisition dimension = {VKB_WIDTH, VKB_HEIGHT};
+  GtkRequisition dimension;
   HildonVKBRendererLayoutInfo *layout_info = NULL;
   gint height = VKB_HEIGHT;
+
+  dimension.height = VKB_HEIGHT;
+  dimension.width = gdk_screen_get_width(gtk_widget_get_screen(GTK_WIDGET(scv)));
 
   g_return_if_fail(HILDON_IM_IS_KEYBOARD_ASSISTANT_SCV(scv));
 
@@ -820,7 +822,7 @@ hildon_im_keyboard_assistant_scv_init(HildonIMKeyboardAssistantSCV *scv)
   }
 
   gtk_widget_set_size_request(
-        GTK_WIDGET(priv->vkb_renderer), VKB_WIDTH, height);
+        GTK_WIDGET(priv->vkb_renderer), -1, height);
 
   priv->numeric_sub = 0;
   priv->combining_input = NULL;

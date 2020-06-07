@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.85) unstable; urgency=low
+
+  * Honour screen width in special keys keyboard
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Sun, 07 Jun 2020 14:33:16 +0200
+
 hildon-input-method-plugins (3.9.84) unstable; urgency=low
 
   * Add various virtual keyboard layouts for the following locales:
