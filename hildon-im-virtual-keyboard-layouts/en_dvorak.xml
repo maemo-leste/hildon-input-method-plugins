@@ -14,9 +14,9 @@
 		<sublayout type="LOWERCASE" variance_index="1" label="">
 			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
 				<row>
-					<key size="2" special="SPECIAL">&semi;</key>
-					<key size="0" special="SPECIAL">&comma;</key>
-					<key size="0" special="SPECIAL">&period;</key>
+					<key size="2" special="SPECIAL">;</key>
+					<key size="0" special="SPECIAL">,</key>
+					<key size="0" special="SPECIAL">.</key>
 					<key size="0" alpha="ALPHA">p</key>
 					<key size="0" alpha="ALPHA">y</key>
 					<key size="0" alpha="ALPHA">f</key>
@@ -24,8 +24,8 @@
 					<key size="0" alpha="ALPHA">c</key>
 					<key size="0" alpha="ALPHA">r</key>
 					<key size="0" alpha="ALPHA" tele="TELE">l</key>
-					<key size="1" special="SPECIAL">&sol;</key>
-					<key size="1" special="SPECIAL">&commat;</key>
+					<key size="1" special="SPECIAL">/</key>
+					<key size="1" special="SPECIAL">@</key>
 				</row>
 				<row>
 					<key size="0" alpha="ALPHA" hexa="HEXA">a</key>
@@ -38,10 +38,10 @@
 					<key size="0" alpha="ALPHA">t</key>
 					<key size="0" alpha="ALPHA">n</key>
 					<key size="0" special="ALPHA">s</key>
-					<key size="0" special="SPECIAL">&hyphen;</key>
+					<key size="0" special="SPECIAL">-</key>
 				</row>
 				<row>
-					<key size="2" special="SPECIAL">&apos;</key>
+					<key size="2" special="SPECIAL">'</key>
 					<key size="0" alpha="ALPHA">q</key>
 					<key size="0" alpha="ALPHA" hexa="HEXA">j</key>
 					<key size="0" alpha="ALPHA">k</key>
@@ -79,7 +79,7 @@
 		<sublayout type="UPPERCASE" variance_index="0" label="">
 			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
 				<row>
-					<key size="2" special="SPECIAL">&colon;</key>
+					<key size="2" special="SPECIAL">:</key>
 					<key size="0" special="SPECIAL">&lt;</key>
 					<key size="0" special="SPECIAL">&gt;</key>
 					<key size="0" alpha="ALPHA">P</key>
@@ -89,8 +89,8 @@
 					<key size="0" alpha="ALPHA">C</key>
 					<key size="0" alpha="ALPHA">R</key>
 					<key size="0" alpha="ALPHA" tele="TELE">L</key>
-					<key size="1" special="SPECIAL">&quest;</key>
-					<key size="1" special="SPECIAL">&Hat;</key>
+					<key size="1" special="SPECIAL">?</key>
+					<key size="1" special="SPECIAL">^</key>
 				</row>
 				<row>
 					<key size="0" alpha="ALPHA" hexa="HEXA">A</key>
@@ -103,8 +103,7 @@
 					<key size="0" alpha="ALPHA">T</key>
 					<key size="0" alpha="ALPHA">N</key>
 					<key size="0" alpha="ALPHA">S</key>
-					<key size="0" special="SPECIAL">&lowbar;</key>
-					<key size="0" special="SPECIAL">&vert;</key>
+					<key size="0" special="SPECIAL">_</key>
 				</row>
 				<row>
 					<key size="2" special="SPECIAL">&quot;</key>
@@ -147,9 +146,9 @@
 		<sublayout type="LOWERCASE" variance_index="1" label="abc">
 			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
 				<row>
-					<key size="3" special="SPECIAL">&semi;</key>
-					<key size="3" special="SPECIAL">&comma;</key>
-					<key size="3" special="SPECIAL" hexa="HEXA">&period;</key>
+					<key size="3" special="SPECIAL">;</key>
+					<key size="3" special="SPECIAL">,</key>
+					<key size="3" special="SPECIAL" hexa="HEXA">.</key>
 					<key size="3" alpha="ALPHA">p</key>
 					<key size="3" alpha="ALPHA">y</key>
 					<key size="3" alpha="ALPHA">f</key>
@@ -157,8 +156,8 @@
 					<key size="3" alpha="ALPHA">c</key>
 					<key size="3" alpha="ALPHA">r</key>
 					<key size="3" alpha="ALPHA" tele="TELE">l</key>
-					<key size="3" special="SPECIAL">&sol;</key>
-          <key size="3" special="SPECIAL">&commat;</key>
+					<key size="3" special="SPECIAL">/</key>
+          <key size="3" special="SPECIAL">@</key>
 				</row>
 				<row>
 					<key size="3" alpha="ALPHA" hexa="HEXA">a</key>
@@ -171,7 +170,7 @@
 					<key size="3" alpha="ALPHA">t</key>
 					<key size="3" alpha="ALPHA">n</key>
 					<key size="3" special="ALPHA">s</key>
-					<key size="3" special="SPECIAL">&hyphen;</key>
+					<key size="3" special="SPECIAL">-</key>
 				</row>
 				<row>
 					<key size="3" shift="SHIFT"></key>
@@ -192,7 +191,7 @@
 		<sublayout type="UPPERCASE" variance_index="0" label="ABC">
 			<keysection margin_top="0" margin_left="0" margin_bottom="0" margin_right="0">
 				<row>
-					<key size="3" special="SPECIAL">&colon;</key>
+					<key size="3" special="SPECIAL">:</key>
 					<key size="3" special="SPECIAL">&lt;</key>
 					<key size="3" special="SPECIAL">&gt;</key>
 					<key size="3" alpha="ALPHA">P</key>
@@ -202,8 +201,8 @@
 					<key size="3" alpha="ALPHA">C</key>
 					<key size="3" alpha="ALPHA">R</key>
 					<key size="3" alpha="ALPHA">L</key>
-					<key size="3" special="SPECIAL">&quest;</key>
-					<key size="3" special="SPECIAL">&Hat;</key>
+					<key size="3" special="SPECIAL">?</key>
+					<key size="3" special="SPECIAL">^</key>
 				</row>
 				<row>
 					<key size="3" alpha="ALPHA" hexa="HEXA">A</key>
@@ -216,8 +215,7 @@
 					<key size="3" alpha="ALPHA">T</key>
 					<key size="3" alpha="ALPHA">N</key>
 					<key size="3" alpha="ALPHA">S</key>
-					<key size="3" special="SPECIAL">&lowbar;</key>
-					<key size="3" special="SPECIAL">&vert;</key>
+					<key size="3" special="SPECIAL">_</key>
 				</row>
 				<row>
 					<key size="3" shift="SHIFT"></key>
