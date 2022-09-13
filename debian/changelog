@@ -1,3 +1,10 @@
+hildon-input-method-plugins (3.9.86) unstable; urgency=low
+
+  * fkb: Fix keyboard size when launched in portrait
+  * fkb: make it look better in portrait
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Tue, 13 Sep 2022 09:39:11 +0200
+
 hildon-input-method-plugins (3.9.85) unstable; urgency=low
 
   * Honour screen width in special keys keyboard
