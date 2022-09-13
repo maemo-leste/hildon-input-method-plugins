@@ -41,6 +41,8 @@
 #include "hildon-im-word-completer.h"
 
 #define HILDON_IM_WESTERN_FKB_HEIGHT 210
+#define HILDON_IM_WESTERN_FKB_BUTTON_WIDTH 108
+
 #define NUM_LANGUAGES 2
 
 typedef enum {
@@ -873,15 +875,17 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   HildonIMWesternFKBPrivate *priv;
   GtkWidget *hbox;
   GtkWidget *vbox;
-  GtkWidget *hbox2;
-  GtkWidget *vbox2;
-  GtkWidget *hbox1;
+  GtkWidget *hbox_space;
+  GtkWidget *hbox_bottom;
   GtkWidget *vbox1;
   GtkWidget *button;
   GtkWidget *alignment;
   GtkWidget *scrolled_window;
   GtkStyle *textviewstyle;
   GtkTextIter iter;
+  guint w;
+  GdkScreen *screen;
+
   /* GtkIconTheme *icon_theme; */
 
   tracef
@@ -966,32 +970,33 @@ fkb_window_create(HildonIMWesternFKB *fkb)
         "editable", FALSE,
         NULL);
 
-  hbox2 = gtk_hbox_new(FALSE, 2);
-  vbox2 = gtk_vbox_new(FALSE, 0);
+  hbox_space = gtk_hbox_new(FALSE, 2);
   priv->control_menu = fkb_create_control_menu(fkb);
 
-  /* repeating */
+  /* space */
+  screen = gtk_widget_get_screen(GTK_WIDGET(fkb));
+  w = MIN(gdk_screen_get_width(screen), gdk_screen_get_height(screen));
+  w -= 3 * HILDON_IM_WESTERN_FKB_BUTTON_WIDTH;
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
-  gtk_widget_set_size_request(button, 324, -1);
+  gtk_widget_set_size_request(button, MIN(w - 12, 324), -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   connect_signals(fkb, button);
   priv->space_button = button;
-  gtk_box_pack_start(GTK_BOX(hbox2), button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox_space), button, TRUE, TRUE, 0);
 
   /* numbers */
   button = hildon_gtk_toggle_button_new(HILDON_SIZE_FINGER_HEIGHT);
-  gtk_widget_set_size_request(button, 108, -1);
+  gtk_widget_set_size_request(button, HILDON_IM_WESTERN_FKB_BUTTON_WIDTH, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   g_signal_connect(button, "released",
                    G_CALLBACK(numbers_button_release), fkb);
   priv->numbers_button = button;
 
-  gtk_box_pack_start(GTK_BOX(vbox2), button, TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(hbox2), vbox2, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox_space), button, TRUE, TRUE, 0);
 
   /* menu */
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
-  gtk_widget_set_size_request(button, 108, -1);
+  gtk_widget_set_size_request(button, HILDON_IM_WESTERN_FKB_BUTTON_WIDTH, -1);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   gtk_container_add(GTK_CONTAINER(button),
                     gtk_image_new_from_icon_name("keyboard_menu",
@@ -1002,7 +1007,7 @@ fkb_window_create(HildonIMWesternFKB *fkb)
 
   /* enter */
   button = hildon_gtk_button_new(HILDON_SIZE_FINGER_HEIGHT);
-  gtk_widget_set_size_request(button, 108, -1);
+  gtk_widget_set_size_request(button, HILDON_IM_WESTERN_FKB_BUTTON_WIDTH, -1);
   connect_signals(fkb, button);
   gtk_widget_set_name(button, "hildon-im-alt-button");
   gtk_container_add(
@@ -1011,17 +1016,17 @@ fkb_window_create(HildonIMWesternFKB *fkb)
   priv->enter_button = button;
 
   gtk_widget_set_size_request(priv->vkb, -1, HILDON_IM_WESTERN_FKB_HEIGHT);
-  hbox1 = gtk_hbox_new(FALSE, 0);
+  hbox_bottom = gtk_hbox_new(FALSE, 0);
 
-  gtk_box_pack_start(GTK_BOX(hbox1), priv->menu_button, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(hbox1), hbox2, TRUE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(hbox1), priv->enter_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox_bottom), priv->menu_button, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox_bottom), hbox_space, TRUE, FALSE, 16);
+  gtk_box_pack_start(GTK_BOX(hbox_bottom), priv->enter_button, FALSE, FALSE, 0);
 
-  gtk_container_set_border_width(GTK_CONTAINER(hbox1), 0);
-  gtk_container_set_border_width(GTK_CONTAINER(hbox2), 0);
-  gtk_widget_set_size_request(hbox1, -1, 70);
+  gtk_container_set_border_width(GTK_CONTAINER(hbox_bottom), 0);
+  gtk_container_set_border_width(GTK_CONTAINER(hbox_space), 0);
+  gtk_widget_set_size_request(hbox_bottom, -1, 70);
 
-  gtk_box_pack_end(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
+  gtk_box_pack_end(GTK_BOX(vbox1), hbox_bottom, FALSE, FALSE, 0);
   gtk_box_pack_end(GTK_BOX(vbox1), priv->vkb, FALSE, FALSE, 0);
 
   gtk_widget_realize(GTK_WIDGET(priv->vkb));
