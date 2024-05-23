@@ -11,18 +11,19 @@ Standards-Version: 3.7.2
 Package: hildon-im-fkb
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, 
+  hildon-input-method,
   fonts-ddc-uchen, 
   fonts-khmeros, 
   fonts-dejavu, 
   fonts-lohit-deva-nepali, 
   fonts-indic, 
-  fonts-thai-tlwg
+  fonts-thai-tlwg,
 Description: Western Finger Keyboard plugin
  This packages provides the Finger keyboard (FKB).
 
 Package: hildon-im-keyboard-assistant
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, hildon-input-method
 Description: Inline word completion plugin for the slide keyboard
  This packages provides the word completion for the slide keyboard.
 
