@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.87) unstable; urgency=low
+
+  * Add dependency on hildon-input-method
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Sat, 25 May 2024 23:23:55 +0200
+
 hildon-input-method-plugins (3.9.86) unstable; urgency=low
 
   * fkb: Fix keyboard size when launched in portrait
