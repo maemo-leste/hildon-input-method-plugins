@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.88) unstable; urgency=low
+
+  * hildon-im-virtual-keyboard-layouts: call hildon-im-recache on install
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Fri, 24 Jan 2025 22:35:13 +0200
+
 hildon-input-method-plugins (3.9.87) unstable; urgency=low
 
   * Add dependency on hildon-input-method
