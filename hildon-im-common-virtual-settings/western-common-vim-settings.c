@@ -613,7 +613,7 @@ cvim_settings_create_hardware_widget(HildonIMSettingsPlugin *plugin,
                                        HILDON_BUTTON_ARRANGEMENT_VERTICAL);
   hildon_button_set_title(HILDON_BUTTON(ext_kb_repeat_cbutton),
                           dgettext("osso-applet-textinput",
-                                   "Hardware keyboard long press"));
+                                   "tein_fi_settings_kbd_long_press"));
   hildon_button_set_alignment(HILDON_BUTTON(ext_kb_repeat_cbutton), 0.0, 0.5, 1.0, 0.0);
 
   selector = hildon_touch_selector_new();
@@ -623,12 +623,12 @@ cvim_settings_create_hardware_widget(HildonIMSettingsPlugin *plugin,
   gboolean ext_kb_repeat_enabled = gconf_client_get_bool(get_gconf(),
           HILDON_IM_GCONF_DIR "/ext_kb_repeat_enabled", NULL);
 
-  static const struct {
+  const struct {
       gboolean value;
       char *label;
   } choices[] = {
-      { FALSE, "Insert Fn-key alternative character", },
-      { TRUE, "Repeat key press", },
+      { FALSE, dgettext("osso-applet-textinput", "tein_fi_settings_kbd_long_press_fnkey"), },
+      { TRUE, dgettext("osso-applet-textinput", "tein_fi_settings_kbd_long_press_repeat"), },
   };
 
   GtkTreeIter *selected_choice = NULL;
