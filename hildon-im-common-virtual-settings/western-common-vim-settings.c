@@ -609,8 +609,6 @@ cvim_settings_create_hardware_widget(HildonIMSettingsPlugin *plugin,
 
   gtk_box_pack_start(GTK_BOX(vbox), cb_layout, FALSE, FALSE, 0);
 
-  ext_kb_repeat_cbutton = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
-
   ext_kb_repeat_cbutton = hildon_picker_button_new(HILDON_SIZE_FINGER_HEIGHT,
                                        HILDON_BUTTON_ARRANGEMENT_VERTICAL);
   hildon_button_set_title(HILDON_BUTTON(ext_kb_repeat_cbutton),
