@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.89) unstable; urgency=low
+
+  * Configure hardware keyboard longpress action
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Mon, 20 Oct 2025 20:24:35 +0200
+
 hildon-input-method-plugins (3.9.88) unstable; urgency=low
 
   * hildon-im-virtual-keyboard-layouts: call hildon-im-recache on install
