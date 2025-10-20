@@ -26,6 +26,7 @@ static GtkWidget *second_dictionary_picker;
 static GtkWidget *first_dictionary_picker;
 static GtkWidget *dual_dictionary_cbutton;
 static GtkWidget *cb_layout;
+static GtkWidget *ext_kb_repeat_cbutton;
 static GtkWidget *word_completion_cbutton;
 static GtkWidget *auto_caps_cbutton;
 static GtkWidget *use_fkb_cbutton;
@@ -74,6 +75,7 @@ cvim_settings_finalize(GObject *object)
   first_dictionary_picker = NULL;
   dual_dictionary_cbutton = NULL;
   cb_layout = NULL;
+  ext_kb_repeat_cbutton = NULL;
   word_completion_cbutton = NULL;
   auto_caps_cbutton = NULL;
   use_fkb_cbutton = NULL;
@@ -606,6 +608,59 @@ cvim_settings_create_hardware_widget(HildonIMSettingsPlugin *plugin,
   g_free(int_kb_layout);
 
   gtk_box_pack_start(GTK_BOX(vbox), cb_layout, FALSE, FALSE, 0);
+
+  ext_kb_repeat_cbutton = hildon_picker_button_new(HILDON_SIZE_FINGER_HEIGHT,
+                                       HILDON_BUTTON_ARRANGEMENT_VERTICAL);
+  hildon_button_set_title(HILDON_BUTTON(ext_kb_repeat_cbutton),
+                          dgettext("osso-applet-textinput",
+                                   "tein_fi_settings_kbd_long_press"));
+  hildon_button_set_alignment(HILDON_BUTTON(ext_kb_repeat_cbutton), 0.0, 0.5, 1.0, 0.0);
+
+  selector = hildon_touch_selector_new();
+  list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
+
+  // See https://git.maemo.org/leste/hildon-input-method/commit/af146da4
+  gboolean ext_kb_repeat_enabled = gconf_client_get_bool(get_gconf(),
+          HILDON_IM_GCONF_DIR "/ext_kb_repeat_enabled", NULL);
+
+  const struct {
+      gboolean value;
+      char *label;
+  } choices[] = {
+      { FALSE, dgettext("osso-applet-textinput", "tein_fi_settings_kbd_long_press_fnkey"), },
+      { TRUE, dgettext("osso-applet-textinput", "tein_fi_settings_kbd_long_press_repeat"), },
+  };
+
+  GtkTreeIter *selected_choice = NULL;
+
+  for (i = 0; i < G_N_ELEMENTS(choices); i++)
+  {
+    gtk_list_store_append(list_store, &iter);
+    gtk_list_store_set(list_store, &iter,
+                       0, choices[i].label,
+                       1, choices[i].value,
+                       -1);
+    if (choices[i].value == ext_kb_repeat_enabled) {
+      selected_choice = gtk_tree_iter_copy(&iter);
+    }
+  }
+
+  column = hildon_touch_selector_append_text_column(
+        HILDON_TOUCH_SELECTOR(selector), GTK_TREE_MODEL(list_store),
+        TRUE);
+  g_object_set(G_OBJECT(column), "text-column", 0, NULL);
+
+  if (selected_choice) {
+    hildon_touch_selector_select_iter(HILDON_TOUCH_SELECTOR(selector), 0,
+                                      selected_choice, TRUE);
+    gtk_tree_iter_free(selected_choice);
+  }
+
+  hildon_picker_button_set_selector(HILDON_PICKER_BUTTON(ext_kb_repeat_cbutton),
+                                    HILDON_TOUCH_SELECTOR(selector));
+
+  gtk_box_pack_start(GTK_BOX(vbox), ext_kb_repeat_cbutton, FALSE, FALSE, 0);
+
   gtk_widget_show_all(vbox);
 
   return vbox;
@@ -667,6 +722,20 @@ cvim_settings_save_data(HildonIMSettingsPlugin *plugin,
                             int_kb_layout, NULL);
 
     g_free(int_kb_layout);
+
+    selector =
+        hildon_picker_button_get_selector(HILDON_PICKER_BUTTON(ext_kb_repeat_cbutton));
+    model =
+        hildon_touch_selector_get_model(HILDON_TOUCH_SELECTOR(selector), 0);
+
+    gboolean ext_kb_repeat_enabled = FALSE;
+    hildon_touch_selector_get_selected(selector, 0, &iter);
+    gtk_tree_model_get(model, &iter,
+            1, &ext_kb_repeat_enabled,
+            -1);
+
+    gconf_client_set_bool(get_gconf(), HILDON_IM_GCONF_DIR "/ext_kb_repeat_enabled",
+                            ext_kb_repeat_enabled, NULL);
   }
 
   gconf_client_set_bool(
