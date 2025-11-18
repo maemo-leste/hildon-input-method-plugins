@@ -1354,7 +1354,11 @@ hildon_im_western_fkb_disable(HildonIMPlugin *plugin)
 
   if (priv->str)
   {
-    g_string_free(priv->str, FALSE);
+    // gcc doesn't allow (void)g_string_free() to indicate that we want to
+    // ignore the result with -Werror=unused-result, so create a temporary
+    // variable and ignore the result (we already know it contains a const char *)
+    char* unused = g_string_free(priv->str, FALSE);
+    (void)unused;
     priv->str = 0;
   }
 
