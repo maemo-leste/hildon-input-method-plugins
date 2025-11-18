@@ -1,3 +1,9 @@
+hildon-input-method-plugins (3.9.90) unstable; urgency=low
+
+  * Fix compilation with Devuan Excalibur
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Tue, 18 Nov 2025 01:12:33 +0100
+
 hildon-input-method-plugins (3.9.89) unstable; urgency=low
 
   * Configure hardware keyboard longpress action
