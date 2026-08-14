@@ -460,7 +460,7 @@ hildon_im_keyboard_monitor_key_event(HildonIMPlugin *plugin, GdkEventType type,
   {
     destroy_banner(priv);
 
-    if (state && val == GDK_space)
+    if (val == GDK_space && (state & GDK_SHIFT_MASK))
     {
       gconf_client_set_bool(priv->ui->client, OSSO_AF_SLIDE_OPEN,
                             priv->slide_open == 0, NULL);
