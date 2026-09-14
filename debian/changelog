@@ -1,3 +1,10 @@
+hildon-input-method-plugins (3.9.91) unstable; urgency=low
+
+  * hildon-im-keyboard-monitor: fixing shift+space check (thanks to Norayr
+    Chilingarian)
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Mon, 14 Sep 2026 16:52:57 +0300
+
 hildon-input-method-plugins (3.9.90) unstable; urgency=low
 
   * Fix compilation with Devuan Excalibur
